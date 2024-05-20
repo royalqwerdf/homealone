@@ -8,30 +8,39 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name="chatting")
+@Table(name="message")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EnableJpaAuditing
-public class Chatting extends BaseEntity {
+public class ChatMessage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Column(nullable = false)
+    private LocalDateTime sendTime;
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Member sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private Member receiver;
+    @JoinColumn(name = "room_id")
+    private Chatting chatting;
 
-
-    public ChatDto toDto() {
-        return ChatDto.builder()
+    public MessageDto toDto() {
+        return MessageDto.builder()
                 .id(this.id)
+                .content(this.content)
+                .sendTime(this.sendTime)
                 .build();
     }
 }
