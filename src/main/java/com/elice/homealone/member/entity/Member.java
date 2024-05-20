@@ -1,17 +1,17 @@
 package com.elice.homealone.member.entity;
 
+import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "member")
-public class Member{
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
@@ -22,7 +22,13 @@ public class Member{
     @Column(name = "email", nullable = false)
     private String email;
 
-    //Enum 사용?
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
+    //enum 사용?
     @Column(name = "role")
     private String role;
 
