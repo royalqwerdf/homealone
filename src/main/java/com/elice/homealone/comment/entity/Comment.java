@@ -5,11 +5,15 @@ import com.elice.homealone.category.entity.Category;
 import com.elice.homealone.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Comment extends BaseEntity {
 
