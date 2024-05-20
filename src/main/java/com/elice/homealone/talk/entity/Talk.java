@@ -6,7 +6,6 @@ import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,9 +21,11 @@ public class Talk extends BaseEntity {
     @Column(nullable = false,name = "title")
     private String title;
 
+
     @Column(nullable = false)
     @Lob
     private String content;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

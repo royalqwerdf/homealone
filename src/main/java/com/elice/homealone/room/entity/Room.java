@@ -7,7 +7,6 @@ import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +26,7 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     @Lob
     private String content;
+
 
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;

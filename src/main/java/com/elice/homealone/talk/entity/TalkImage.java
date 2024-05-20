@@ -1,6 +1,6 @@
 package com.elice.homealone.talk.entity;
 
-import com.elice.homealone.room.entity.Room;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
