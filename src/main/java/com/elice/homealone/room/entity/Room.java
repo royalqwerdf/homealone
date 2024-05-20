@@ -23,10 +23,10 @@ public class Room extends BaseEntity {
 
     @Column(nullable = false, name = "title")
     private String title;
-//
-//    @Column(nullable = false)
-//    @Lob
-//    private String content;
+
+    @Column(nullable = false)
+    @Lob
+    private String content;
 
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
@@ -39,9 +39,10 @@ public class Room extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "room" , fetch = FetchType.LAZY)
-    private List<RoomContent> contents = new ArrayList<>();
     @Column(name = "view")
     private Integer view;
+
+    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
+    private List<RoomImage> roomImages;
 
 }

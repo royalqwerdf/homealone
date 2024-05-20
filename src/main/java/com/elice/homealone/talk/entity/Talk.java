@@ -22,9 +22,9 @@ public class Talk extends BaseEntity {
     @Column(nullable = false,name = "title")
     private String title;
 
-//    @Column(nullable = false)
-//    @Lob
-//    private String content;
+    @Column(nullable = false)
+    @Lob
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -34,8 +34,9 @@ public class Talk extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<TalkContent> talkContents = new ArrayList<>();
+    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
+    private List<TalkImage> talkImages;
+
     @Column(name = "view")
     private Integer view;
 
