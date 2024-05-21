@@ -1,16 +1,18 @@
 package com.elice.homealone.like.entity;
 
-
 import com.elice.homealone.category.entity.Category;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Builder
-//좋아요 엔티티
+@Table(name = "like") // 테이블명 수정
 public class Like {
 
     @Id
@@ -18,21 +20,18 @@ public class Like {
     @Column(name="id")
     private Long id;
 
-    @Column(name="content_id")
-    private Long contentId;
-
-    @Column(name="content_title")
-    private String title;
-
     @ManyToOne
-    @JoinColumn(name="category_id")
-    private Category category;
-
-    @ManyToOne
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable = false)
+    private Category category;
 
+    @Column(name="post_id", nullable = false)
+    private Long postId;
 
+    @Column(name="post_title", nullable = false)
+    private String postTitle;
 
 }
