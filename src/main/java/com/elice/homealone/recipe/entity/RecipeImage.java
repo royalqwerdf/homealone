@@ -8,34 +8,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class RecipeDetail extends BaseEntity {
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class RecipeImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    private RecipeImage recipeDetailImage;
-
-    private String description;
+    @Column
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
-
-    @Builder
-    public RecipeDetail(String description){
-        this.description = description;
-    }
 }
