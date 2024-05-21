@@ -1,0 +1,44 @@
+package com.elice.homealone.socket.handler;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.*;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class WebSocketHandlerImpl implements WebSocketHandler {
+
+    //connection이 성립된 이후 작동되는 메서드
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        log.info("{} 연결됨", session.getId());
+    }
+
+    //양방향 통신 로직
+    //session은 전송자(sender), 데이터는 message
+    //전달받은 세션을 통해 전송자의 메시지를 확인
+    @Override
+    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        if(message instanceof TextMessage) {
+            String payload = ((TextMessage) message).getPayload();
+            log.info("payload {}", payload);
+        }
+    }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        log.info("WebSocket error {}", exception.getMessage());
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        log.info("WebSocket connect close");
+    }
+
+    @Override
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+}

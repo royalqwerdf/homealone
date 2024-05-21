@@ -1,6 +1,6 @@
 package com.elice.homealone.socket;
 
-import com.elice.homealone.chatting.socket.WebSocketHandlerImpl;
+import com.elice.homealone.socket.handler.WebSocketHandlerImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -20,6 +20,7 @@ public class WebSocketTest {
     @Test
     public void testWebSocket() throws Exception {
         WebSocketClient client = new StandardWebSocketClient();
+        //execute 메서드로 웹 소켓 연결을 시도, 연결 성공하면 WebSocket 세션을 반환
         WebSocketSession session = client.execute(new WebSocketHandlerImpl(), null,
                 new URI("ws://localhost:" + port + "/websocket-endpoint")).get();
 
