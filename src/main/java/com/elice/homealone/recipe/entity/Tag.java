@@ -25,13 +25,13 @@ public class Tag extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String tagName;
 
     @OneToMany(mappedBy = "tag")
-    private List<RecipeTagMap> recipeTags = new ArrayList<>();
+    private List<RecipeTagMap> recipeTags;
 
     @Builder
-    public Tag(String name) {
-        this.name = name;
+    public Tag(String tagName) {
+        this.tagName = tagName;
     }
 }
