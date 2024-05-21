@@ -18,6 +18,8 @@ public class MessageDto {
     private String content;
     private LocalDateTime sendTime;
 
+    private long sender_id;
+    private long room_id;
     private Member sender;
     private Chatting chatting;
 

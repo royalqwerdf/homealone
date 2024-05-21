@@ -5,11 +5,13 @@ import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Entity
 @Table(name="chatting")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -32,6 +34,8 @@ public class Chatting extends BaseEntity {
     public ChatDto toDto() {
         return ChatDto.builder()
                 .id(this.id)
+                .sender_id(this.sender.getId())
+                .receiver_id(this.receiver.getId())
                 .build();
     }
 }

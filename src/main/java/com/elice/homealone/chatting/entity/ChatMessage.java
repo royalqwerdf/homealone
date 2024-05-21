@@ -5,6 +5,7 @@ import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="message")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -41,6 +43,8 @@ public class ChatMessage extends BaseEntity {
                 .id(this.id)
                 .content(this.content)
                 .sendTime(this.sendTime)
+                .sender_id(this.sender.getId())
+                .room_id(this.chatting.getId())
                 .build();
     }
 }
