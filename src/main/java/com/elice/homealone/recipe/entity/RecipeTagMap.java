@@ -19,10 +19,10 @@ public class RecipeTagMap {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 }

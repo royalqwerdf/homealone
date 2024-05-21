@@ -2,6 +2,9 @@ package com.elice.homealone.recipe.entity;
 
 import com.elice.homealone.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.recipe.enums.RecipeCuisine;
+import com.elice.homealone.recipe.enums.RecipeTime;
+import com.elice.homealone.recipe.enums.RecipeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,14 +32,17 @@ public class Recipe extends BaseEntity {
     private String description;
 
     @Column
-    private int portions;
+    private int recipePortions;
 
     @Column
+    private RecipeType recipeType;
+    @Column
     private RecipeTime recipeTime;
+    @Column
+    private RecipeCuisine recipeCuisine;
 
-    // TODO : 이미지 처리 방식에 대해 고민해봐야 함
     @OneToMany(mappedBy = "recipe")
-    private List<ImageEntity> images;
+    private List<RecipeImage> images;
 
     @ManyToOne
     @JoinColumn(name="member_id")
@@ -46,7 +52,7 @@ public class Recipe extends BaseEntity {
     private List<RecipeTagMap> recipeTags;
 
     @OneToMany(mappedBy = "recipe")
-    private List<Ingredient> ingredients;
+    private List<RecipeIngredient> recipeIngredients;
 
     @OneToMany(mappedBy = "recipe")
     private List<RecipeDetail> details;
