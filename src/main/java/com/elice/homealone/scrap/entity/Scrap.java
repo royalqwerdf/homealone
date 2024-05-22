@@ -1,7 +1,8 @@
 package com.elice.homealone.scrap.entity;
 
-import com.elice.homealone.category.entity.Category;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,25 +14,18 @@ import lombok.*;
 @Setter
 @Builder
 @Table(name = "scrap")
-public class Scrap {
+public class Scrap extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="member_id", nullable = false)
-    private Member member;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @ManyToOne
-    @JoinColumn(name="category_id", nullable = false)
-    private Category category;
-
-    @Column(name="post_id", nullable = false)
-    private Long postId;
-
-    @Column(name="post_title", nullable = false)
-    private String postTitle;
-
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 }
