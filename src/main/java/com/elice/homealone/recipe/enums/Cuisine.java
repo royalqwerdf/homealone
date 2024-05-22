@@ -3,7 +3,7 @@ package com.elice.homealone.recipe.enums;
 import lombok.Getter;
 
 @Getter
-public enum RecipeCuisine {
+public enum Cuisine {
     KOREAN("한식"),
     CHINESE("중식"),
     JAPANESE("일식"),
@@ -14,6 +14,6 @@ public enum RecipeCuisine {
     THAI("태국 음식"),
     ETC("기타");
 
-    RecipeCuisine(String cuisine) {
+    Cuisine(String cuisine) {
     }
 }

@@ -1,9 +1,8 @@
 package com.elice.homealone.room.entity;
 
-
-import com.elice.homealone.category.entity.Category;
 import com.elice.homealone.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Room extends BaseEntity {
+public class Room extends Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,24 +22,10 @@ public class Room extends BaseEntity {
 
     @Column(nullable = false, name = "title")
     private String title;
-//
-//    @Column(nullable = false)
-//    @Lob
-//    private String content;
 
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @OneToMany(mappedBy = "room" , fetch = FetchType.LAZY)
-    private List<RoomContent> contents = new ArrayList<>();
     @Column(name = "view")
     private Integer view;
 

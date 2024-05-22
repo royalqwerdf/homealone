@@ -2,6 +2,7 @@ package com.elice.homealone.recipe.entity;
 
 import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +17,6 @@ public class RecipeDetailImage extends BaseEntity {
     @Column
     private String imageUrl;
 
-    @OneToOne(mappedBy = "recipeDetailImage")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "recipeDetailImage")
     private RecipeDetail recipeDetail;
 }

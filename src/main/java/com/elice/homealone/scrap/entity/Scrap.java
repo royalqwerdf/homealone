@@ -1,33 +1,32 @@
 package com.elice.homealone.scrap.entity;
 
-
-import com.elice.homealone.category.entity.Category;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Builder
+@NoArgsConstructor
 public class Scrap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="content_id")
-    private Long contentId;
-
-    @Column(name="content_title")
-    private String title;
-
-    @ManyToOne
-    @JoinColumn(name="category_id")
-    private Category category;
-
     @ManyToOne
     @JoinColumn(name="member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="post_id")
+    private Post post;
+
+    @Builder
+    public Scrap(Member member, Post post) {
+        this.member = member;
+        this.post = post;
+    }
 }
