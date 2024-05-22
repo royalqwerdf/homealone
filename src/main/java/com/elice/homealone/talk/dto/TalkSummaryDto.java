@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TalkSumaryDto {
+public class TalkSummaryDto {
     private Long id;
     private String title;
     private String memberNickname;
