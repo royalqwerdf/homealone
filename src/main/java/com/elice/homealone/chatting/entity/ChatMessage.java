@@ -31,11 +31,11 @@ public class ChatMessage extends BaseEntity {
     private LocalDateTime sendTime;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private Member sender;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "chat_room_id")
     private Chatting chatting;
 
     public MessageDto toDto() {
@@ -43,8 +43,8 @@ public class ChatMessage extends BaseEntity {
                 .id(this.id)
                 .content(this.content)
                 .sendTime(this.sendTime)
-                .sender_id(this.sender.getId())
-                .room_id(this.chatting.getId())
+                .member_id(this.member.getId())
+                .chat_room_id(this.chatting.getId())
                 .build();
     }
 }

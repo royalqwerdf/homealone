@@ -18,8 +18,8 @@ public class MessageDto {
     private String content;
     private LocalDateTime sendTime;
 
-    private long sender_id;
-    private long room_id;
+    private long member_id;
+    private long chat_room_id;
     private Member sender;
     private Chatting chatting;
 
@@ -27,7 +27,7 @@ public class MessageDto {
         return ChatMessage.builder()
                 .content(this.content)
                 .sendTime(this.sendTime)
-                .sender(sender)
+                .member(sender)
                 .chatting(chatting)
                 .build();
     }

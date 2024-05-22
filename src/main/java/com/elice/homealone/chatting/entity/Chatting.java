@@ -23,11 +23,11 @@ public class Chatting extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "member_sender_id")
     private Member sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn(name = "member_receiver_id")
     private Member receiver;
 
 
