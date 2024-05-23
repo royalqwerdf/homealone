@@ -1,8 +1,6 @@
 package com.elice.homealone.room.entity;
 
 
-import com.elice.homealone.category.entity.Category;
-import com.elice.homealone.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomDto;
