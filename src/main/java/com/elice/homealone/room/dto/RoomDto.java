@@ -20,7 +20,7 @@ public class RoomDto {
     private Integer view;
     private Long likeCount;
     private Long scrapCount;
-    private String memberNickname;
+    private String memberName;
     private Integer commentCount;
 
 }

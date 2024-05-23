@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class TalkSummaryDto {
     private Long id;
     private String title;
-    private String memberNickname;
+    private String memberName;
     private Integer commentCount;
 }

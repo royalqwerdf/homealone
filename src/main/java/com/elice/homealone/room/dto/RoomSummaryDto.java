@@ -11,6 +11,6 @@ public class RoomSummaryDto {
     private Long id;
     private String title;
     private String thumbnailUrl;
-    private String memberNickname;
+    private String memberName;
     private Integer commentCount;
 }
