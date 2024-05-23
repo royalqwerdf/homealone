@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @Builder
 @Table(name = "member")
+
 public class Member extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue
