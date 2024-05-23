@@ -1,4 +1,4 @@
-package com.elice.homealone.recipe.entity;
+package com.elice.homealone.tag.entity;
 
 import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,7 +27,7 @@ public class Tag extends BaseEntity {
     private String tagName;
 
     @OneToMany(mappedBy = "tag")
-    private List<RecipeTagMap> recipeTags;
+    private List<PostTagMap> tags;
 
     @Builder
     public Tag(String tagName) {

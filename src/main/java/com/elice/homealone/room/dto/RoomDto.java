@@ -1,8 +1,6 @@
 package com.elice.homealone.room.dto;
 
-import com.elice.homealone.like.entity.Like;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

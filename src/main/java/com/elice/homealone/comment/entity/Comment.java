@@ -1,4 +1,4 @@
-package com.elice.homealone.like.entity;
+package com.elice.homealone.comment.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
@@ -13,8 +13,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "like")
-public class Like extends BaseEntity {
+@Table(name = "comment")
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,7 @@ public class Like extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Column(name = "content", nullable = false)
+    private String content;
 }

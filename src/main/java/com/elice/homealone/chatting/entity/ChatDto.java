@@ -16,8 +16,13 @@ public class ChatDto {
     private Member sender;
     private Member receiver;
 
+    private long sender_id;
+    private long receiver_id;
+
     public Chatting toEntity(Member sender, Member receiver) {
         return Chatting.builder()
+                .sender(sender)
+                .receiver(receiver)
                 .sender(sender)
                 .receiver(receiver)
                 .build();
