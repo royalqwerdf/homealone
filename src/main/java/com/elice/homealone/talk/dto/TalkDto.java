@@ -2,6 +2,7 @@ package com.elice.homealone.talk.dto;
 
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.entity.Room;
+import com.elice.homealone.talk.entity.Talk;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,18 +32,18 @@ public class TalkDto {
         private String memberName;
         private Integer commentCount;
 
-        public static TalkInfoDto toRoomInfoDto(Room room) {
+        public static TalkInfoDto toRoomInfoDto(Talk talk) {
             return TalkInfoDto.builder()
-                    .id(room.getId())
-                    .title(room.getTitle())
-                    .content(room.getContent())
-                    .createdAt(room.getCreatedAt())
-                    .updatedAt(room.getUpdatedAt())
-                    .view(room.getView())
-                    .likeCount((long) room.getPostLikes().size())
-                    .scrapCount((long) room.getScraps().size())
-                    .memberName(room.getMember().getName())
-                    .commentCount(room.getComments().size())
+                    .id(talk.getId())
+                    .title(talk.getTitle())
+                    .content(talk.getContent())
+                    .createdAt(talk.getCreatedAt())
+                    .updatedAt(talk.getUpdatedAt())
+                    .view(talk.getView())
+                    .likeCount((long) talk.getPostLikes().size())
+                    .scrapCount((long) talk.getScraps().size())
+                    .memberName(talk.getMember().getName())
+                    .commentCount(talk.getComments().size())
                     .build();
         }
     }
