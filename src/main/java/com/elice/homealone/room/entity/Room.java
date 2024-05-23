@@ -22,10 +22,12 @@ public class Room extends Post {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "content")
     @Lob
     private String content;
 
+    @Column(name = "plain_content")
+    private String plainContent;
 
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
@@ -35,7 +37,8 @@ public class Room extends Post {
     private Member member;
 
     @Column(name = "view")
-    private Integer view;
+    @Builder.Default
+    private Integer view = 0;
 
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
     private List<RoomImage> roomImages;
@@ -52,7 +55,7 @@ public class Room extends Post {
         Room room = new Room();
         room.title = roomDto.getTitle();
         room.content = roomDto.getContent();
-        room.thumbnailUrl = room.getThumbnailUrl();
+        room.thumbnailUrl = roomDto.getThumbnailUrl();
         room.setType(Type.ROOM); // Post의 type 필드를 설정
         return room;
     }

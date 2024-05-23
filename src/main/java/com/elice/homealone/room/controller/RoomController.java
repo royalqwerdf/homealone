@@ -3,8 +3,6 @@ package com.elice.homealone.room.controller;
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.dto.RoomSummaryDto;
 import com.elice.homealone.room.service.RoomService;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RestController("/api/room")
+@RestController
+@RequestMapping("/api/room")
 public class RoomController {
     @Autowired
     private RoomService roomService;
@@ -34,7 +32,7 @@ public class RoomController {
 
     @PostMapping("")
     public ResponseEntity<?> createRoomPost(@RequestBody @Validated RoomDto roomDto,
-                                                              BindingResult bindingResult // 여기에 사용자 권한 추가 후 사용자 검증 로직
+                                                              BindingResult bindingResult // 여기에 회원 검증로직 추가해야함
                                                                 ) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
@@ -73,7 +71,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long roomId){
+    public ResponseEntity<String> deletePost(@PathVariable Long roomId){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
         roomService.deleteRoomPost(roomId);
         return ResponseEntity.ok().body("Room id: "+roomId+" post deleted successfully");
     }
@@ -87,11 +85,12 @@ public class RoomController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchRoom(@RequestParam String query, Pageable pageable){
-        if(query.length()==0){
-            ///검색어를 입력하라ㅡㄴ 에러
+        if (query == null || query.isEmpty()) {
+            return ResponseEntity.badRequest().body("검색어를 입력하십시오.");
         }
+
         Page<RoomSummaryDto> roomSummaryDtos = roomService.searchRoomPost(query, pageable);
-        if(roomSummaryDtos.getSize() ==0){
+        if (roomSummaryDtos.isEmpty()) {
             return ResponseEntity.ok().body("검색 결과가 없습니다.");
         }
         return ResponseEntity.ok().body(roomSummaryDtos);

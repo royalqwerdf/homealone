@@ -1,6 +1,5 @@
 package com.elice.homealone.room.service;
 
-import com.elice.homealone.common.exception.RoomException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.dto.RoomSummaryDto;
@@ -8,12 +7,13 @@ import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import com.elice.homealone.global.exception.RoomException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -21,8 +21,11 @@ import java.util.Optional;
 public class RoomService {
     private final RoomRepository roomRepository;
     @Transactional
-    public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto){
+    public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto){ ///회원 정의 추가해야함.
         Room room = Room.createRoom(roomDto);
+        //HTML태그 제거
+        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
+        room.setPlainContent(plainContent);
         roomRepository.save(room);
         return RoomDto.RoomInfoDto.toRoomInfoDto(room);
     }
@@ -31,7 +34,7 @@ public class RoomService {
     public RoomDto.RoomInfoDto EditRoomPost(Long roomId, RoomDto roomDto){
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomException.RoomNotFoundException("Room Post is Not Found with id: "+ roomId));
-        roomOriginal.setTitle(roomOriginal.getTitle());
+        roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
         return RoomDto.RoomInfoDto.toRoomInfoDto(roomOriginal);
@@ -52,7 +55,7 @@ public class RoomService {
 
     @Transactional
     public Page<RoomSummaryDto> searchRoomPost(String query,Pageable pageable){
-        Page<Room> roomsBySearch = roomRepository.searchByTitleContainingOrContentContaining(query, query, pageable);
+        Page<Room> roomsBySearch = roomRepository.searchByTitleContainingOrPlainContentContaining(query, query, pageable);
         return roomsBySearch.map(RoomSummaryDto::toroomSummaryDto);
 
     }

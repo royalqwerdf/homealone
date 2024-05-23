@@ -25,7 +25,7 @@ public class RoomSummaryDto {
                 .id(room.getId())
                 .title(room.getTitle())
                 .thumbnailUrl(room.getThumbnailUrl())
-                .memberName(room.getMember().getName())
+//                .memberName(room.getMember().getName())
                 .commentCount(room.getComments().size())
                 .createdAt(room.getCreatedAt())
                 .build();
