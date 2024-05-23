@@ -2,6 +2,7 @@ package com.elice.homealone.scrap.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -10,19 +11,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Scrap {
+@Table(name = "scrap")
+public class Scrap extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Builder
     public Scrap(Member member, Post post) {
