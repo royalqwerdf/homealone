@@ -1,6 +1,7 @@
 package com.elice.homealone.chatting.entity;
 
-import com.elice.homealone.common.entity.BaseEntity;
+
+import com.elice.homealone.global.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

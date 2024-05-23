@@ -1,4 +1,4 @@
-package com.elice.homealone.common.exception;
+package com.elice.homealone.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

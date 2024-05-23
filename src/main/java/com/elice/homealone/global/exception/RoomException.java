@@ -1,4 +1,4 @@
-package com.elice.homealone.common.exception;
+package com.elice.homealone.global.exception;
 
 public class RoomException {
     public static class RoomNotFoundException extends RuntimeException{

@@ -1,6 +1,7 @@
 package com.elice.homealone.tag.entity;
 
-import com.elice.homealone.common.entity.BaseEntity;
+
+import com.elice.homealone.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

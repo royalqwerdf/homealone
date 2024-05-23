@@ -1,7 +1,8 @@
 package com.elice.homealone.member.entity;
 
 import com.elice.homealone.comment.entity.Comment;
-import com.elice.homealone.common.entity.BaseEntity;
+
+import com.elice.homealone.global.common.BaseEntity;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;

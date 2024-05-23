@@ -1,6 +1,7 @@
 package com.elice.homealone.recipe.entity;
 
-import com.elice.homealone.common.entity.BaseEntity;
+
+import com.elice.homealone.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

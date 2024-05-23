@@ -1,4 +1,4 @@
-package com.elice.homealone.common.entity;
+package com.elice.homealone.global.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
