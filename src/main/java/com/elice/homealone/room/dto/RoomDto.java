@@ -1,15 +1,15 @@
 package com.elice.homealone.room.dto;
 
+import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.entity.Room;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
+import java.util.List;
 import java.util.Date;
 
 @Data
@@ -17,7 +17,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomDto {
-    private long id;
     @NotNull(message = "제목을 입력해주세요.")
     @NotEmpty(message = "제목을 입력해주세요.")
     private String title;
@@ -34,6 +33,7 @@ public class RoomDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RoomInfoDto extends RoomDto {
+        private long id;
         private Date createdAt;
         private Date updatedAt;
         private Integer view;
@@ -41,6 +41,7 @@ public class RoomDto {
         private Long scrapCount;
         private String memberName;
         private Integer commentCount;
+        private List<Comment> comments;
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
@@ -55,6 +56,7 @@ public class RoomDto {
                     .scrapCount((long) room.getScraps().size())
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments().size())
+                    .comments(room.getComments())
                     .build();
         }
     }

@@ -1,5 +1,6 @@
 package com.elice.homealone.room.service;
 
+import com.elice.homealone.common.exception.RoomException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.dto.RoomSummaryDto;
@@ -28,7 +29,8 @@ public class RoomService {
 
     @Transactional
     public RoomDto.RoomInfoDto EditRoomPost(Long roomId, RoomDto roomDto){
-        Room roomOriginal = roomRepository.findById(roomId).orElseThrow();
+        Room roomOriginal = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomException.RoomNotFoundException("Room Post is Not Found with id: "+ roomId));
         roomOriginal.setTitle(roomOriginal.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
@@ -37,7 +39,8 @@ public class RoomService {
 
     @Transactional
     public void deleteRoomPost(Long roomId){
-        Room roomOriginal = roomRepository.findById(roomId).orElseThrow();
+        Room roomOriginal = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomException.RoomNotFoundException("Room Post is Not Found with id: "+ roomId));
         roomRepository.delete(roomOriginal);
     }
 
@@ -58,5 +61,11 @@ public class RoomService {
     public RoomDto.RoomInfoDto findByRoomId(Long roomId){
         Room room = roomRepository.findById(roomId).orElseThrow();
         return RoomDto.RoomInfoDto.toRoomInfoDto(room);
+    }
+
+    @Transactional
+    public Page<RoomSummaryDto> findAll(Pageable pageable){
+        Page<Room> all = roomRepository.findAll(pageable);
+        return all.map(RoomSummaryDto :: toroomSummaryDto);
     }
 }

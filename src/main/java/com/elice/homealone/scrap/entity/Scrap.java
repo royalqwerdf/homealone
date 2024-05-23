@@ -2,7 +2,7 @@ package com.elice.homealone.scrap.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

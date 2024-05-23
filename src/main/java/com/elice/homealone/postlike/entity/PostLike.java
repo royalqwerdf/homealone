@@ -1,12 +1,11 @@
 package com.elice.homealone.postlike.entity;
 
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.common.entity.BaseEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
