@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class Room extends Post {
 
     @Id
@@ -44,11 +44,18 @@ public class Room extends Post {
 
     public static Room toRoom(RoomDto roomDto){
         return Room.builder()
-                .type(roomDto.getType())
                 .title(roomDto.getTitle())
                 .content(roomDto.getContent())
                 .thumbnailUrl(roomDto.getThumbnailUrl())
-                .type(Type.ROOM)
                 .build();
+    }
+
+    public static Room createRoom(RoomDto roomDto) {
+        Room room = new Room();
+        room.title = roomDto.getTitle();
+        room.content = roomDto.getContent();
+        room.thumbnailUrl = room.getThumbnailUrl();
+        room.setType(Type.ROOM); // Post의 type 필드를 설정
+        return room;
     }
 }

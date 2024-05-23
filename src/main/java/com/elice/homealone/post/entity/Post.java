@@ -17,7 +17,6 @@ import lombok.experimental.SuperBuilder;
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@SuperBuilder
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,5 +47,8 @@ public class Post extends BaseEntity {
         RECIPE,
         ROOM,
         TALK
+    }
+    protected void setType(Type type) {
+        this.type = type;
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RestController("/api/talk")
+@RestController("/api/room")
 public class RoomController {
     @Autowired
     private RoomService roomService;
@@ -51,8 +51,8 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomInfoDto);
     }
 
-    @PutMapping("/{talkId}")
-    public ResponseEntity<?> editRoomPost(@PathVariable Long talkId
+    @PutMapping("/{roomId}")
+    public ResponseEntity<?> editRoomPost(@PathVariable Long roomId
                                             ,@RequestBody @Validated RoomDto roomDto,
                                           BindingResult bindingResult //사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
                                             ){
@@ -67,20 +67,20 @@ public class RoomController {
 
         //사용자 검증 로직
 
-        RoomDto.RoomInfoDto roomInfoDto = roomService.EditRoomPost(talkId,roomDto);
+        RoomDto.RoomInfoDto roomInfoDto = roomService.EditRoomPost(roomId,roomDto);
         return ResponseEntity.status(HttpStatus.OK).body(roomInfoDto);
 
     }
 
-    @DeleteMapping("/{talkId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long talkId){
-        roomService.deleteRoomPost(talkId);
-        return ResponseEntity.ok().body("Room id: "+talkId+" post deleted successfully");
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long roomId){
+        roomService.deleteRoomPost(roomId);
+        return ResponseEntity.ok().body("Room id: "+roomId+" post deleted successfully");
     }
 
-    @GetMapping("/{talkId}")
-    public ResponseEntity<RoomDto.RoomInfoDto> findRoomById (@PathVariable Long talkId){
-        RoomDto.RoomInfoDto byRoomId = roomService.findByRoomId(talkId);
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDto.RoomInfoDto> findRoomById (@PathVariable Long roomId){
+        RoomDto.RoomInfoDto byRoomId = roomService.findByRoomId(roomId);
         return ResponseEntity.ok().body(byRoomId);
 
     }

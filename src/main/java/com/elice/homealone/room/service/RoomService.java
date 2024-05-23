@@ -22,7 +22,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     @Transactional
     public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto){
-        Room room = Room.toRoom(roomDto);
+        Room room = Room.createRoom(roomDto);
         roomRepository.save(room);
         return RoomDto.RoomInfoDto.toRoomInfoDto(room);
     }
@@ -52,14 +52,16 @@ public class RoomService {
 
     @Transactional
     public Page<RoomSummaryDto> searchRoomPost(String query,Pageable pageable){
-        Page<Room> roomsBySearch = roomRepository.searchByTitleContainingORContentContaining(query, query, pageable);
+        Page<Room> roomsBySearch = roomRepository.searchByTitleContainingOrContentContaining(query, query, pageable);
         return roomsBySearch.map(RoomSummaryDto::toroomSummaryDto);
 
     }
 
     @Transactional
     public RoomDto.RoomInfoDto findByRoomId(Long roomId){
-        Room room = roomRepository.findById(roomId).orElseThrow();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomException.RoomNotFoundException("Room Post is Not Found with id: "+ roomId));
+        room.setView(room.getView()+1);
         return RoomDto.RoomInfoDto.toRoomInfoDto(room);
     }
 

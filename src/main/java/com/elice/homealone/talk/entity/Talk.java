@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Talk extends Post {
@@ -38,10 +38,17 @@ public class Talk extends Post {
 
     public static Talk toTalk(TalkDto talkDto){
         return Talk.builder()
-                .type(talkDto.getType())
                 .title(talkDto.getTitle())
                 .content(talkDto.getContent())
                 .build();
     }
 
+
+    public static Talk createTalk(TalkDto talkDto) {
+        Talk talk = new Talk();
+        talk.title = talkDto.getContent();
+        talk.content = talkDto.getContent();
+        talk.setType(Type.TALK); // Post의 type 필드를 설정
+        return talk;
+    }
 }
