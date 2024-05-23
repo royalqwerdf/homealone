@@ -4,6 +4,7 @@ import com.elice.homealone.common.BaseEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
+import java.awt.Image;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -28,5 +29,4 @@ public class Room extends Post {
 
     @Column(name = "view")
     private Integer view;
-
 }

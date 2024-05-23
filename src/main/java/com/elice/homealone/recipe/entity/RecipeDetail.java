@@ -25,10 +25,7 @@ public class RecipeDetail extends BaseEntity {
     @Column
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private RecipeImage recipeDetailImage;
-
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
