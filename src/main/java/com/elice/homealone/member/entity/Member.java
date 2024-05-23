@@ -1,7 +1,12 @@
 package com.elice.homealone.member.entity;
 
+import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.postlike.entity.PostLike;
+import com.elice.homealone.scrap.entity.Scrap;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 @Entity
@@ -38,4 +43,15 @@ public class Member extends BaseEntity {
     @Column(name = "ist_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<PostLike> postLikes;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Scrap> scraps;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }
