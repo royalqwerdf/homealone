@@ -1,29 +1,23 @@
 package com.elice.homealone.recipe.entity;
 
-import com.elice.homealone.common.BaseEntity;
-import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.recipe.enums.RecipeCuisine;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Recipe extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
+@Getter
+public class Recipe extends Post {
 
     @Column
     private String title;
@@ -32,28 +26,31 @@ public class Recipe extends BaseEntity {
     private String description;
 
     @Column
-    private int recipePortions;
+    private int portions;
 
     @Column
     private RecipeType recipeType;
     @Column
     private RecipeTime recipeTime;
     @Column
-    private RecipeCuisine recipeCuisine;
+    private Cuisine cuisine;
 
-    @OneToMany(mappedBy = "recipe")
-    private List<RecipeImage> images;
-
-    @ManyToOne
-    @JoinColumn(name="member_id")
-    private Member member;
-
-    @OneToMany(mappedBy = "recipe")
-    private List<RecipeTagMap> recipeTags;
-
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private List<RecipeIngredient> recipeIngredients;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private List<RecipeDetail> details;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
+    private List<RecipeImage> images;
+
+    @Builder
+    public Recipe(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine) {
+        this.title = title;
+        this.description = description;
+        this.portions = portions;
+        this.recipeType = recipeType;
+        this.recipeTime = recipeTime;
+        this.cuisine = cuisine;
+    }
 }

@@ -26,15 +26,15 @@ public class TalkContent {
     @Column(name = "content_type")
     private ContentType contentType;
 
-    @Column(name = "order")
-    private Integer order;
+    @Column(name = "sequence")
+    private Integer sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="talk_id")
     private Talk talk;
+
     public enum ContentType{
         TEXT,
-    IMAGE
-
+        IMAGE
     }
 }

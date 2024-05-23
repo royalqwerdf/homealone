@@ -29,7 +29,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                     s.sendMessage(new TextMessage("새 사용자가 입장했습니다"));
                 }
             } catch (IOException e) {}
-        });
+        }));
 
     }
 
