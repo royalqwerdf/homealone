@@ -1,5 +1,6 @@
 package com.elice.homealone.talk.dto;
 
+import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.talk.entity.Talk;
@@ -17,6 +18,7 @@ import java.util.Date;
 public class TalkDto {
     private String title;
     private String content;
+    private Post.Type type;
 
     @Data
     @SuperBuilder
@@ -35,6 +37,7 @@ public class TalkDto {
         public static TalkInfoDto toRoomInfoDto(Talk talk) {
             return TalkInfoDto.builder()
                     .id(talk.getId())
+                    .type(talk.getType())
                     .title(talk.getTitle())
                     .content(talk.getContent())
                     .createdAt(talk.getCreatedAt())

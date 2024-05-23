@@ -1,6 +1,9 @@
 package com.elice.homealone.room.dto;
 
+import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.entity.Room;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,16 +17,23 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomDto {
-
+    private long id;
+    @NotNull(message = "제목을 입력해주세요.")
+    @NotEmpty(message = "제목을 입력해주세요.")
     private String title;
+    @NotNull(message = "내용을 입력해주세요.")
+    @NotEmpty(message = "내용을 입력해주세요.")
     private String content;
+    private Post.Type type;
+    @NotNull(message = "대표이미지를 등록해주세요.")
+    @NotEmpty(message = "대표이미지를 등록해주세요.")
+    private String thumbnailUrl;
 
     @Data
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RoomInfoDto extends RoomDto {
-        private long id;
         private Date createdAt;
         private Date updatedAt;
         private Integer view;
@@ -36,6 +46,7 @@ public class RoomDto {
             return RoomInfoDto.builder()
                     .id(room.getId())
                     .title(room.getTitle())
+                    .type(room.getType())
                     .content(room.getContent())
                     .createdAt(room.getCreatedAt())
                     .updatedAt(room.getUpdatedAt())

@@ -5,12 +5,13 @@ import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.talk.dto.TalkDto;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Entity
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Talk extends Post {
@@ -37,6 +38,7 @@ public class Talk extends Post {
 
     public static Talk toTalk(TalkDto talkDto){
         return Talk.builder()
+                .type(talkDto.getType())
                 .title(talkDto.getTitle())
                 .content(talkDto.getContent())
                 .build();

@@ -6,6 +6,7 @@ import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomDto;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Room extends Post {
 
     @Id
@@ -43,8 +44,11 @@ public class Room extends Post {
 
     public static Room toRoom(RoomDto roomDto){
         return Room.builder()
+                .type(roomDto.getType())
                 .title(roomDto.getTitle())
                 .content(roomDto.getContent())
+                .thumbnailUrl(roomDto.getThumbnailUrl())
+                .type(Type.ROOM)
                 .build();
     }
 }
