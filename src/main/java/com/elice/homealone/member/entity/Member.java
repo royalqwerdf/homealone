@@ -1,8 +1,12 @@
 package com.elice.homealone.member.entity;
 
+import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -37,5 +41,8 @@ public class Member extends BaseEntity {
 
     @Column(name = "ist_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Chatting> chat_rooms = new ArrayList<>();
 
 }

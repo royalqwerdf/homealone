@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="chatting")
 @Data
@@ -22,6 +25,12 @@ public class Chatting extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String chatroom_name;
+
+    @Column(nullable = false)
+    private String chatUuid;
+
     @ManyToOne
     @JoinColumn(name = "member_sender_id")
     private Member sender;
@@ -29,6 +38,9 @@ public class Chatting extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_receiver_id")
     private Member receiver;
+
+    @OneToMany(mappedBy = "chatting")
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
 
     public ChatDto toDto() {
