@@ -19,7 +19,6 @@ public class AuthRequestDto {
     private String email;
     private String address;
     private String password;
-
     public Member toEntity() {
         return Member.builder()
                 .name(this.name)
