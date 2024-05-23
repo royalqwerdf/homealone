@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class AuthRequestDto {
+public class SignUpDto {
     private String name;
     private LocalDate birth;
     @NotNull

@@ -21,7 +21,6 @@ import java.util.Collection;
 @Setter
 @Builder
 @Table(name = "member")
-
 public class Member extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue
@@ -54,6 +53,7 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Column(name = "deleted_at", nullable = false)
     private boolean deletedAt = false;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
