@@ -1,12 +1,10 @@
 package com.elice.homealone.room.entity;
 
-
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomDto;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
 @Entity
