@@ -1,14 +1,8 @@
 package com.elice.homealone.room.entity;
 
-import com.elice.homealone.common.BaseEntity;
-import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
-import java.awt.Image;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data

@@ -1,4 +1,4 @@
-package com.elice.global.jwt;
+package com.elice.homealone.global.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

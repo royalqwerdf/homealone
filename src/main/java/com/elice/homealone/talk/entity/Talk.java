@@ -1,7 +1,5 @@
 package com.elice.homealone.talk.entity;
 
-import com.elice.homealone.common.BaseEntity;
-import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
