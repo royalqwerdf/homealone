@@ -1,6 +1,9 @@
-package com.elice.global.config;
+package com.elice.homealone.global.config;
 
+import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
+import com.elice.homealone.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,18 +19,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 //    private final UserDetailsService userDetailsService;
 //
-//    public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.userDetailsService = userDetailsService;
-//    }
+
+
+    // h2 콘솔에 대한 요청이 스프링 시큐리티 필터를 통과 하지 않도록 하는 설정
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
+    public WebSecurityCustomizer configureH2ConsoleEnable() {
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console());
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,16 +49,19 @@ public class SecurityConfig {
                         //정적 자원 허용
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
-                        .requestMatchers(  "/").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/", "/index.html").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .anyRequest().permitAll()
                 )
                 // enable h2-console
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                );
+                )
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 비활성화
         // 필터 요청 전에 passwordEncorder 사용
-//                .addFilterBefore(n ew JwtAuthenticationFilter(jwtTokenProvider, userDetailsService)
-//                        , UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)
+                        , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -56,7 +70,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     //사용자 인증 처리
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

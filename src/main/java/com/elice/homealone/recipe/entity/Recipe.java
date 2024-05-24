@@ -54,3 +54,4 @@ public class Recipe extends Post {
         this.cuisine = cuisine;
     }
 }
+

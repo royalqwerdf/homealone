@@ -1,7 +1,7 @@
 package com.elice.homealone.chatting.controller;
 
-import com.elice.homealone.socket.model.MessageModel;
-import com.elice.homealone.socket.model.OutputMessageModel;
+import com.elice.homealone.global.socket.model.MessageModel;
+import com.elice.homealone.global.socket.model.OutputMessageModel;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -24,11 +24,11 @@ public class MessageController {
     */
 
 
-    @MessageMapping("/message/send/{chatUuid}") //"/app/message/send/"+chatUuid에 라우팅
-    @SendTo("/topic/chat/{chatUuid}")
+    @MessageMapping("/message/send/{chatUuid}") //"/pub/message/send/"+chatUuid에 라우팅
+    @SendTo("/sub/chat/{chatUuid}")
     public OutputMessageModel sendMessage(@Payload MessageModel messageModel,
                             //경로로부터 chatUuid 추출
-                            @DestinationVariable String chatUuid) {
+                            @DestinationVariable Long chatUuid) {
         final String time = new SimpleDateFormat("HH:mm").format(new Date());
 
         //서버에서 메시지를 가공해 OutputMessageModel에 담고 리턴하면 메시지 브로커가 받음
