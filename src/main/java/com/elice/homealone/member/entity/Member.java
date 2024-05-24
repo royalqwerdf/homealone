@@ -1,7 +1,7 @@
 package com.elice.homealone.member.entity;
 
 import com.elice.homealone.comment.entity.Comment;
-import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
@@ -22,7 +22,7 @@ import java.util.Collection;
 @Setter
 @Builder
 @Table(name = "member")
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
@@ -64,7 +64,7 @@ public class Member extends BaseEntity implements UserDetails {
                 .imageUrl(this.imageUrl)
                 .role(this.role)
                 .createdAt(this.getCreatedAt())
-                .updatedAt(this.getUpdatedAt())
+                .modifiedAt(this.getModifiedAt())
                 .deletedAt(this.deletedAt)
                 .build();
     }

@@ -21,8 +21,8 @@ public class MemberDto{
     private String address;
     private String imageUrl;
     private Role role;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
     private String token;
     private boolean deletedAt;
 }

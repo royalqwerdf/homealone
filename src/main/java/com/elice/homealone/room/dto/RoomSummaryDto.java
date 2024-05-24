@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,7 +19,7 @@ public class RoomSummaryDto {
     private String thumbnailUrl;
     private String memberName;
     private Integer commentCount;
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     public static RoomSummaryDto toroomSummaryDto(Room room){
         return RoomSummaryDto.builder()
