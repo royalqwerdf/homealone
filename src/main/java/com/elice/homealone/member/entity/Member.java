@@ -47,7 +47,7 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role = Role.ROLE_USER;
+    private Role role;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -63,6 +63,9 @@ public class Member extends BaseEntity implements UserDetails {
                 .address(this.address)
                 .imageUrl(this.imageUrl)
                 .role(this.role)
+                .createdAt(this.getCreatedAt())
+                .updatedAt(this.getUpdatedAt())
+                .deletedAt(this.deletedAt)
                 .build();
     }
 

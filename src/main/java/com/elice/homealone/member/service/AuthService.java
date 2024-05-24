@@ -42,7 +42,7 @@ public class AuthService {
             String token = jwtTokenProvider.createToken(findMember.getEmail());
             LoginResponseDTO response = new LoginResponseDTO();
             response.setToken(token);
-            response.setMessage("로그인에 성공했습니다.");
+            response.setMessage("로그인이 성공했습니다.");
             return response;
         } else{
             throw new RuntimeException("잘못된 비밀번호입니다.");
@@ -54,7 +54,7 @@ public class AuthService {
      * Token으로 회원정보를 찾아서 반환
      */
     
-
+//    public MemberDto findMemberByToken
 
     /**
      * 회원 탈퇴

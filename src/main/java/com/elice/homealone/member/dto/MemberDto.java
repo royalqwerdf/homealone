@@ -8,16 +8,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
 @Builder
-public class MemberDto {
+public class MemberDto{
     private String name;
     private LocalDate birth;
     private String email;
     private String address;
     private String imageUrl;
     private Role role;
+    private Date createdAt;
+    private Date updatedAt;
     private String token;
+    private boolean deletedAt;
 }
