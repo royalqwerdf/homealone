@@ -24,10 +24,10 @@ public class WebSocketStompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
 
-        //서버에서 클라이언트로 발행하는 메세지에 대한 endpoint 설정 : 구독
+        //서버에서 클라이언트로 발행하는 메세지에 대한 endpoint 설정 : 구독 중인 클라이언트에게 보낼 메시지
         config.enableSimpleBroker("/sub");
 
-        //클라이언트에서 서버로 발행하는 메세지에 대한 endpoint 설정 : 구독에 대한 메시지
+        //클라이언트에서 보낸 메시지에 대한 endpoint 설정
         config.setApplicationDestinationPrefixes("/pub");
 
     }

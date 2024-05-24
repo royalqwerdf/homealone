@@ -7,8 +7,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class OutputMessageModel {
-    private String sender;
-    private String chatUuid;
+    private Long chatroomId;
+    private Long senderId;
+    private String senderName;
     private String content;
     private String time;
     private MessageType type;
@@ -17,9 +18,10 @@ public class OutputMessageModel {
         CHAT, JOIN, LEAVE
     }
 
-    public OutputMessageModel(String sender, String chatUuid, String content, String time, MessageType type) {
-        this.sender = sender;
-        this.chatUuid = chatUuid;
+    public OutputMessageModel(Long chatroomId, Long senderId, String senderName, String content, String time, MessageType type) {
+        this.chatroomId = chatroomId;
+        this.senderId = senderId;
+        this.senderName = senderName;
         this.content = content;
         this.time = time;
         this.type = type;

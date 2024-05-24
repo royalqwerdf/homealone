@@ -28,14 +28,14 @@ public class ChatMessage extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime sendTime;
+    private String sendTime;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "chatroom_id")
     private Chatting chatting;
 
     public MessageDto toDto() {

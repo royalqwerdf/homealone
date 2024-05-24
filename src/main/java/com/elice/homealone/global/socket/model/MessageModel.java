@@ -6,13 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageModel {
-    private String sender;
+    private Long senderId;
     private String content;
-    private String chatUuid;
 
-    public MessageModel(String sender, String content, String chatUuid) {
-        this.sender = sender;
+    public MessageModel(Long senderId, String content) {
+        this.senderId = senderId;
         this.content = content;
-        this.chatUuid = chatUuid;
     }
 }
