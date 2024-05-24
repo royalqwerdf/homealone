@@ -1,4 +1,4 @@
-package com.elice.homealone.member.dto;
+package com.elice.homealone.member.dto.request;
 
 
 import com.elice.homealone.member.entity.Member;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class SignUpDto {
+public class SignupRequestDTO {
     private String name;
     private LocalDate birth;
     @NotNull

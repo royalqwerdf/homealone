@@ -2,6 +2,7 @@ package com.elice.homealone.member.entity;
 
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
@@ -46,13 +47,24 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role;
+    private Role role = Role.ROLE_USER;
 
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "deleted_at", nullable = false)
     private boolean deletedAt = false;
+
+    public MemberDto toDto() {
+        return MemberDto.builder()
+                .name(this.name)
+                .birth(this.birth)
+                .email(this.email)
+                .address(this.address)
+                .imageUrl(this.imageUrl)
+                .role(this.role)
+                .build();
+    }
 
 
     @Override
