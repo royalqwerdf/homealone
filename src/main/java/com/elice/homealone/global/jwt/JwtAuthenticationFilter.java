@@ -1,4 +1,4 @@
-package com.elice.global.jwt;
+package com.elice.homealone.global.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -2,7 +2,7 @@ package com.elice.homealone.member.entity;
 
 import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.global.common.BaseEntity;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
