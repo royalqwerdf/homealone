@@ -1,6 +1,8 @@
 package com.elice.homealone.member.service;
 
 
+import com.elice.homealone.global.exception.ErrorCode;
+import com.elice.homealone.global.exception.homealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.entity.Member;
@@ -19,7 +21,7 @@ public class MemberService {
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new homealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
 
 }

@@ -1,6 +1,8 @@
 package com.elice.homealone.member.service;
 
 
+import com.elice.homealone.global.exception.ErrorCode;
+import com.elice.homealone.global.exception.homealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
@@ -45,7 +47,7 @@ public class AuthService {
             response.setMessage("로그인이 성공했습니다.");
             return response;
         } else{
-            throw new RuntimeException("잘못된 비밀번호입니다.");
+            throw new homealoneException(ErrorCode.MISMATCHED_PASSWORD);
         }
     }
 
