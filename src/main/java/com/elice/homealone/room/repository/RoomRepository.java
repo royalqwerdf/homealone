@@ -16,7 +16,9 @@ public interface RoomRepository extends JpaRepository<Room,Long> {
 
     Page<Room> findByMember(Member member, Pageable pageable);
 
+
     Page<Room> searchByTitleContainingOrPlainContentContaining(String titleQuery,String contentQuery, Pageable pageable);
+
 
 
 }

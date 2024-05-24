@@ -1,4 +1,4 @@
-package com.elice.homealone.socket.handler;
+package com.elice.homealone.global.socket.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +23,13 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         final String sessionId = session.getId();
         sessions.put(sessionId, session);
 
-        sessions.values().forEach((s -> {
+        sessions.values().forEach((s) -> {
             try {
                 if(!s.getId().equals(sessionId) && s.isOpen()) {
                     s.sendMessage(new TextMessage("새 사용자가 입장했습니다"));
                 }
             } catch (IOException e) {}
-        }));
+        });
 
     }
 

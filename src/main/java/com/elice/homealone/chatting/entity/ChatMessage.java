@@ -1,7 +1,9 @@
 package com.elice.homealone.chatting.entity;
 
 
-import com.elice.homealone.global.common.BaseEntity;
+
+
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @EnableJpaAuditing
-public class ChatMessage extends BaseEntity {
+public class ChatMessage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

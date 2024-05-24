@@ -1,4 +1,4 @@
-package com.elice.homealone.socket.config;
+package com.elice.homealone.global.socket.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -7,23 +7,29 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocketMessageBroker //웹소켓 활성화
 public class WebSocketStompConfig implements WebSocketMessageBrokerConfigurer {
 
-    //웹소켓 connect를 위한 End Point 설정 (/ws)
+    //웹소켓 connect를 위한 End Point 설정 "/ws"
     //SockJS : 웹소켓이 지원하지 않는 브라우저에서도 실시간 통신을 지원할 수 있다
+    //SockJS 쓸 땐 클라이언트에서 웹소켓 요청을 보낼 때 설정한 endpoint 뒤에 "/webSocket"을 추가해야함
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*") //모든 출처에대한 Cors 설정
+                .withSockJS();
     }
 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        //@Controller 클래스의 @MessageMapping을 적용한 메서드로 라우팅되도록 "/app" prefix 추가
-        //연결된 브로커로 라우팅하기 위해 "/topic", "/queue" prefix 추가
-        config.setApplicationDestinationPrefixes("/app")
-                .enableSimpleBroker("/topic", "/queue");
+
+        //서버에서 클라이언트로 발행하는 메세지에 대한 endpoint 설정 : 구독
+        config.enableSimpleBroker("/sub");
+
+        //클라이언트에서 서버로 발행하는 메세지에 대한 endpoint 설정 : 구독에 대한 메시지
+        config.setApplicationDestinationPrefixes("/pub");
+
     }
 
 }

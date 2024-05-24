@@ -5,7 +5,6 @@ import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.talk.dto.TalkDto;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 

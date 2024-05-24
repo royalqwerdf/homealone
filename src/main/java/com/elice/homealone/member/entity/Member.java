@@ -1,8 +1,10 @@
 package com.elice.homealone.member.entity;
 
+import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 
-import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
@@ -15,6 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,8 +27,7 @@ import java.util.Collection;
 @Setter
 @Builder
 @Table(name = "member")
-
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
@@ -55,6 +59,21 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Column(name = "deleted_at", nullable = false)
     private boolean deletedAt = false;
+
+    public MemberDto toDto() {
+        return MemberDto.builder()
+                .name(this.name)
+                .birth(this.birth)
+                .email(this.email)
+                .address(this.address)
+                .imageUrl(this.imageUrl)
+                .role(this.role)
+                .createdAt(this.getCreatedAt())
+                .modifiedAt(this.getModifiedAt())
+                .deletedAt(this.deletedAt)
+                .build();
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -95,6 +114,10 @@ public class Member extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
 
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<Chatting> chat_rooms;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
 }
