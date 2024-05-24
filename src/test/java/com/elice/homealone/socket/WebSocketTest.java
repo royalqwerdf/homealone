@@ -1,6 +1,6 @@
 package com.elice.homealone.socket;
 
-import com.elice.homealone.socket.handler.WebSocketHandlerImpl;
+import com.elice.homealone.global.socket.handler.WebSocketHandlerImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;

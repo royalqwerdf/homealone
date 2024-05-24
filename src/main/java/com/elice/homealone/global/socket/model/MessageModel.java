@@ -1,4 +1,4 @@
-package com.elice.homealone.socket.model;
+package com.elice.homealone.global.socket.model;
 
 import lombok.Getter;
 import lombok.Setter;

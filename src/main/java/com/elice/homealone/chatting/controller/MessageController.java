@@ -1,7 +1,7 @@
 package com.elice.homealone.chatting.controller;
 
-import com.elice.homealone.socket.model.MessageModel;
-import com.elice.homealone.socket.model.OutputMessageModel;
+import com.elice.homealone.global.socket.model.MessageModel;
+import com.elice.homealone.global.socket.model.OutputMessageModel;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

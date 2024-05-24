@@ -1,4 +1,4 @@
-package com.elice.homealone.socket.handler;
+package com.elice.homealone.global.socket.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
