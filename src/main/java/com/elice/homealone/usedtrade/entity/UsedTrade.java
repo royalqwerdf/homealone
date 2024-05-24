@@ -1,6 +1,7 @@
 package com.elice.homealone.usedtrade.entity;
 
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UsedTrade extends Post {
 
     @Column(name="title")
@@ -27,5 +29,16 @@ public class UsedTrade extends Post {
 
     @OneToMany(mappedBy = "usedTrade")
     private List<UsedTradeImage> images = new ArrayList<>();
+
+    public UsedTradeResponseDto toDto(){
+        return UsedTradeResponseDto.builder()
+                .id(this.getId())
+                .title(this.getTitle())
+                .price(this.getPrice())
+                .location(this.getLocation())
+                .content(this.getContent())
+                .images(this.getImages())
+                .build();
+    }
 
 }
