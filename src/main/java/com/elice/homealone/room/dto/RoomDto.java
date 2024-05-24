@@ -55,7 +55,6 @@ public class RoomDto {
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
 //                    .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
-                    .comments(room.getComments())
                     .build();
         }
     }

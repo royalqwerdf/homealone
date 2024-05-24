@@ -29,8 +29,8 @@ public class TalkDto {
         private Date createdAt;
         private Date updatedAt;
         private Integer view;
-        private Long likeCount;
-        private Long scrapCount;
+        private Integer likeCount;
+        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
 
@@ -43,8 +43,8 @@ public class TalkDto {
                     .createdAt(talk.getCreatedAt())
                     .updatedAt(talk.getUpdatedAt())
                     .view(talk.getView())
-                    .likeCount((long) talk.getPostLikes().size())
-                    .scrapCount((long) talk.getScraps().size())
+                    .likeCount(talk.getPostLikes().size())
+                    .scrapCount( talk.getScraps().size())
                     .memberName(talk.getMember().getName())
                     .commentCount(talk.getComments().size())
                     .build();
