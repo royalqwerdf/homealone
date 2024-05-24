@@ -57,7 +57,8 @@ public class Post extends BaseEntity {
     public enum Type{
         RECIPE,
         ROOM,
-        TALK
+        TALK,
+        USEDTRADE
     }
 }
 
