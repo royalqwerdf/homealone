@@ -1,5 +1,9 @@
 package com.elice.homealone.recipe.enums;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
 public enum RecipeType {
     RSC("밥/죽/떡"),
     ND("면/만두"),
@@ -19,6 +23,9 @@ public enum RecipeType {
     SNACK("스낵"),
     ETC("기타");
 
+    private final String type;
+
     RecipeType(String type) {
+        this.type = type;
     }
 }

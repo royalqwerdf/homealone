@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.enums;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +15,9 @@ public enum Cuisine {
     THAI("태국 음식"),
     ETC("기타");
 
+    private final String cuisine;
+
     Cuisine(String cuisine) {
+        this.cuisine = cuisine;
     }
 }

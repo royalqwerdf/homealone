@@ -22,8 +22,14 @@ public class Ingredient extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "ingredient")
-    private List<RecipeIngredient> recipeIngredients;
+    private List<RecipeIngredient> ingredients;
 
     @Builder
     public Ingredient(String name) {this.name = name;}
+
+    public void addIngredient(RecipeIngredient recipeIngredient) {
+        this.ingredients.add(recipeIngredient);
+        recipeIngredient.setIngredient(this);
+    }
+
 }

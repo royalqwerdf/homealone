@@ -6,17 +6,21 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
 import com.elice.homealone.tag.entity.PostTagMap;
+import com.elice.homealone.tag.entity.Tag;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Post extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -46,5 +50,16 @@ public class Post extends BaseEntity {
         RECIPE,
         ROOM,
         TALK
+    }
+
+    //@Builder
+    protected Post(Member member, Type type) {
+        this.member = member;
+        this.type = type;
+    }
+
+    public void addTag(PostTagMap tag) {
+        this.tags.add(tag);
+        tag.setPost(this);
     }
 }

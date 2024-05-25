@@ -1,11 +1,13 @@
 package com.elice.homealone.recipe.entity;
 
 import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,12 +22,25 @@ public class RecipeDetail extends BaseEntity {
     @Column
     private String description;
 
+    @Column
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
+    @Setter
     private Recipe recipe;
 
     @Builder
-    public RecipeDetail(String description){
+    public RecipeDetail(String description, String imageUrl){
         this.description = description;
+        this.imageUrl = imageUrl;
+    }
+
+    public RecipeDetailDto toDto() {
+        return  RecipeDetailDto.builder()
+            .id(this.id)
+            .description(this.description)
+            .imageUrl(this.imageUrl)
+            .build();
     }
 }
