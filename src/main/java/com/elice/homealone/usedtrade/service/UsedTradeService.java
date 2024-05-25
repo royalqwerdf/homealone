@@ -44,6 +44,7 @@ public class UsedTradeService {
         if(!(requestDto.getContent()==null)){
             usedTrade.setContent(requestDto.getContent());
         }
+        usedTradeRepository.save(usedTrade);
         return true;
     }
 
