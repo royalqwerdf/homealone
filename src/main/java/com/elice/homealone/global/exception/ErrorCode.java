@@ -12,9 +12,10 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public enum ErrorCode {
     //400
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일입니다"),
-    MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
-    INVALID_TOKEN(NOT_FOUND, "유효하지 않는 토큰입니다.");
+
     //401
+    MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
+    INVALID_TOKEN(UNAUTHORIZED, "유효하지 않는 토큰입니다.");
 
     //402
 

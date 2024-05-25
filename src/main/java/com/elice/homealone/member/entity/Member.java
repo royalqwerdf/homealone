@@ -64,13 +64,14 @@ public class Member extends BaseTimeEntity implements UserDetails {
     }
 
     public MemberDTO toDto() {
-        return MemberDTO.builder()
-                .name(this.name)
-                .birth(this.birth)
-                .email(this.email)
-                .address(this.address)
-                .imageUrl(this.imageUrl)
-                .build();
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setName(this.name);
+        memberDTO.setBirth(this.birth);
+        memberDTO.setEmail(this.email);
+        memberDTO.setAddress(this.address);
+        memberDTO.setImageUrl(this.imageUrl);
+        return memberDTO;
+
     }
 
     @Override

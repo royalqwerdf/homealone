@@ -5,7 +5,6 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.homealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.dto.MemberDTO;
-import com.elice.homealone.member.dto.TokenDTO;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
@@ -14,7 +13,6 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -86,8 +84,9 @@ public class AuthService {
                     jwtTokenProvider.getEmail(accessToken)
             ).toDto();
             return member;
+        } else{
+            throw new homealoneException(ErrorCode.INVALID_TOKEN);
         }
-        return throw new homealoneException(ErrorCode.INVALID_TOKEN);
     }
 
     /**
