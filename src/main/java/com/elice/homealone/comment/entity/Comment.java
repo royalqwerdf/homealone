@@ -1,6 +1,6 @@
 package com.elice.homealone.comment.entity;
 
-import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "comment")
-public class Comment extends BaseEntity {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

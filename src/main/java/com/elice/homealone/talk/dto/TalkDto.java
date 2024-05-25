@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @SuperBuilder
@@ -24,8 +25,8 @@ public class TalkDto {
     @AllArgsConstructor
     public static class TalkInfoDto extends TalkDto {
         private long id;
-        private Date createdAt;
-        private Date updatedAt;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
         private Integer view;
         private Long likeCount;
         private Long scrapCount;
@@ -38,7 +39,7 @@ public class TalkDto {
                     .title(talk.getTitle())
                     .content(talk.getContent())
                     .createdAt(talk.getCreatedAt())
-                    .updatedAt(talk.getUpdatedAt())
+                    .modifiedAt(talk.getModifiedAt())
                     .view(talk.getView())
                     .likeCount((long) talk.getPostLikes().size())
                     .scrapCount((long) talk.getScraps().size())

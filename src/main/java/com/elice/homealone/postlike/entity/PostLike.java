@@ -1,6 +1,6 @@
 package com.elice.homealone.postlike.entity;
 
-import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 //좋아요 엔티티
-public class PostLike extends BaseEntity {
+public class PostLike extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

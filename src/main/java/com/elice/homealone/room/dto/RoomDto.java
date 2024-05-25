@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -24,8 +25,8 @@ public class RoomDto {
     @AllArgsConstructor
     public static class RoomInfoDto extends RoomDto {
         private long id;
-        private Date createdAt;
-        private Date updatedAt;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
         private Integer view;
         private Long likeCount;
         private Long scrapCount;
@@ -38,7 +39,7 @@ public class RoomDto {
                     .title(room.getTitle())
                     .content(room.getContent())
                     .createdAt(room.getCreatedAt())
-                    .updatedAt(room.getUpdatedAt())
+                    .updatedAt(room.getModifiedAt())
                     .view(room.getView())
                     .likeCount((long) room.getPostLikes().size())
                     .scrapCount((long) room.getScraps().size())
