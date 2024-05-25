@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,16 +20,14 @@ public class SignupRequestDTO {
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$")
     private String email;
     private String address;
-    private String role;
     private String password;
     public Member toEntity() {
-        return Member.builder()
-                .name(this.name)
-                .birth(this.birth)
-                .email(this.email)
-                .address(this.address)
-                .role(Role.ROLE_USER)
-                .password(this.password)
-                .build();
+        Member member = new Member();
+        member.setName(this.name);
+        member.setBirth(this.birth);
+        member.setEmail(this.email);
+        member.setAddress(this.address);
+        member.setPassword(this.password);
+        return member;
     }
 }

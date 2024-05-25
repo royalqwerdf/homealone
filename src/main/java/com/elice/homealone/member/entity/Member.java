@@ -2,14 +2,17 @@ package com.elice.homealone.member.entity;
 
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseTimeEntity;
-import com.elice.homealone.member.dto.MemberDto;
+import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
@@ -47,7 +50,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role;
+    private Role role = Role.ROLE_USER;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -55,24 +58,24 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(name = "deleted_at", nullable = false)
     private boolean deletedAt = false;
 
-    public MemberDto toDto() {
-        return MemberDto.builder()
+    public Member(String email, String password) {
+        this.email=email;
+        this.password=password;
+    }
+
+    public MemberDTO toDto() {
+        return MemberDTO.builder()
                 .name(this.name)
                 .birth(this.birth)
                 .email(this.email)
                 .address(this.address)
                 .imageUrl(this.imageUrl)
-                .role(this.role)
-                .createdAt(this.getCreatedAt())
-                .modifiedAt(this.getModifiedAt())
-                .deletedAt(this.deletedAt)
                 .build();
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> role.name());
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

@@ -17,8 +17,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
-    private long validityInMilliseconds;
+    @Value("${spring.jwt.token.access-expiration-time}")
+    private long accessExpirationTime;
+
+    @Value("${spring.jwt.token.refresh-expiration-time}")
+    private long refreshExpirationTime;
 
     @PostConstruct
     protected void init() {
@@ -26,12 +29,12 @@ public class JwtTokenProvider {
     }
 
     /**
-     * email 받아서 JWT 토큰으로 반환한다.
+     * email을 받아서 access 토큰 생성
      */
-    public String createToken(String email) {
+    public String createAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessExpirationTime);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -41,6 +44,21 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * email을 받아서 refresh 토큰 생성
+     */
+    public String createRefreshToken(String email) {
+        Claims claims = Jwts.claims().setSubject(email);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + refreshExpirationTime);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
     /**
      * JWT 토큰 유효성 검증
      */

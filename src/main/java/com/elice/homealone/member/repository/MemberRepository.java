@@ -1,7 +1,6 @@
 package com.elice.homealone.member.repository;
 
 
-import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
