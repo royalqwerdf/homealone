@@ -1,6 +1,6 @@
 package com.elice.homealone.recipe.entity;
 
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class RecipeIngredient extends BaseEntity {
+public class RecipeIngredient extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

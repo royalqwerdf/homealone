@@ -2,7 +2,7 @@ package com.elice.homealone.scrap.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name = "scrap")
-public class Scrap extends BaseEntity {
+public class Scrap extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
