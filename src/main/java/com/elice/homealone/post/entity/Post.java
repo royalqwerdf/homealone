@@ -1,6 +1,7 @@
 package com.elice.homealone.post.entity;
 
 import com.elice.homealone.comment.entity.Comment;
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.postlike.entity.PostLike;
@@ -46,7 +47,8 @@ public class Post extends BaseTimeEntity {
     public enum Type{
         RECIPE,
         ROOM,
-        TALK
+        TALK,
+        USEDTRADE
     }
 
     //@Builder
@@ -60,3 +62,4 @@ public class Post extends BaseTimeEntity {
         tag.setPost(this);
     }
 }
+

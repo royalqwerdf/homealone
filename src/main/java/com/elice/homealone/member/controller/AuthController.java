@@ -45,8 +45,4 @@ public class AuthController {
             return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
         }
     }
-
-
-
-
 }
