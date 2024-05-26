@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.entity;
 
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;

@@ -5,6 +5,7 @@ import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomDto;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
 import lombok.experimental.SuperBuilder;
 
@@ -22,20 +23,20 @@ public class Room extends Post {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "content")
     @Lob
     private String content;
 
+    @Column(name = "plain_content")
+    private String plainContent;
 
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @Column(name = "view")
-    private Integer view;
+    @Builder.Default
+    private Integer view = 0;
 
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
     private List<RoomImage> roomImages;
@@ -44,6 +45,20 @@ public class Room extends Post {
         return Room.builder()
                 .title(roomDto.getTitle())
                 .content(roomDto.getContent())
+                .thumbnailUrl(roomDto.getThumbnailUrl())
                 .build();
+    }
+
+//    public Room(RoomDto roomDto,Member member) {
+//        super(member,Type.ROOM);
+//        this.title = roomDto.getTitle();
+//        this.content = roomDto.getContent();
+//        this.thumbnailUrl = roomDto.getThumbnailUrl();
+//    }
+
+    public Room(RoomDto roomDto) {
+        this.title = roomDto.getTitle();
+        this.content = roomDto.getContent();
+        this.thumbnailUrl = roomDto.getThumbnailUrl();
     }
 }

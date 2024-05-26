@@ -26,9 +26,6 @@ public class Talk extends Post {
     @Lob
     private String content;
 
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
     private List<TalkImage> talkImages;
@@ -43,4 +40,11 @@ public class Talk extends Post {
                 .build();
     }
 
+
+    public static Talk createTalk(TalkDto talkDto) {
+        Talk talk = new Talk();
+        talk.title = talkDto.getContent();
+        talk.content = talkDto.getContent();
+        return talk;
+    }
 }

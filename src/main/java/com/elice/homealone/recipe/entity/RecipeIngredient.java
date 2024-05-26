@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.entity;
 
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import jakarta.persistence.*;

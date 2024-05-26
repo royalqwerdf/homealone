@@ -1,5 +1,8 @@
 package com.elice.homealone.chatting.entity;
 
+
+
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;
@@ -28,14 +31,14 @@ public class ChatMessage extends BaseTimeEntity {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime sendTime;
+    private String sendTime;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "chatroom_id")
     private Chatting chatting;
 
     public MessageDto toDto() {
