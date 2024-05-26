@@ -26,8 +26,22 @@ public class RoomController {
     private RoomService roomService;
 
     @GetMapping("")
-    public ResponseEntity<Page<RoomSummaryDto>> findAll(@PageableDefault(size = 20) Pageable pageable){
-        return ResponseEntity.ok(roomService.findAll(pageable));
+    public ResponseEntity<?> findAll(@RequestParam(required = false) String title,
+                                                        @RequestParam(required = false) String content,
+                                                        @RequestParam(required = false) Long memberId,
+                                                        @PageableDefault(size = 20) Pageable pageable){
+        Page<RoomSummaryDto> roomSummaryDtos = roomService.searchRoomPost(title, content, memberId, pageable);
+        if(!(title == null || title.isBlank()) || !(content == null && content.isBlank())){
+            if(roomSummaryDtos.isEmpty()){
+                return ResponseEntity.ok("검색 결과가 없습니다.");
+            }
+        }
+        if(memberId != null){
+            if(roomSummaryDtos.isEmpty()){
+                return ResponseEntity.ok("작성하신 게시글이 없습니다.");
+            }
+        }
+        return ResponseEntity.ok().body(roomSummaryDtos);
     }
 
     @PostMapping("")
@@ -83,19 +97,7 @@ public class RoomController {
 
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchRoom(@RequestParam String query, Pageable pageable){
-        if (query == null || query.isEmpty()) {
-            return ResponseEntity.badRequest().body("검색어를 입력하십시오.");
-        }
 
-        Page<RoomSummaryDto> roomSummaryDtos = roomService.searchRoomPost(query, pageable);
-        if (roomSummaryDtos.isEmpty()) {
-            return ResponseEntity.ok().body("검색 결과가 없습니다.");
-        }
-        return ResponseEntity.ok().body(roomSummaryDtos);
 
-    }
 
-//    @GetMapping("/member") 회원으로 조회
 }

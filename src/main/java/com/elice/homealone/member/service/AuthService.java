@@ -38,7 +38,7 @@ public class AuthService {
         // 회원 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
         // 비밀번호 검증
-        if (passwordEncoder.matches(findMember.getPassword(), loginRequestDTO.getPassword())) {
+        if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String token = jwtTokenProvider.createToken(findMember.getEmail());
             LoginResponseDTO response = new LoginResponseDTO();
             response.setToken(token);
@@ -53,7 +53,7 @@ public class AuthService {
     /**
      * Token으로 회원정보를 찾아서 반환
      */
-    
+
 //    public MemberDto findMemberByToken
 
     /**

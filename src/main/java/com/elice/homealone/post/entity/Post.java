@@ -58,7 +58,8 @@ public class Post extends BaseTimeEntity {
     public enum Type{
         RECIPE,
         ROOM,
-        TALK
+        TALK,
+        USEDTRADE
     }
     public Post(Member member, Type type){
         this.member = member;

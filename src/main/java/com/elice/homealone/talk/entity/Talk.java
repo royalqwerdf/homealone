@@ -44,7 +44,6 @@ public class Talk extends Post {
         Talk talk = new Talk();
         talk.title = talkDto.getContent();
         talk.content = talkDto.getContent();
-        talk.setType(Type.TALK); // Post의 type 필드를 설정
         return talk;
     }
 }

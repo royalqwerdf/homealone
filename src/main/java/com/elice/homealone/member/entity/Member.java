@@ -29,7 +29,7 @@ import java.util.List;
 @Table(name = "member")
 public class Member extends BaseTimeEntity implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 15, nullable = false)
