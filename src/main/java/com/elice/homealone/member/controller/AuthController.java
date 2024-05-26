@@ -1,7 +1,7 @@
 package com.elice.homealone.member.controller;
 
 
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
@@ -25,9 +25,14 @@ public class AuthController {
      */
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
-        SignupResponseDTO response = authService.signUp(signupRequestDTO);
-        //일단 회원가입이 성공하든 실패하든 HttpStatus.CREATE로 보내게 만듬
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        SignupResponseDTO response = new SignupResponseDTO();
+        try{
+            response = authService.signUp(signupRequestDTO);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }catch(HomealoneException e){
+            response.setMessage(e.getErrorCode().getMessage());
+            return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+        }
     }
 
     /**
@@ -43,7 +48,7 @@ public class AuthController {
             headers.set("Authorization", response.getAccessToken());
 
             return new ResponseEntity<>(response, headers, HttpStatus.OK);
-        } catch (homealoneException e) {
+        } catch (HomealoneException e) {
             //로그인 실패
             LoginResponseDTO response = new LoginResponseDTO();
             response.setMessage(e.getErrorCode().getMessage());

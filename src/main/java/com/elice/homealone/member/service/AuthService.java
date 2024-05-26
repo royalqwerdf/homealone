@@ -2,7 +2,7 @@ package com.elice.homealone.member.service;
 
 
 import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
@@ -28,17 +28,19 @@ public class AuthService {
     /**
      * 회원 가입
      */
+    //exception 잡는 로직을 서비스단에서 던질지 컨트롤러단에서 던질지고민
+    //회원가입은 서비스에서 오류를 안던지고 로그인은 서비스에서 오류를 던짐;;
     public SignupResponseDTO signUp(SignupRequestDTO signupRequestDTO){
         SignupResponseDTO response = new SignupResponseDTO();
-        try {
-            String password = passwordEncoder.encode(signupRequestDTO.getPassword());
-            Member savedMember = signupRequestDTO.toEntity();
-            savedMember.setPassword(password);
-            memberRepository.save(savedMember);
-            response.setMessage("회원 가입이 성공적으로 완료되었습니다.");
-        } catch (Exception e) {
-            response.setMessage("회원 가입 중 오류가 발생하였습니다 :" + e.getMessage());
-        }
+        //이메일 중복검사
+        emailExists(signupRequestDTO.getEmail());
+        //비밀번호 암호화
+        String password = passwordEncoder.encode(signupRequestDTO.getPassword());
+        Member savedMember = signupRequestDTO.toEntity();
+        savedMember.setPassword(password);
+        //회원 저장
+        memberRepository.save(savedMember);
+        response.setMessage("회원 가입이 성공적으로 완료되었습니다.");
         return response;
     }
 
@@ -61,7 +63,7 @@ public class AuthService {
 
             return response;
         } else{
-            throw new homealoneException(ErrorCode.MISMATCHED_PASSWORD);
+            throw new HomealoneException(ErrorCode.MISMATCHED_PASSWORD);
         }
     }
 
@@ -85,7 +87,7 @@ public class AuthService {
             ).toDto();
             return member;
         } else{
-            throw new homealoneException(ErrorCode.INVALID_TOKEN);
+            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         }
     }
 
@@ -96,6 +98,19 @@ public class AuthService {
     public void withdrawal(MemberDTO memberDto) {
         Member findedMember = memberService.findByEmail(memberDto.getEmail());
         memberRepository.delete(findedMember);
+    }
+
+
+
+
+
+    /**
+     * 이메일 중복여부 검사
+     */
+    public void emailExists(String email) {
+        if(memberRepository.findByEmail(email).isPresent()){
+            throw new HomealoneException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
     }
 
 

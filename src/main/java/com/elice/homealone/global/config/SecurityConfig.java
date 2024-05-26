@@ -50,7 +50,7 @@ public class SecurityConfig {
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-               // 필터 요청 전에 passwordEncorder 사용
+                // 필터 요청 전에 passwordEncorder 사용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
