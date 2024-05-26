@@ -1,5 +1,6 @@
 package com.elice.homealone.tag.entity;
 
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

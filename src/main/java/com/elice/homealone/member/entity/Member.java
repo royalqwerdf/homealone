@@ -2,6 +2,7 @@ package com.elice.homealone.member.entity;
 
 import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;

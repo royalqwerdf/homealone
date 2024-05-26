@@ -1,5 +1,8 @@
 package com.elice.homealone.chatting.entity;
 
+
+
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import jakarta.persistence.*;

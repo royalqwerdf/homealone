@@ -1,5 +1,6 @@
 package com.elice.homealone.postlike.entity;
 
+
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;

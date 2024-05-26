@@ -2,6 +2,8 @@ package com.elice.homealone.global.exception;
 
 import lombok.Getter;
 
+
+
 @Getter
 public class homealoneException extends RuntimeException{
     private final ErrorCode errorCode;
