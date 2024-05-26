@@ -1,12 +1,13 @@
 package com.elice.homealone.tag.entity;
 
-import com.elice.homealone.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Tag extends BaseEntity {
+public class Tag extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +28,15 @@ public class Tag extends BaseEntity {
     private String tagName;
 
     @OneToMany(mappedBy = "tag")
-    private List<PostTagMap> tags;
+    private List<PostTag> tags = new ArrayList<>();
 
     @Builder
     public Tag(String tagName) {
         this.tagName = tagName;
+    }
+
+    public void addTag(PostTag postTagMap) {
+        this.tags.add(postTagMap);
+        postTagMap.setTag(this);
     }
 }

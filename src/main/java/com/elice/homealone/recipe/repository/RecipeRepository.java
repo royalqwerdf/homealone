@@ -1,9 +1,8 @@
-package com.elice.homealone.recipe.Repository;
+package com.elice.homealone.recipe.repository;
 
 import com.elice.homealone.recipe.entity.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RestController;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
