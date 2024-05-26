@@ -1,10 +1,9 @@
 package com.elice.homealone.recipe.dto;
 
-import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
-import com.elice.homealone.tag.dto.TagDto;
+import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,10 +23,10 @@ public class RecipeResponseDto {
     private List<String> imageUrls;
     private List<RecipeIngredientDto> ingredientDtos;
     private List<RecipeDetailDto> detailDtos;
-    private List<TagDto> tagDtos;
+    private List<PostTagDto> tagDtos;
 
     @Builder
-    public RecipeResponseDto(Long id, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<String> imageUrls, List<RecipeIngredientDto> ingredientDtos, List<RecipeDetailDto> detailDtos, List<TagDto> tagDtos) {
+    public RecipeResponseDto(Long id, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<String> imageUrls, List<RecipeIngredientDto> ingredientDtos, List<RecipeDetailDto> detailDtos, List<PostTagDto> tagDtos) {
         this.id = id;
         this.title = title;
         this.description = description;

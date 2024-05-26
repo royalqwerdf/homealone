@@ -1,7 +1,7 @@
 package com.elice.homealone.tag.entity;
 
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.recipe.entity.Recipe;
+import com.elice.homealone.tag.dto.PostTagDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostTagMap {
+public class PostTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +37,14 @@ public class PostTagMap {
     private Tag tag;
 
     @Builder
-    public PostTagMap(String name) {
+    public PostTag(String name) {
         this.name = name;
+    }
+
+    public PostTagDto toDto() {
+        return PostTagDto.builder()
+            .id(this.id)
+            .name(this.name)
+            .build();
     }
 }

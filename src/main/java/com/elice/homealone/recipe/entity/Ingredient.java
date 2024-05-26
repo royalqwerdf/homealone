@@ -2,6 +2,7 @@ package com.elice.homealone.recipe.entity;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class Ingredient extends BaseTimeEntity {
     private String name;
 
     @OneToMany(mappedBy = "ingredient")
-    private List<RecipeIngredient> ingredients;
+    private List<RecipeIngredient> ingredients = new ArrayList<>();
 
     @Builder
     public Ingredient(String name) {this.name = name;}

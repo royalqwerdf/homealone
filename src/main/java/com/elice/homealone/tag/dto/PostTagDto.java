@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class TagDto {
+public class PostTagDto {
 
     private Long id;
+
     private String name;
 
     @Builder
-    public TagDto(Long id, String name) {
+    public PostTagDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }

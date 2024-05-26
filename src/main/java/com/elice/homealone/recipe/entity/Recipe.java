@@ -8,6 +8,8 @@ import com.elice.homealone.recipe.dto.RecipeResponseDto;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
+import com.elice.homealone.tag.dto.PostTagDto;
+import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,13 +44,13 @@ public class Recipe extends Post {
     private Cuisine cuisine;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
-    private List<RecipeImage> images;
+    private List<RecipeImage> images = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
-    private List<RecipeIngredient> ingredients;
+    private List<RecipeIngredient> ingredients = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
-    private List<RecipeDetail> details;
+    private List<RecipeDetail> details = new ArrayList<>();
 
     @Builder
     public Recipe(Member member, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine) {
@@ -78,6 +80,10 @@ public class Recipe extends Post {
             .map(RecipeDetail::toDto)
             .toList();
 
+        List<PostTagDto> tagDtos = getTags().stream()
+            .map(PostTag::toDto)
+            .toList();
+
         return RecipeResponseDto.builder()
             .id(this.getId())
             .title(this.title)
@@ -89,7 +95,7 @@ public class Recipe extends Post {
             .imageUrls(imageUrls)
             .ingredientDtos(ingredientDtos)
             .detailDtos(detailDtos)
-            .tagDtos(null)
+            .tagDtos(tagDtos)
             .build();
     }
 

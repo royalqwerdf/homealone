@@ -5,12 +5,11 @@ import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
-import com.elice.homealone.tag.entity.PostTagMap;
-import com.elice.homealone.tag.entity.Tag;
+import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,16 +32,16 @@ public class Post extends BaseTimeEntity {
     private Member member;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostTagMap> tags;
+    private List<PostTag> tags = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostLike> postLikes;
+    private List<PostLike> postLikes = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Scrap> scraps;
+    private List<Scrap> scraps = new ArrayList<>();
 
     public enum Type{
         RECIPE,
@@ -56,7 +55,7 @@ public class Post extends BaseTimeEntity {
         this.type = type;
     }
 
-    public void addTag(PostTagMap tag) {
+    public void addTag(PostTag tag) {
         this.tags.add(tag);
         tag.setPost(this);
     }
