@@ -6,20 +6,9 @@ import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
-import com.elice.homealone.tag.entity.PostTagMap;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.elice.homealone.tag.entity.PostTag;
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,16 +33,16 @@ public class Post extends BaseTimeEntity {
     private Member member;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostTagMap> tags;
+    private List<PostTag> tags = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostLike> postLikes;
+    private List<PostLike> postLikes = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Scrap> scraps;
+    private List<Scrap> scraps = new ArrayList<>();
 
     public enum Type{
         RECIPE,
@@ -61,10 +50,16 @@ public class Post extends BaseTimeEntity {
         TALK,
         USEDTRADE
     }
-    public Post(Member member, Type type){
+
+    //@Builder
+    protected Post(Member member, Type type) {
         this.member = member;
         this.type = type;
     }
-}
 
+    public void addTag(PostTag tag) {
+        this.tags.add(tag);
+        tag.setPost(this);
+    }
+}
 

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,10 +29,15 @@ public class Tag extends BaseTimeEntity {
     private String tagName;
 
     @OneToMany(mappedBy = "tag")
-    private List<PostTagMap> tags;
+    private List<PostTag> tags = new ArrayList<>();
 
     @Builder
     public Tag(String tagName) {
         this.tagName = tagName;
+    }
+
+    public void addTag(PostTag postTagMap) {
+        this.tags.add(postTagMap);
+        postTagMap.setTag(this);
     }
 }
