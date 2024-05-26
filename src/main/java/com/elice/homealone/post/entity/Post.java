@@ -1,7 +1,7 @@
 package com.elice.homealone.post.entity;
 
 import com.elice.homealone.comment.entity.Comment;
-import com.elice.homealone.global.common.BaseEntity;
+import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Post extends BaseEntity {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -57,7 +57,8 @@ public class Post extends BaseEntity {
     public enum Type{
         RECIPE,
         ROOM,
-        TALK
+        TALK,
+        USEDTRADE
     }
 }
 
