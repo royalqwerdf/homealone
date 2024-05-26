@@ -46,7 +46,8 @@ public class Post extends BaseTimeEntity {
     public enum Type{
         RECIPE,
         ROOM,
-        TALK
+        TALK,
+        USEDTRADE
     }
 
     //@Builder

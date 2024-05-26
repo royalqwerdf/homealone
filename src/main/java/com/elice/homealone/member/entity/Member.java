@@ -1,5 +1,6 @@
 package com.elice.homealone.member.entity;
 
+import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.dto.MemberDto;
@@ -15,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +28,7 @@ import java.util.Collection;
 @Table(name = "member")
 public class Member extends BaseTimeEntity implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 15, nullable = false)
@@ -109,6 +113,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
 
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<Chatting> chat_rooms;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
 }
