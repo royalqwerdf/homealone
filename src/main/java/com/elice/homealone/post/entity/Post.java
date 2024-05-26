@@ -60,8 +60,8 @@ public class Post extends BaseTimeEntity {
         ROOM,
         TALK
     }
-
-    protected void setType(Type type) {
+    public Post(Member member, Type type){
+        this.member = member;
         this.type = type;
     }
 }

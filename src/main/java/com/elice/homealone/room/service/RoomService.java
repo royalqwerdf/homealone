@@ -22,7 +22,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     @Transactional
     public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto){ ///회원 정의 추가해야함.
-        Room room = Room.createRoom(roomDto);
+        Room room = new Room(roomDto);
         //HTML태그 제거
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
         room.setPlainContent(plainContent);

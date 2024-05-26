@@ -32,9 +32,6 @@ public class Room extends Post {
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @Column(name = "view")
     @Builder.Default
@@ -51,12 +48,16 @@ public class Room extends Post {
                 .build();
     }
 
-    public static Room createRoom(RoomDto roomDto) {
-        Room room = new Room();
-        room.title = roomDto.getTitle();
-        room.content = roomDto.getContent();
-        room.thumbnailUrl = roomDto.getThumbnailUrl();
-        room.setType(Type.ROOM); // Post의 type 필드를 설정
-        return room;
+//    public Room(RoomDto roomDto,Member member) {
+//        super(member,Type.ROOM);
+//        this.title = roomDto.getTitle();
+//        this.content = roomDto.getContent();
+//        this.thumbnailUrl = roomDto.getThumbnailUrl();
+//    }
+
+    public Room(RoomDto roomDto) {
+        this.title = roomDto.getTitle();
+        this.content = roomDto.getContent();
+        this.thumbnailUrl = roomDto.getThumbnailUrl();
     }
 }
