@@ -48,7 +48,7 @@ public class AuthService {
      * 로그인
      */
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
-        // 회원 검증
+        // 이메일 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
         // 비밀번호 검증
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
@@ -77,7 +77,7 @@ public class AuthService {
     }
 
     /**
-     * AccessToken으로 회원 정보 찾아오기
+     * Token으로 로그인한 회원 정보 조회
      */
     public MemberDTO findbyToken(String accessToken) {
         //토큰 유효성 검사
@@ -90,18 +90,6 @@ public class AuthService {
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         }
     }
-
-
-    /**
-     * 회원 탈퇴
-     */
-    public void withdrawal(MemberDTO memberDto) {
-        Member findedMember = memberService.findByEmail(memberDto.getEmail());
-        memberRepository.delete(findedMember);
-    }
-
-
-
 
 
     /**
