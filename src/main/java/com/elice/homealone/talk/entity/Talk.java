@@ -41,10 +41,10 @@ public class Talk extends Post {
     }
 
 
-    public static Talk createTalk(TalkDto talkDto) {
-        Talk talk = new Talk();
-        talk.title = talkDto.getContent();
-        talk.content = talkDto.getContent();
-        return talk;
+    public Talk(TalkDto talkDto, Member member) {
+        super(member,Type.TALK);
+        this.title = talkDto.getContent();
+        this.content = talkDto.getContent();
+        this.view = 0;
     }
 }
