@@ -6,7 +6,7 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatMessageRepository;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
-import com.elice.homealone.member.dto.MemberDto;
+import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
@@ -35,7 +35,7 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDto member = authService.findbyToken(accessToken);
+        MemberDTO member = authService.findbyToken(accessToken);
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
 
         //chatting 테이블 생성해 저장
