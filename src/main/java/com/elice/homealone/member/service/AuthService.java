@@ -56,7 +56,17 @@ public class AuthService {
      * Token으로 회원정보를 찾아서 반환
      */
 
-//    public MemberDto findMemberByToken
+    public MemberDto findbyToken(String accessToken) {
+        //토큰 유효성 검사
+        if (jwtTokenProvider.validateToken(accessToken)) {
+            MemberDto member = memberService.findByEmail(
+                    jwtTokenProvider.getEmail(accessToken)
+            ).toDto();
+            return member;
+        } else{
+            throw new homealoneException(ErrorCode.INVALID_TOKEN);
+        }
+    }
 
     /**
      * 회원 탈퇴
