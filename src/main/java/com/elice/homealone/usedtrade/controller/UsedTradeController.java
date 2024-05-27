@@ -35,9 +35,11 @@ public class UsedTradeController {
         //데이터가 없다면 204 NO_CONTENT 반환
         //todo 커스텀 상태코드 클래스를 만들어서 공동으로 사용하는게 좋아보임
         //todo API 구현을 우선으로 하고 추후 논의
-//        if(responseDtos.getContent().isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("message","게시글을 찾을 수 없습니다");
+        if(responseDtos.getContent().isEmpty()) {
+            return new ResponseEntity<>(map,HttpStatus.OK);
+        }
 
         //Map으로 메시지와 중고거래 리스트를 반환
         Map<String,Object> response = new HashMap<>();
@@ -48,6 +50,7 @@ public class UsedTradeController {
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
     @GetMapping("/{usedtradeId}")
     public ResponseEntity<?> getUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
         UsedTradeResponseDto responseDto = usedTradeService.getUsedTrade(usedtradeId);
