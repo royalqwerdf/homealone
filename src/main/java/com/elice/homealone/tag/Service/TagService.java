@@ -16,24 +16,16 @@ public class TagService {
     private final TagRepository tagRepository;
 
     // 입력된 게시물의 태그와 db의 태그를 비교하여 비슷한 태그가 없다면 태그 엔티티를 생성하고 연결한다.
-    public Tag addTag(PostTag postTagMap) {
-        String tagName = postTagMap.getName();
-        Optional<Tag> tag = similarTagExists(tagName);
-        if(tag.isEmpty()) {
-            Tag newTag = Tag.builder()
-                .tagName(tagName)
-                .build();
-            tagRepository.save(newTag);
-            newTag.addTag(postTagMap);
-            return newTag;
-        }
-        tag.get().addTag(postTagMap);
-        return tag.get();
+    public Tag addTag(PostTag postTag) {
+        String tagName = postTag.getName();
+        Tag tag = similarTagExists(tagName);
+        tag.addTag(postTag);
+        return tag;
     }
 
     // 게시물의 태그와 DB의 태그를 비교하는 함수
     // Tag에서 영어와 한글, 숫자만 남긴 뒤, 영어 소문자는 대문자로 치환해서 비교
-    public Optional<Tag> similarTagExists(String tagName) {
+    public Tag similarTagExists(String tagName) {
         StringBuilder sb = new StringBuilder();
 
         for(char c : tagName.toCharArray()) {
@@ -41,7 +33,16 @@ public class TagService {
                 sb.append(Character.toUpperCase(c));
             }
         }
+        String newName = sb.toString();
+        Optional<Tag> tag = tagRepository.findByTagName(newName);
+        if(tag.isPresent()){
+            return tag.get();
+        }
 
-        return tagRepository.findByTagName(sb.toString());
+        Tag newTag = Tag.builder()
+            .tagName(newName)
+            .build();
+        tagRepository.save(newTag);
+        return newTag;
     }
 }
