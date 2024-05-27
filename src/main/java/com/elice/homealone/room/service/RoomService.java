@@ -1,7 +1,8 @@
 package com.elice.homealone.room.service;
 
+import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.ErrorMessage;
-import com.elice.homealone.global.exception.RoomException;
+import com.elice.homealone.global.exception.homealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
@@ -20,8 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -34,6 +33,7 @@ public class RoomService {
     public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto,String token){ ///회원 정의 추가해야함.
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
+                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
                  );
         Room room = new Room(roomDto,member);
         //HTML태그 제거
@@ -46,15 +46,16 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomInfoDto EditRoomPost(String token,Long roomId, RoomDto roomDto){
         if(token == null || token.isEmpty()){
-            throw new RoomException.UnauthorizedActionException(ErrorMessage.NO_JWT_TOKEN);
+            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
         }
         String email = jwtTokenProvider.getEmail(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(//TODO:회원이 없을때 예외 던져주기
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
         Room roomOriginal = roomRepository.findById(roomId)
-                .orElseThrow(() ->new RoomException.RoomNotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
-           throw new RoomException.UnauthorizedActionException(ErrorMessage.NOT_UNAUTHORIZED_ACTION);
+           throw new homealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
@@ -65,15 +66,16 @@ public class RoomService {
     @Transactional
     public void deleteRoomPost(String token,Long roomId){
         if(token == null || token.isEmpty()){
-            throw new RoomException.UnauthorizedActionException(ErrorMessage.NO_JWT_TOKEN);
+            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
         }
         String email = jwtTokenProvider.getEmail(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(//TODO:회원이 없을때 예외 던져주기
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
         Room roomOriginal = roomRepository.findById(roomId)
-                .orElseThrow(() ->new RoomException.RoomNotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
-            throw new RoomException.UnauthorizedActionException(ErrorMessage.NOT_UNAUTHORIZED_ACTION);
+            throw new homealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomRepository.delete(roomOriginal);
     }
@@ -107,7 +109,7 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomInfoDto findByRoomId(Long roomId){
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->new RoomException.RoomNotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView()+1);
         return RoomDto.RoomInfoDto.toRoomInfoDto(room);
     }
