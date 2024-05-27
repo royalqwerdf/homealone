@@ -26,6 +26,8 @@ public class Talk extends Post {
     @Lob
     private String content;
 
+    @Column(name = "plain_content")
+    private String plainContent;
 
     @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
     private List<TalkImage> talkImages;

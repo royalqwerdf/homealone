@@ -53,7 +53,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomInfoDto);
     }
 
-    @PutMapping("/{roomId}")
+    @PatchMapping("/{roomId}")
     public ResponseEntity<?> editRoomPost(@PathVariable Long roomId
                                             , @Validated @RequestBody RoomDto roomDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
                                             , @RequestHeader("Authorization") String token){

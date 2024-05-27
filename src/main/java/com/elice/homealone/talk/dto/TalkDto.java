@@ -35,8 +35,32 @@ public class TalkDto {
         private String memberName;
         private Integer commentCount;
 
-        public static TalkInfoDto toRoomInfoDto(Talk talk) {
+        public static TalkInfoDto toTalkInfoDto(Talk talk) {
             return TalkInfoDto.builder()
+                    .id(talk.getId())
+                    .type(talk.getType())
+                    .title(talk.getTitle())
+                    .content(talk.getContent())
+                    .createdAt(talk.getCreatedAt())
+                    .modifiedAt(talk.getModifiedAt())
+                    .view(talk.getView())
+                    .likeCount(talk.getPostLikes().size())
+                    .scrapCount( talk.getScraps().size())
+                    .memberName(talk.getMember().getName())
+                    .commentCount(talk.getComments().size())
+                    .build();
+        }
+    }
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkInfoDtoForMember extends TalkInfoDto {
+      private Boolean like;
+      private Boolean scrap;
+
+        public static TalkInfoDtoForMember toTalkInfoDtoForMember(Talk talk) {
+            return TalkInfoDtoForMember.builder()
                     .id(talk.getId())
                     .type(talk.getType())
                     .title(talk.getTitle())
