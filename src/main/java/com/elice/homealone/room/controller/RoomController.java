@@ -1,6 +1,6 @@
 package com.elice.homealone.room.controller;
 
-import com.elice.homealone.global.exception.ApiResponse;
+import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.room.dto.RoomDto;
 import com.elice.homealone.room.dto.RoomSummaryDto;
 import com.elice.homealone.room.service.RoomService;
@@ -29,13 +29,13 @@ public class RoomController {
         Page<RoomSummaryDto> roomSummaryDtos = roomService.searchRoomPost(title, content, memberId, pageable);
         if(!(title == null || title.isBlank()) || !(content == null && content.isBlank())){
             if(roomSummaryDtos.isEmpty()){
-                ApiResponse response = new ApiResponse("검색 결과가 없습니다.");
+                Response.ApiResponse response = new Response.ApiResponse("검색 결과가 없습니다.");
                 return ResponseEntity.ok(response);
             }
         }
         if(memberId != null){
             if(roomSummaryDtos.isEmpty()){
-                ApiResponse response = new ApiResponse("작성하신 게시글이 없습니다.");
+                Response.ApiResponse response = new Response.ApiResponse("작성하신 게시글이 없습니다.");
                 return ResponseEntity.ok(response);
             }
         }
@@ -68,8 +68,8 @@ public class RoomController {
     public ResponseEntity<?> deletePost(@PathVariable Long roomId
             , @RequestHeader("Authorization") String token){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
         roomService.deleteRoomPost(token,roomId);
-        ApiResponse apiResponse = new ApiResponse("방자랑 "+roomId+"번 게시글이 성공적으로 지워졌습니다.");
-        return ResponseEntity.ok().body(apiResponse);
+        Response.ApiResponse response = new Response.ApiResponse("방자랑 "+roomId+"번 게시글이 성공적으로 지워졌습니다.");
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{roomId}")

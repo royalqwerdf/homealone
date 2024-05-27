@@ -31,6 +31,9 @@ public class RoomService {
 
     @Transactional
     public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto,String token){ ///회원 정의 추가해야함.
+        if(token == null || token.isEmpty()){
+            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
+        }
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
                 ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
