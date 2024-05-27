@@ -52,11 +52,11 @@ public class UsedTradeController {
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
-//    @PostMapping
-//    public ResponseEntity<UsedTradeResponseDto> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
-//
-//        return null;
-//    }
+    @PostMapping
+    public ResponseEntity<UsedTradeResponseDto> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+
+        return null;
+    }
 
     @PutMapping("/{usedtradeId}")
     public ResponseEntity<String> updateUsedTrade(@RequestBody UsedTradeRequestDto requestDto, @PathVariable("usedtradeId") Long usedtradeId) {
@@ -84,6 +84,7 @@ public class UsedTradeController {
 
     }
 
+    //중고거래 게시글 검색
     @GetMapping("/search")
     public ResponseEntity<Map<String,?>> searchUsedTrades(
             @RequestParam(value = "page", defaultValue = "0") int page,

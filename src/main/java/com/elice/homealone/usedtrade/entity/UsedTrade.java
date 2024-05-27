@@ -45,9 +45,11 @@ public class UsedTrade extends Post {
             tagDtos.add(postTag);
         }
 
+
         return UsedTradeResponseDto.builder()
                 .id(super.getId())
                 .tags(tagDtos)
+                .member(this.getMember().toDto())
                 .title(this.getTitle())
                 .price(this.getPrice())
                 .location(this.getLocation())
@@ -67,6 +69,7 @@ public class UsedTrade extends Post {
         }
         return UsedTradeResponseDto.builder()
                 .id(super.getId())
+                .member(this.getMember().toDto())
                 .title(this.getTitle())
                 .price(this.getPrice())
                 .location(this.getLocation())

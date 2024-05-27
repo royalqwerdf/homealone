@@ -1,5 +1,7 @@
 package com.elice.homealone.usedtrade.dto;
 
+import com.elice.homealone.member.dto.MemberDTO;
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.usedtrade.entity.UsedTradeImage;
@@ -24,6 +26,7 @@ public class UsedTradeResponseDto {
     private UsedTradeImage mainImage;
     private List<UsedTradeImage> images = new ArrayList<>();
     private List<PostTagDto> tags = new ArrayList<>();
+    private MemberDTO member;
 
 
 }
