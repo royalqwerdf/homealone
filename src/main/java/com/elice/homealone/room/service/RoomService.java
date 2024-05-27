@@ -21,6 +21,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -111,10 +113,29 @@ public class RoomService {
 
     @Transactional
     public RoomDto.RoomInfoDto findByRoomId(Long roomId){
-        Room room = roomRepository.findById(roomId)
+         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView()+1);
-        return RoomDto.RoomInfoDto.toRoomInfoDto(room);
+        return  RoomDto.RoomInfoDto.toRoomInfoDto(room);
+
+    }
+
+
+    @Transactional
+    public RoomDto.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String token){
+            String email = jwtTokenProvider.getEmail(token);
+            Member member = memberRepository.findByEmail(email).orElseThrow(
+                    ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
+            );
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
+            room.setView(room.getView()+1);
+            RoomDto.RoomInfoDtoForMember roomInfoDtoForMember = RoomDto.RoomInfoDtoForMember.toRoomInfoDtoForMember(room);
+            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
+            roomInfoDtoForMember.setScrap(true);
+            roomInfoDtoForMember.setLike(true);
+            return roomInfoDtoForMember;
+
     }
 
 }

@@ -73,8 +73,16 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<RoomDto.RoomInfoDto> findRoomById (@PathVariable Long roomId){
-        RoomDto.RoomInfoDto byRoomId = roomService.findByRoomId(roomId);
+    public ResponseEntity<?> findRoomById ( @RequestHeader(value = "Authorization",required = false) String token,
+            @PathVariable Long roomId){
+        Object byRoomId;
+        if(token.isEmpty() || token == null)
+        {
+             byRoomId =  roomService.findByRoomId(roomId);
+        }
+        else {
+             byRoomId = roomService.findByRoomIdForMember(roomId, token);
+        }
         return ResponseEntity.ok().body(byRoomId);
 
     }

@@ -63,4 +63,29 @@ public class RoomDto {
                     .build();
         }
     }
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RoomInfoDtoForMember extends RoomInfoDto {
+        private Boolean scrap;
+        private Boolean like;
+        public static RoomInfoDtoForMember toRoomInfoDtoForMember(Room room) {
+            return RoomInfoDtoForMember.builder()
+                    .id(room.getId())
+                    .title(room.getTitle())
+                    .thumbnailUrl(room.getThumbnailUrl())
+                    .type(room.getType())
+                    .content(room.getContent())
+                    .createdAt(room.getCreatedAt())
+                    .updatedAt(room.getModifiedAt())
+                    .view(room.getView())
+                    .likeCount( room.getPostLikes() != null ? room.getPostLikes().size() : 0)
+                    .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
+                    .memberName(room.getMember().getName())
+                    .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .build();
+        }
+    }
+
 }
