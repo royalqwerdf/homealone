@@ -14,7 +14,4 @@ public interface TalkRepository extends JpaRepository<Talk,Long> {
 
     Page<Talk> findAll(Pageable pageable);
 
-    Page<Talk> findByMember(Member member, Pageable pageable);
-
-    Page<Talk> searchByTitleContainingOrContentContaining(String titleQuery,String contentQuery, Pageable pageable);
 }
