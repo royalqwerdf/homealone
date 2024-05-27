@@ -2,6 +2,8 @@ package com.elice.homealone.usedtrade.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.tag.dto.PostTagDto;
+import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,8 +34,20 @@ public class UsedTrade extends Post {
     private List<UsedTradeImage> images = new ArrayList<>();
 
     public UsedTradeResponseDto toDto(){
+
+        //관련태그 추가 무한참조를 막기위한 로직
+        List<PostTag> tags = super.getTags();
+        PostTagDto postTag;
+        List<PostTagDto> tagDtos = new ArrayList<>();
+
+        for(PostTag tag : tags){
+            postTag = tag.toDto();
+            tagDtos.add(postTag);
+        }
+
         return UsedTradeResponseDto.builder()
                 .id(super.getId())
+                .tags(tagDtos)
                 .title(this.getTitle())
                 .price(this.getPrice())
                 .location(this.getLocation())

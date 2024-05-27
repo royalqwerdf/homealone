@@ -65,5 +65,12 @@ public class UsedTradeService {
         return true;
     }
 
+    //중고거래 검색
+    public Page<UsedTradeResponseDto> searchUsedTrades(Pageable pageable,String title,String content,String location) {
+        Page<UsedTrade> usedTrades = usedTradeRepository.findBySearchQuery(pageable,title,content,location);
+        Page<UsedTradeResponseDto> responseDtos = usedTrades.map(UsedTrade::toAllListDto);
+        return responseDtos;
+    }
+
 
 }
