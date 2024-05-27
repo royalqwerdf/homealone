@@ -43,11 +43,10 @@ public class ChatMessage extends BaseTimeEntity {
 
     public MessageDto toDto() {
         return MessageDto.builder()
-                .id(this.id)
                 .content(this.content)
                 .sendTime(this.sendTime)
-                .member_id(this.member.getId())
-                .chat_room_id(this.chatting.getId())
+                .memberId(this.member.getId())
+                .chatRoomId(this.chatting.getId())
                 .build();
     }
 }

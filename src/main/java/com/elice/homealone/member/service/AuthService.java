@@ -89,6 +89,7 @@ public class AuthService {
         }
     }
 
+//    public MemberDto findMemberByToken
 
     /**
      * 회원 탈퇴
