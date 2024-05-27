@@ -13,12 +13,15 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final MemberService memberService;
@@ -79,12 +82,12 @@ public class AuthService {
     /**
      * Token으로 로그인한 회원 정보 조회
      */
-    public MemberDTO findbyToken(String accessToken) {
+    public Member findbyToken(String accessToken) {
         //토큰 유효성 검사
         if (jwtTokenProvider.validateToken(accessToken)) {
-            MemberDTO member = memberService.findByEmail(
+            Member member = memberService.findByEmail(
                     jwtTokenProvider.getEmail(accessToken)
-            ).toDto();
+            );
             return member;
         } else{
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
@@ -99,6 +102,16 @@ public class AuthService {
         if(memberRepository.findByEmail(email).isPresent()){
             throw new HomealoneException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
+    }
+
+    /**
+     * 스프링 시큐리티 인증 로직
+     * email을 통해서 SecurityContextHolder에 사용자를 저장해둔다.
+     */
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = memberService.findByEmail(email);
+        return member;
     }
 
 

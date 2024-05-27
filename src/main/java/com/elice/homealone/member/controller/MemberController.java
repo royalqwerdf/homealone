@@ -27,7 +27,7 @@ public class MemberController {
         MemberDTO member = new MemberDTO();
         try {
             //토큰으로 memberDTO 반환
-            member = authService.findbyToken(accessToken);
+            member = authService.findbyToken(accessToken).toDto();
             member.setMessage("회원정보가 성공적으로 조회되었습니다.");
             return new ResponseEntity<>(member, HttpStatus.OK);
         } catch (HomealoneException e) {
