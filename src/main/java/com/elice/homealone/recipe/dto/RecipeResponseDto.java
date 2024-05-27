@@ -23,10 +23,10 @@ public class RecipeResponseDto {
     private List<String> imageUrls;
     private List<RecipeIngredientDto> ingredientDtos;
     private List<RecipeDetailDto> detailDtos;
-    private List<PostTagDto> tagDtos;
+    private List<PostTagDto> postTagDtos;
 
     @Builder
-    public RecipeResponseDto(Long id, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<String> imageUrls, List<RecipeIngredientDto> ingredientDtos, List<RecipeDetailDto> detailDtos, List<PostTagDto> tagDtos) {
+    public RecipeResponseDto(Long id, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<String> imageUrls, List<RecipeIngredientDto> ingredientDtos, List<RecipeDetailDto> detailDtos, List<PostTagDto> postTagDtos) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,6 +37,6 @@ public class RecipeResponseDto {
         this.imageUrls = imageUrls;
         this.ingredientDtos = ingredientDtos;
         this.detailDtos = detailDtos;
-        this.tagDtos = tagDtos;
+        this.postTagDtos = postTagDtos;
     }
 }

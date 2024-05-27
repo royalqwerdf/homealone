@@ -32,9 +32,10 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();
 
+    // TODO : 게시물 삭제 시 댓글, 좋아요, 스크랩 전부 삭제?
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 

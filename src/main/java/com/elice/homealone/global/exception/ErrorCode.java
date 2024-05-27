@@ -12,7 +12,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public enum ErrorCode {
     //400
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일입니다"),
-    MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다");
+    MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
+    RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피입니다");
     //401
 
     //402
