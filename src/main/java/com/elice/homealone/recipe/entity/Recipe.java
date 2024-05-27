@@ -4,19 +4,20 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
+import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,13 +44,13 @@ public class Recipe extends Post {
     @Column
     private Cuisine cuisine;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeImage> images = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeIngredient> ingredients = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeDetail> details = new ArrayList<>();
 
     @Builder
@@ -86,16 +87,34 @@ public class Recipe extends Post {
 
         return RecipeResponseDto.builder()
             .id(this.getId())
-            .title(this.title)
-            .description(this.description)
-            .portions(this.portions)
-            .recipeType(this.recipeType)
-            .recipeTime(this.recipeTime)
-            .cuisine(this.cuisine)
+            .title(title)
+            .description(description)
+            .portions(portions)
+            .recipeType(recipeType)
+            .recipeTime(recipeTime)
+            .cuisine(cuisine)
             .imageUrls(imageUrls)
             .ingredientDtos(ingredientDtos)
             .detailDtos(detailDtos)
-            .tagDtos(tagDtos)
+            .postTagDtos(tagDtos)
+            .build();
+    }
+
+    public RecipePageDto toPageDto() {
+        String imageUrl = null;
+        if(images != null){
+            imageUrl = images.get(0).getImageUrl();
+        }
+
+        return RecipePageDto.builder()
+            .id(this.getId())
+            .title(title)
+            .description(description)
+            .portions(portions)
+            .recipeType(recipeType.getType())
+            .recipeTime(recipeTime.getTime())
+            .cuisine(cuisine.getCuisine())
+            .imageUrl(imageUrl)
             .build();
     }
 
@@ -106,6 +125,7 @@ public class Recipe extends Post {
 
     public void addDetail(RecipeDetail detail) {
         this.details.add(detail);
+        detail.setRecipe(this);
     }
 
     public void addIngredients(RecipeIngredient ingredient) {
