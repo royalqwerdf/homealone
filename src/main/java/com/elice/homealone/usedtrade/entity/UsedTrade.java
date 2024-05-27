@@ -1,5 +1,6 @@
 package com.elice.homealone.usedtrade.entity;
 
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class UsedTrade extends Post {
 
     public UsedTradeResponseDto toDto(){
         return UsedTradeResponseDto.builder()
-                .id(this.getId())
+                .id(super.getId())
                 .title(this.getTitle())
                 .price(this.getPrice())
                 .location(this.getLocation())
@@ -51,7 +52,7 @@ public class UsedTrade extends Post {
             }
         }
         return UsedTradeResponseDto.builder()
-                .id(this.getId())
+                .id(super.getId())
                 .title(this.getTitle())
                 .price(this.getPrice())
                 .location(this.getLocation())

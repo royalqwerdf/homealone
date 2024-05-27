@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,12 @@ public class UsedTradeService {
         Page<UsedTradeResponseDto> usedTradesDto = usedTrades.map(UsedTrade::toAllListDto);
         return usedTradesDto;
     }
+    //1개의 중고거래 게시글 조회
+    public UsedTradeResponseDto getUsedTrade(Long id) {
+        UsedTradeResponseDto responseDto = usedTradeRepository.findById(id).map(UsedTrade::toDto).orElse(null);
+        return responseDto;
+    }
+
 
     //중고거래 게시글 수정
     public boolean modifyUsedTrade(Long id, UsedTradeRequestDto requestDto) {
