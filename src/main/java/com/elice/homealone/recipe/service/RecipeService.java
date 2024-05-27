@@ -54,7 +54,6 @@ public class RecipeService {
             }
         }
 
-
         // 레시피 dto 재료 리스트를 통해 레시피 재료 생성 후 레시피 엔티티에 추가
         List<RecipeIngredientDto> ingredientDtos = registerDto.getIngredientDtos();
         if(ingredientDtos != null){
@@ -69,7 +68,7 @@ public class RecipeService {
                 .map(recipeDetailService::createRecipeDetail)
                 .forEach(recipe::addDetail));
 
-        // 레시피 dto 태그 리스트로 태그 생성 후 레시피 엔티티(포스트 엔티티) 에 추가
+        // 태그 리스트로 태그 생성 후 레시피 엔티티(포스트 엔티티) 에 추가
         Optional.ofNullable(registerDto.getPostTagDtos())
             .ifPresent(tagDtos -> tagDtos.stream()
                 .map(postTagService::createPostTag)
