@@ -26,7 +26,7 @@ public class Chatting extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String chatroom_name;
+    private String chatroomName;
 
     @ManyToOne
     @JoinColumn(name = "member_sender_id")
@@ -43,11 +43,11 @@ public class Chatting extends BaseTimeEntity {
     public ChatDto toDto() {
         return ChatDto.builder()
                 .id(this.id)
-                .chatroom_name(this.chatroom_name)
+                .chatroomName(this.chatroomName)
                 .senderName(this.sender.getName())
                 .receiverName(this.receiver.getName())
-                .sender_id(this.sender.getId())
-                .receiver_id(this.receiver.getId())
+                .senderId(this.sender.getId())
+                .receiverId(this.receiver.getId())
                 .build();
     }
 }

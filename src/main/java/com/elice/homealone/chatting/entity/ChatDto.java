@@ -13,19 +13,18 @@ import lombok.NoArgsConstructor;
 public class ChatDto {
 
     private long id;
-    private String chatroom_name;
+    private String chatroomName;
     private Member sender;
     private Member receiver;
 
-    private String member_email;
     private String senderName;
     private String receiverName;
-    private long sender_id;
-    private long receiver_id;
+    private long senderId;
+    private long receiverId;
 
     public Chatting toEntity(Member sender, Member receiver) {
         return Chatting.builder()
-                .chatroom_name(this.chatroom_name)
+                .chatroomName(this.chatroomName)
                 .sender(sender)
                 .receiver(receiver)
                 .build();

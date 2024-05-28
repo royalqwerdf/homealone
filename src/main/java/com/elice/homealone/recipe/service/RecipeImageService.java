@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.service;
 
+import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.repository.RecipeImageRepository;
 import com.elice.homealone.recipe.entity.RecipeImage;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,10 @@ public class RecipeImageService {
 
     private final RecipeImageRepository recipeImageRepository;
 
-    public RecipeImage createImage(String imageUrl){
+    public RecipeImage createImage(RecipeImageDto imageDto){
         RecipeImage recipeImage = RecipeImage.builder()
-            .imageUrl(imageUrl)
+            .fileName(imageDto.getFileName())
+            .imageUrl(imageDto.getImageUrl())
             .build();
 
         recipeImageRepository.save(recipeImage);

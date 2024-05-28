@@ -1,8 +1,7 @@
 package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.ErrorMessage;
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
@@ -34,11 +33,11 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomInfoDto CreateRoomPost(RoomDto roomDto,String token){ ///회원 정의 추가해야함.
         if(token == null || token.isEmpty()){
-            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
+            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
         }
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
-                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
+                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
                  );
         Room room = new Room(roomDto,member);
         //HTML태그 제거
@@ -51,16 +50,16 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomInfoDto EditRoomPost(String token,Long roomId, RoomDto roomDto){
         if(token == null || token.isEmpty()){
-            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
+            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
         }
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
+                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
         Room roomOriginal = roomRepository.findById(roomId)
-                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
-           throw new homealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+           throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
@@ -71,16 +70,16 @@ public class RoomService {
     @Transactional
     public void deleteRoomPost(String token,Long roomId){
         if(token == null || token.isEmpty()){
-            throw new homealoneException(ErrorCode.NO_JWT_TOKEN);
+            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
         }
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
+                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
         Room roomOriginal = roomRepository.findById(roomId)
-                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
-            throw new homealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomRepository.delete(roomOriginal);
     }
@@ -114,7 +113,7 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomInfoDto findByRoomId(Long roomId){
          Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
+                .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView()+1);
         return  RoomDto.RoomInfoDto.toRoomInfoDto(room);
 
@@ -125,10 +124,10 @@ public class RoomService {
     public RoomDto.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String token){
             String email = jwtTokenProvider.getEmail(token);
             Member member = memberRepository.findByEmail(email).orElseThrow(
-                    ()-> new homealoneException(ErrorCode.MEMBER_NOT_FOUND)
+                    ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
             );
             Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() ->new homealoneException(ErrorCode.ROOM_NOT_FOUND));
+                    .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
             room.setView(room.getView()+1);
             RoomDto.RoomInfoDtoForMember roomInfoDtoForMember = RoomDto.RoomInfoDtoForMember.toRoomInfoDtoForMember(room);
             //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로

@@ -1,7 +1,7 @@
 package com.elice.homealone.recipe.controller;
 
 import com.elice.homealone.recipe.dto.RecipePageDto;
-import com.elice.homealone.recipe.dto.RecipeRegisterDto;
+import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
 import com.elice.homealone.recipe.service.RecipeService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,14 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,7 +24,7 @@ public class RecipeController {
 
     // 레시피 등록
     @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(HttpServletRequest request, @RequestBody RecipeRegisterDto requestDto) {
+    public ResponseEntity<RecipeResponseDto> createRecipe(HttpServletRequest request, @RequestBody RecipeRequestDto requestDto) {
         RecipeResponseDto responseDto = recipeService.createRecipe(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -76,5 +69,14 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // 레시피 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<RecipeResponseDto> patchRecipe(@PathVariable Long id, @RequestBody RecipeRequestDto requestDto) {
+        RecipeResponseDto patchedRecipe = recipeService.patchRecipe(id, requestDto);
+        return new ResponseEntity<>(patchedRecipe, HttpStatus.OK);
+    }
+
+    // TODO : 트렌드 레시피 추천 api 필요
 }
 
