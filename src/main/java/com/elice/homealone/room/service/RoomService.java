@@ -1,9 +1,7 @@
 package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.ErrorMessage;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.global.exception.homealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
