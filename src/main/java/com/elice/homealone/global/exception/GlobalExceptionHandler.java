@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(homealoneException.class)
-    public ResponseEntity<String> handleHomealoneException(homealoneException ex) {
+    @ExceptionHandler(HomealoneException.class)
+    public ResponseEntity<String> handleHomealoneException(HomealoneException ex) {
         HttpStatus status = ex.getErrorCode().getHttpStatus();
         return new ResponseEntity<>(ex.getMessage(), status);
     }

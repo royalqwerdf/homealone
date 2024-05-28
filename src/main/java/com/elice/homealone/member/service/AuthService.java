@@ -2,7 +2,7 @@ package com.elice.homealone.member.service;
 
 
 import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
@@ -61,7 +61,7 @@ public class AuthService {
 
             return response;
         } else{
-            throw new homealoneException(ErrorCode.MISMATCHED_PASSWORD);
+            throw new HomealoneException(ErrorCode.MISMATCHED_PASSWORD);
         }
     }
 
@@ -85,7 +85,7 @@ public class AuthService {
             ).toDto();
             return member;
         } else{
-            throw new homealoneException(ErrorCode.INVALID_TOKEN);
+            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         }
     }
 

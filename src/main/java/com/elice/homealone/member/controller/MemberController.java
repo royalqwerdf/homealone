@@ -1,7 +1,7 @@
 package com.elice.homealone.member.controller;
 
 
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class MemberController {
             member = authService.findbyToken(accessToken);
             member.setMessage("회원정보가 성공적으로 조회되었습니다.");
             return new ResponseEntity<>(member, HttpStatus.OK);
-        } catch (homealoneException e) {
+        } catch (HomealoneException e) {
             member.setMessage(e.getErrorCode().getMessage());
             return new ResponseEntity<>(member, e.getErrorCode().getHttpStatus());
         }

@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class RecipeRegisterDto {
+public class RecipeRequestDto {
     private String title;
     private String description;
     private int portions;
@@ -19,13 +19,13 @@ public class RecipeRegisterDto {
     private RecipeTime recipeTime;
     private Cuisine cuisine;
 
-    private List<String> imageUrls;
-    private List<RecipeIngredientDto> ingredientDtos;
-    private List<RecipeDetailDto> detailDtos;
-    private List<PostTagDto> postTagDtos;
+    private List<RecipeImageDto> images;
+    private List<RecipeIngredientDto> ingredients;
+    private List<RecipeDetailDto> details;
+    private List<PostTagDto> postTags;
 
     @Builder
-    public RecipeRegisterDto(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<String> imageUrls, List<RecipeIngredientDto> ingredientDtos, List<RecipeDetailDto> detailDtos, List<PostTagDto> tagDtos) {;
+    public RecipeRequestDto(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<RecipeImageDto> images, List<RecipeIngredientDto> ingredients, List<RecipeDetailDto> details, List<PostTagDto> postTags) {
         this.title = title;
         this.description = description;
         this.portions = portions;
@@ -33,10 +33,10 @@ public class RecipeRegisterDto {
         this.recipeTime = recipeTime;
         this.cuisine = cuisine;
 
-        this.imageUrls = imageUrls;
-        this.ingredientDtos = ingredientDtos;
-        this.detailDtos = detailDtos;
-        this.postTagDtos = tagDtos;
+        this.images = images;
+        this.ingredients = ingredients;
+        this.details = details;
+        this.postTags = postTags;
     }
 
     public Recipe toBaseEntity(Member member) {
