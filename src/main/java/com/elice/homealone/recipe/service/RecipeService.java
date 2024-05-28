@@ -7,12 +7,10 @@ import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
-import com.elice.homealone.recipe.repository.RecipeRepository;
-import com.elice.homealone.recipe.dto.RecipeDetailDto;
+import com.elice.homealone.recipe.repository.RecipeRepository.RecipeRepository;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.entity.Recipe;
-import com.elice.homealone.recipe.repository.RecipeRepository;
 import com.elice.homealone.tag.Service.PostTagService;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -82,6 +80,18 @@ public class RecipeService {
         }
     }
 
+    // QueryDsl 레시피 페이지 조회
+    public Page<RecipePageDto> findRecipes(
+        Pageable pageable,
+        String userId,
+        String title,
+        String description,
+        List<String> tags
+    ) {
+        Page<Recipe> recipePage = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        return recipePage.map(Recipe::toPageDto);
+    }
+
     // 레시피 리스트 전체 조회
     public Page<RecipePageDto> findAll(Pageable pageable) {
         try {
@@ -89,26 +99,6 @@ public class RecipeService {
             return recipePage.map(Recipe::toPageDto);
         } catch (Exception e) {
             throw new HomealoneException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    // 레시피 리스트 제목으로 조회
-    public Page<RecipePageDto> findByTitle(Pageable pageable, String title) {
-        try {
-            Page<Recipe> recipePage = recipeRepository.findByTitleContaining(pageable, title);
-            return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.BAD_REQUEST);
-        }
-    }
-
-    // 레시피 리스트 내용으로 조회
-    public Page<RecipePageDto> findByDescription(Pageable pageable, String description) {
-        try {
-            Page<Recipe> recipePage = recipeRepository.findByDescriptionContaining(pageable, description);
-            return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.BAD_REQUEST);
         }
     }
 
