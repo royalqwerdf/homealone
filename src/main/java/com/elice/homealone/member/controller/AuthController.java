@@ -1,7 +1,7 @@
 package com.elice.homealone.member.controller;
 
 
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
@@ -43,7 +43,7 @@ public class AuthController {
             headers.set("Authorization", response.getAccessToken());
 
             return new ResponseEntity<>(response, headers, HttpStatus.OK);
-        } catch (homealoneException e) {
+        } catch (HomealoneException e) {
             //로그인 실패
             LoginResponseDTO response = new LoginResponseDTO();
             response.setMessage(e.getErrorCode().getMessage());

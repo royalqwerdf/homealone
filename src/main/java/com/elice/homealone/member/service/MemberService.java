@@ -2,7 +2,7 @@ package com.elice.homealone.member.service;
 
 
 import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.homealoneException;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class MemberService implements UserDetailsService {
      */
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new homealoneException(ErrorCode.EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
 
 }

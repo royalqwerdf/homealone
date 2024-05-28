@@ -1,10 +1,5 @@
 package com.elice.homealone;
 
-import com.elice.homealone.recipe.dto.RecipeRegisterDto;
-import com.elice.homealone.recipe.enums.RecipeTime;
-import com.elice.homealone.recipe.enums.RecipeType;
-import com.elice.homealone.recipe.service.RecipeService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
