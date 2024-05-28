@@ -17,6 +17,7 @@ public class RecipeDetailService {
     public RecipeDetail createRecipeDetail(RecipeDetailDto recipeDetailDto) {
         RecipeDetail recipeDetail = RecipeDetail.builder()
             .description(recipeDetailDto.getDescription())
+            .fileName(recipeDetailDto.getFileName())
             .imageUrl(recipeDetailDto.getImageUrl())
             .build();
 
