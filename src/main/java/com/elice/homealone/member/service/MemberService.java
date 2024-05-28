@@ -62,8 +62,7 @@ public class MemberService{
         }
 
     }
-
-
+    
     /**
      * 회원 삭제 delete
      */
