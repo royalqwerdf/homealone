@@ -49,12 +49,13 @@ public class Room extends Post {
                 .build();
     }
 
-//    public Room(RoomDto roomDto,Member member) {
-//        super(member,Type.ROOM);
-//        this.title = roomDto.getTitle();
-//        this.content = roomDto.getContent();
-//        this.thumbnailUrl = roomDto.getThumbnailUrl();
-//    }
+    public Room(RoomDto roomDto,Member member) {
+        super(member,Type.ROOM);
+        this.view = 0;
+        this.title = roomDto.getTitle();
+        this.content = roomDto.getContent();
+        this.thumbnailUrl = roomDto.getThumbnailUrl();
+    }
 
     public Room(RoomDto roomDto) {
         this.title = roomDto.getTitle();
