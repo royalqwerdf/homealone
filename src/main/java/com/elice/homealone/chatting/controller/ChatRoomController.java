@@ -6,6 +6,7 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.chatting.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class ChatRoomController {
@@ -23,9 +25,13 @@ public class ChatRoomController {
 
 
     //회원의 모든 채팅방 목록 반환
-    @GetMapping("/chatting/{memberId}")
-    public List<Chatting> chattingRooms(@PathVariable Long memberId) {
-         return chatRoomRepository.findAllChattingBySenderId(memberId);
+    @GetMapping("/chattings")
+    public ResponseEntity<List<ChatDto>> chattingRooms(@RequestHeader("Authorization") String token) {
+        String accessToken = token.substring(7);
+        log.info("{} : not exist token", accessToken);
+        List<ChatDto> chatrooms = chatRoomService.findChatrooms(accessToken);
+
+        return ResponseEntity.ok().body(chatrooms);
 
     }
 
@@ -41,8 +47,7 @@ public class ChatRoomController {
     //채팅방 생성
     @PostMapping("/chatting")
     public ResponseEntity<ChatDto> makeChat(@RequestHeader("Authorization") String token, @RequestBody ChatDto chatDto) {
-        String accessToken = token.substring(7);
-        ChatDto createdRoom = chatRoomService.makeChat(accessToken, chatDto);
+        ChatDto createdRoom = chatRoomService.makeChat(token, chatDto);
 
         return ResponseEntity.ok().body(createdRoom);
     }
