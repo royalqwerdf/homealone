@@ -1,7 +1,11 @@
 package com.elice.homealone.talk.repository;
 
 import com.elice.homealone.room.entity.Room;
+import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.entity.Talk;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class TalkSpecification {
@@ -24,5 +28,16 @@ public class TalkSpecification {
                         criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
                         criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%")
                 );
+    }
+    public static Specification<Talk> containsTag(String tagName) {
+        return (root, query, criteriaBuilder) -> {
+            // Room과 PostTag를 조인
+            Join<Talk, PostTag> tags = root.join("tags", JoinType.INNER);
+
+            // PostTag의 name 필드에 대해 LIKE
+            Predicate tagPredicate = criteriaBuilder.like(tags.get("name"), "%" + tagName + "%");
+
+            return tagPredicate;
+        };
     }
 }

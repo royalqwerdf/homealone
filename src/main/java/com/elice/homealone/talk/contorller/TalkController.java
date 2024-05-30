@@ -2,8 +2,8 @@ package com.elice.homealone.talk.contorller;
 
 import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.talk.Service.TalkService;
-import com.elice.homealone.talk.dto.TalkDto;
-import com.elice.homealone.talk.dto.TalkSummaryDto;
+import com.elice.homealone.talk.dto.TalkRequestDTO;
+import com.elice.homealone.talk.dto.TalkResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,14 +20,15 @@ import org.springframework.web.bind.annotation.*;
 public class TalkController {
     @Autowired
     private TalkService talkService;
-
+//TODO: 검색 검증로직 컨트롤러 단에만 추가하도록
     @GetMapping("")
     public ResponseEntity<?> findAll(@RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
+                                                        @RequestParam(required = false) String tag,
                                                         @RequestParam(required = false) Long memberId,
                                                         @PageableDefault(size = 20) Pageable pageable){
 
-        Page<TalkSummaryDto> talkSummaryDtos = talkService.searchTalkPost(title, content, memberId, pageable);
+        Page<TalkResponseDTO> talkSummaryDtos = talkService.searchTalkPost(title, content,tag, memberId, pageable);
         if(!(title == null || title.isBlank()) || !(content == null && content.isBlank())){
             if(talkSummaryDtos.isEmpty()){
                 Response.ApiResponse response = new Response.ApiResponse("검색 결과가 없습니다.");
@@ -44,18 +45,18 @@ public class TalkController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createRoomPost(@Validated @RequestBody TalkDto talkDto,
+    public ResponseEntity<?> createRoomPost(@Validated @RequestBody TalkRequestDTO talkDto,
                                             @RequestHeader("Authorization") String token
                                                                 ) {
-        TalkDto.TalkInfoDto talkInfoDto = talkService.CreateTalkPost(talkDto, token);
+        TalkResponseDTO.TalkInfoDto talkInfoDto = talkService.CreateTalkPost(talkDto, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(talkInfoDto);
     }
 
     @PatchMapping("/{talkId}")
     public ResponseEntity<?> editRoomPost(@PathVariable Long talkId
-                                            , @Validated @RequestBody TalkDto talkDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
+                                            , @Validated @RequestBody TalkRequestDTO talkDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
                                             , @RequestHeader("Authorization") String token){
-        TalkDto.TalkInfoDto talkInfoDto = talkService.EditTalkPost(token, talkId, talkDto);
+        TalkResponseDTO.TalkInfoDto talkInfoDto = talkService.EditTalkPost(token, talkId, talkDto);
         return ResponseEntity.status(HttpStatus.OK).body(talkInfoDto);
 
     }

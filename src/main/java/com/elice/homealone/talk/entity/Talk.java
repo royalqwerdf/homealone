@@ -2,12 +2,12 @@ package com.elice.homealone.talk.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.talk.dto.TalkDto;
+import com.elice.homealone.tag.entity.PostTag;
+import com.elice.homealone.talk.dto.TalkRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
@@ -35,7 +35,7 @@ public class Talk extends Post {
     @Column(name = "view")
     private Integer view;
 
-    public static Talk toTalk(TalkDto talkDto){
+    public static Talk toTalk(TalkRequestDTO talkDto){
         return Talk.builder()
                 .title(talkDto.getTitle())
                 .content(talkDto.getContent())
@@ -43,10 +43,15 @@ public class Talk extends Post {
     }
 
 
-    public Talk(TalkDto talkDto, Member member) {
+    public Talk(TalkRequestDTO talkDto, Member member) {
         super(member,Type.TALK);
         this.title = talkDto.getContent();
         this.content = talkDto.getContent();
         this.view = 0;
+    }
+
+    @Override
+    public void addTag(PostTag tag) {
+        super.addTag(tag);
     }
 }

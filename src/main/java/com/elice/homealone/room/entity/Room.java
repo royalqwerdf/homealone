@@ -2,12 +2,13 @@ package com.elice.homealone.room.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.room.dto.RoomDto;
+import com.elice.homealone.room.dto.RoomRequestDTO;
+import com.elice.homealone.room.dto.RoomResponseDTO;
+import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
@@ -41,15 +42,16 @@ public class Room extends Post {
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
     private List<RoomImage> roomImages;
 
-    public static Room toRoom(RoomDto roomDto){
+    public static Room toRoom(RoomRequestDTO roomDto){
         return Room.builder()
                 .title(roomDto.getTitle())
                 .content(roomDto.getContent())
                 .thumbnailUrl(roomDto.getThumbnailUrl())
+                .roomImages(roomDto.getImages())
                 .build();
     }
 
-    public Room(RoomDto roomDto,Member member) {
+    public Room(RoomRequestDTO roomDto,Member member) {
         super(member,Type.ROOM);
         this.view = 0;
         this.title = roomDto.getTitle();
@@ -57,9 +59,8 @@ public class Room extends Post {
         this.thumbnailUrl = roomDto.getThumbnailUrl();
     }
 
-    public Room(RoomDto roomDto) {
-        this.title = roomDto.getTitle();
-        this.content = roomDto.getContent();
-        this.thumbnailUrl = roomDto.getThumbnailUrl();
+    @Override
+    public void addTag(PostTag tag) {
+        super.addTag(tag);
     }
 }
