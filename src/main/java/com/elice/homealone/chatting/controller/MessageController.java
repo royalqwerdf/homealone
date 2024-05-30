@@ -1,8 +1,10 @@
 package com.elice.homealone.chatting.controller;
 
+import com.elice.homealone.chatting.entity.ChatMessage;
 import com.elice.homealone.chatting.service.ChatRoomService;
 import com.elice.homealone.chatting.model.MessageModel;
 import com.elice.homealone.chatting.model.OutputMessageModel;
+import com.elice.homealone.chatting.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -27,14 +29,21 @@ public class MessageController {
     */
 
     private final ChatRoomService chatRoomService;
+    private final MessageService messageService;
 
-    @MessageMapping("/chat-sendMessage")
+    @MessageMapping("/chat-sendMessage/{chatroomId}")
     @SendTo("/topic/public")
-    public MessageModel sendMessage(@Payload MessageModel messageModel) {
+    public MessageModel sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
+        String content = messageModel.getContent();
+        String chatType = messageModel.getType().toString();
+        final String time = new SimpleDateFormat("HH:mm").format(new Date());
+
+        messageService.saveMessage(chatroomId, content, time, chatType);
+
         return messageModel;
     }
 
-    @MessageMapping("chat-addUser")
+    @MessageMapping("/chat-addUser")
     @SendTo("/topic/public")
     public MessageModel addUser(@Payload MessageModel messageModel, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("usernme", messageModel.getSender());
