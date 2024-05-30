@@ -28,7 +28,7 @@ public class ChatRoomController {
     @GetMapping("/chattings")
     public ResponseEntity<List<ChatDto>> chattingRooms(@RequestHeader("Authorization") String token) {
         String accessToken = token.substring(7);
-        log.info("{} : not exist token", accessToken);
+        log.info("{} : exist token", accessToken);
         List<ChatDto> chatrooms = chatRoomService.findChatrooms(accessToken);
 
         return ResponseEntity.ok().body(chatrooms);

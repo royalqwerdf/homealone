@@ -30,6 +30,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(NOT_FOUND,"존재하지 않는 회원입니다. "),
     ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다"),
     RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피입니다"),
+    CHATTING_ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 채팅방입니다"),
 
     //500
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다. 다시 요청해주세요.");

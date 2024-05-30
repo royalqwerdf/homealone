@@ -66,7 +66,12 @@ public class ChatRoomService {
 
     @Transactional
     public Map<String, Object> findChatList(Long chatroomId) {
-        Chatting chatting = chatRoomRepository.findChattingById(chatroomId);
+
+        //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
+        Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
+                new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
+
+        String title = chatting.getChatroomName();
 
         //sender의 메시지 dto 리스트
         List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
@@ -83,6 +88,7 @@ public class ChatRoomService {
         }
 
         Map<String, Object> result = new HashMap<>();
+        result.put("title", title);
         result.put("senderData", senderDatas);
         result.put("receiverData", receiverDatas);
         result.put("message", "채팅방 메시지 전달 성공");
