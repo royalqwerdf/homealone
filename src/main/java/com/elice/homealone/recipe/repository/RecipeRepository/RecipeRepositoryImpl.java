@@ -20,7 +20,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     @PersistenceContext
