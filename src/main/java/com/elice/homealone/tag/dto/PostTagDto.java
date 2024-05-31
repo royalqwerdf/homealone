@@ -2,8 +2,10 @@ package com.elice.homealone.tag.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class PostTagDto {
 
     private Long id;
