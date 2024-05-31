@@ -5,11 +5,13 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.Service.PostTagService;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
 import com.elice.homealone.talk.dto.TalkResponseDTO;
 import com.elice.homealone.talk.entity.Talk;
+import com.elice.homealone.talk.entity.TalkImage;
 import com.elice.homealone.talk.repository.TalkRepository;
 import com.elice.homealone.talk.repository.TalkSpecification;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -59,12 +64,14 @@ public class TalkService {
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
         Talk talkOriginal = talkRepository.findById(talkId).orElseThrow(() -> new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-
         if(talkOriginal.getMember() != member){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkOriginal.setTitle(talkDto.getTitle());
-        talkOriginal.setContent(talkDto.getContent());
+        List<TalkImage> talkImage = talkDto.getImages().stream()
+                .map(url -> new TalkImage(url,talkOriginal))
+                .collect(Collectors.toList());
+        talkOriginal.getTalkImages().addAll(talkImage);
         return TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talkOriginal);
     }
 

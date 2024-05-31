@@ -1,7 +1,6 @@
 package com.elice.homealone.room.service;
 
 
-import com.elice.homealone.global.Image.ImageService;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
@@ -35,7 +34,7 @@ public class RoomService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PostTagService postTagService;
-    private final ImageService imageService;
+//    private final ImageService imageService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String token){ ///회원 정의 추가해야함.
         if(token == null || token.isEmpty()){
@@ -69,8 +68,6 @@ public class RoomService {
         if(roomOriginal.getMember() != member){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
-        //먼저 이전의 이미지url로 스토리지에 저장된 이미지 삭제
-        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
@@ -78,8 +75,6 @@ public class RoomService {
         List<RoomImage> newImages = roomDto.getImages().stream()
                 .map(url -> new RoomImage(url,roomOriginal))
                 .collect(Collectors.toList());
-        //이전의 룸 이미지테이블 다 제거
-        roomOriginal.getRoomImages().clear();
         //새로운 룸 이미지 테이블 넣기
         roomOriginal.getRoomImages().addAll(newImages);
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
@@ -96,12 +91,11 @@ public class RoomService {
         );
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        int size = roomOriginal.getRoomImages().size();
         if(roomOriginal.getMember() != member){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
-        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
+//        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomRepository.delete(roomOriginal);
     }
 

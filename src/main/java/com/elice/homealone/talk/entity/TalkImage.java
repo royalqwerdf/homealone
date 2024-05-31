@@ -17,4 +17,9 @@ public class TalkImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "talk_id")
     private Talk talk;
+
+    public TalkImage(String image_url, Talk talk){
+        this.image_url = image_url;
+        this.talk = talk;
+    }
 }
