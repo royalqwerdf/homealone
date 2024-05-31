@@ -24,6 +24,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//firebase Dependency
+	implementation 'com.google.firebase:firebase-admin:9.0.0'
 //	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'com.h2database:h2:2.1.214'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

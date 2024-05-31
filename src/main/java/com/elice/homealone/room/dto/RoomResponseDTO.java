@@ -2,6 +2,7 @@ package com.elice.homealone.room.dto;
 
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.room.entity.Room;
+import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,7 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
+        private List<String> roomImages;
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
@@ -66,6 +68,7 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .build();
         }
     }

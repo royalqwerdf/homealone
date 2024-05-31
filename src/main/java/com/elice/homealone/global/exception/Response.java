@@ -15,6 +15,16 @@ public class Response {
         this.message = message;
     }
     }
+    @Getter
+    @Setter
+    public static class URLResponse{
+        private String URl;
+
+        public URLResponse(String URl) {
+            this.URl = URl;
+        }
+    }
+
 
     @Getter
     @AllArgsConstructor
