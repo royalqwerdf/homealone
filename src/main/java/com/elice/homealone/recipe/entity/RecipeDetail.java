@@ -19,7 +19,7 @@ public class RecipeDetail extends BaseTimeEntity {
     @Column
     private Long id;
 
-    @Column
+    @Column(length = 1500)
     private String description;
 
     @Column
