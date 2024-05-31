@@ -37,17 +37,17 @@ public class ChatRoomController {
 
     //선택 채팅방 조회
     @GetMapping("/chatting/{chatroomId}")
-    public ResponseEntity<Map<String, Object>> chatroomInfo(@PathVariable Long chatroomId) {
+    public ResponseEntity<ChatDto> chatroomInfo(@PathVariable Long chatroomId) {
 
-        Map<String, Object> chatMessages = chatRoomService.findChatList(chatroomId);
-
-        return ResponseEntity.ok().body(chatMessages);
+        return ResponseEntity.ok().body(chatRoomService.findChatList(chatroomId));
     }
 
     //채팅방 생성
     @PostMapping("/chatting")
     public ResponseEntity<ChatDto> makeChat(@RequestHeader("Authorization") String token, @RequestBody ChatDto chatDto) {
-        ChatDto createdRoom = chatRoomService.makeChat(token, chatDto);
+        String accessToken = token.substring(7);
+        log.info("{} : exist token", accessToken);
+        ChatDto createdRoom = chatRoomService.makeChat(accessToken, chatDto);
 
         return ResponseEntity.ok().body(createdRoom);
     }

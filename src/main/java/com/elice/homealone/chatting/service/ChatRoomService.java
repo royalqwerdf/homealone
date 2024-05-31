@@ -40,6 +40,10 @@ public class ChatRoomService {
         MemberDTO member = authService.findbyToken(accessToken);
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
 
+        if(receiver_id == sender.getId()) {
+            throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
+        }
+
         //chatting 테이블 생성해 저장
         Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(sender, receiver));
         chatDto.setId(chatroom.getId());
@@ -65,35 +69,28 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public Map<String, Object> findChatList(Long chatroomId) {
+    public ChatDto findChatList(Long chatroomId) {
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
         Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
                 new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
 
-        String title = chatting.getChatroomName();
-
         //sender의 메시지 dto 리스트
-        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
-        List<MessageDto> senderDatas = new ArrayList<>();
-        for(ChatMessage senderChat : senderChatList) {
-            senderDatas.add(senderChat.toDto());
-        }
+        List<MessageDto> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
 
         //receiver의 메시지 dto 리스트
-        List<ChatMessage> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
-        List<MessageDto> receiverDatas = new ArrayList<>();
-        for(ChatMessage receiverChat : receiverChatList) {
-            receiverDatas.add(receiverChat.toDto());
-        }
+        List<MessageDto> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("title", title);
-        result.put("senderData", senderDatas);
-        result.put("receiverData", receiverDatas);
-        result.put("message", "채팅방 메시지 전달 성공");
+        ChatDto responseDtos = ChatDto.builder()
+                .id(chatroomId)
+                .chatroomName(chatting.getChatroomName())
+                .senderName(chatting.getSender().getName())
+                .receiverName(chatting.getReceiver().getName())
+                .senderMessages(senderChatList)
+                .receiverMessages(receiverChatList)
+                .build();
 
-        return result;
+        return responseDtos;
     }
 
     @Transactional
