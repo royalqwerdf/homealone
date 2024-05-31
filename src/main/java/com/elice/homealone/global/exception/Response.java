@@ -18,10 +18,12 @@ public class Response {
     @Getter
     @Setter
     public static class URLResponse{
-        private String URl;
+        private String url;
+        private String fileName;
 
-        public URLResponse(String URl) {
-            this.URl = URl;
+        public URLResponse(String url, String fileName) {
+            this.url = url;
+            this.fileName = fileName;
         }
     }
 

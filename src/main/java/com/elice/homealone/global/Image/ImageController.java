@@ -27,7 +27,7 @@ public class ImageController {
         Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType()); //스토리지에 파일 업로드.
 
         String fileUrl = blob.getMediaLink();  //업로드한 파일의 url을 가져온다.
-        Response.URLResponse urlResponse = new Response.URLResponse(fileUrl); //url로 응답객체 생성
+        Response.URLResponse urlResponse = new Response.URLResponse(fileUrl,fileName); //url로 응답객체 생성
         return ResponseEntity.ok(urlResponse); //응답
     }
 }
