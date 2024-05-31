@@ -27,7 +27,7 @@ public class RoomRequestDTO {
     private List<PostTagDto> tags;
     @NotBlank(message = ErrorMessage.THUMBNAIL_URL_REQUIRED)
     private String thumbnailUrl;
-    private List<RoomImage> images;
+    private List<String> images;
 
 //    public static RoomRequestDTO toRoomRequestDTO(Room room){
 //        return RoomRequestDTO.builder()

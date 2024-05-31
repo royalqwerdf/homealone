@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -39,17 +40,17 @@ public class Room extends Post {
     @Builder.Default
     private Integer view = 0;
 
-    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<RoomImage> roomImages;
 
-    public static Room toRoom(RoomRequestDTO roomDto){
-        return Room.builder()
-                .title(roomDto.getTitle())
-                .content(roomDto.getContent())
-                .thumbnailUrl(roomDto.getThumbnailUrl())
-                .roomImages(roomDto.getImages())
-                .build();
-    }
+//    public static Room toRoom(RoomRequestDTO roomDto){
+//        return Room.builder()
+//                .title(roomDto.getTitle())
+//                .content(roomDto.getContent())
+//                .thumbnailUrl(roomDto.getThumbnailUrl())
+//                .roomImages(roomDto.getImages())
+//                .build();
+//    }
 
     public Room(RoomRequestDTO roomDto,Member member) {
         super(member,Type.ROOM);
@@ -57,6 +58,9 @@ public class Room extends Post {
         this.title = roomDto.getTitle();
         this.content = roomDto.getContent();
         this.thumbnailUrl = roomDto.getThumbnailUrl();
+        this.roomImages = roomDto.getImages().stream()
+                .map(url -> new RoomImage(url, this))
+                .collect(Collectors.toList());
     }
 
     @Override

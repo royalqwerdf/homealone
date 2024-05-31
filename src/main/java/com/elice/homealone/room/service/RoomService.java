@@ -8,10 +8,10 @@ import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
+import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
 import com.elice.homealone.tag.Service.PostTagService;
-import com.elice.homealone.tag.entity.PostTag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -46,7 +46,6 @@ public class RoomService {
         roomRepository.save(room);
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
         room.setPlainContent(plainContent);
-        roomRepository.save(room);
         roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
                 .forEach(postTag-> room.addTag(postTag));
         //HTML태그 제거
@@ -70,6 +69,13 @@ public class RoomService {
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
+        String plainContent = Jsoup.clean(roomDto.getContent(),Safelist.none());
+        roomOriginal.setPlainContent(plainContent);
+        List<RoomImage> newImages = roomDto.getImages().stream()
+                .map(url -> new RoomImage(url,roomOriginal))
+                .collect(Collectors.toList());
+        roomOriginal.getRoomImages().clear();
+        roomOriginal.getRoomImages().addAll(newImages);
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
 
