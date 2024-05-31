@@ -15,7 +15,7 @@ public class ImageService {
     private final Storage storage;
     private final String bucketName = "homealone-73965.appspot.com";
 
-
+    //firebaseConfig클래스에서 빈으로 설정한 storage인스턴스 자동 주입
     @Autowired
     public ImageService(Storage storage) {
         this.storage = storage;
@@ -24,15 +24,14 @@ public class ImageService {
 
     public void deleteImage(String imageUrl){
         try {
-            // URL에서 파일 이름과 쿼리 파라미터를 분리하여 파일 이름만 추출
-            String decodedUrl = URLDecoder.decode(imageUrl, StandardCharsets.UTF_8.name());
-            String fileName = decodedUrl.substring(decodedUrl.lastIndexOf('/') + 1);
-            if (fileName.contains("?")) {
+            String decodedUrl = URLDecoder.decode(imageUrl, StandardCharsets.UTF_8.name());// URL을 디코딩
+            String fileName = decodedUrl.substring(decodedUrl.lastIndexOf('/') + 1); //URL에서 파일 이름을 추출
+            if (fileName.contains("?")) { //파라미터가 포함되 있는 경우 제거
                 fileName = fileName.substring(0, fileName.indexOf('?'));
             }
 
-            BlobId blobId = BlobId.of(bucketName, fileName);
-            boolean deleted = storage.delete(blobId);
+            BlobId blobId = BlobId.of(bucketName, fileName);  //blodId생성
+            boolean deleted = storage.delete(blobId);  //스토리지에서 blodId제거
             if (deleted) {
                 System.out.println("File deleted successfully: " + fileName);
             } else {

@@ -22,12 +22,12 @@ public class ImageController {
 
     @PostMapping("/upload")
     public ResponseEntity<Response.URLResponse> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
-        Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
+        String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename(); //파일 이름을 고유한 UUID와 원래 파일 이름을 조합하여 생성
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);  //버킷 인스턴스를 가져옴
+        Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType()); //스토리지에 파일 업로드.
 
-        String fileUrl = blob.getMediaLink();
-        Response.URLResponse urlResponse = new Response.URLResponse(fileUrl);
-        return ResponseEntity.ok(urlResponse);
+        String fileUrl = blob.getMediaLink();  //업로드한 파일의 url을 가져온다.
+        Response.URLResponse urlResponse = new Response.URLResponse(fileUrl); //url로 응답객체 생성
+        return ResponseEntity.ok(urlResponse); //응답
     }
 }

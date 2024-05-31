@@ -69,14 +69,18 @@ public class RoomService {
         if(roomOriginal.getMember() != member){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
+        //먼저 이전의 이미지url로 스토리지에 저장된 이미지 삭제
         roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
+        //새로운 룸이미지 리스트 생성
         List<RoomImage> newImages = roomDto.getImages().stream()
                 .map(url -> new RoomImage(url,roomOriginal))
                 .collect(Collectors.toList());
+        //이전의 룸 이미지테이블 다 제거
         roomOriginal.getRoomImages().clear();
+        //새로운 룸 이미지 테이블 넣기
         roomOriginal.getRoomImages().addAll(newImages);
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
@@ -96,6 +100,7 @@ public class RoomService {
         if(roomOriginal.getMember() != member){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
+        //이전의 이미지url로 스토리지에 저장된 이미지 삭제
         roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomRepository.delete(roomOriginal);
     }
