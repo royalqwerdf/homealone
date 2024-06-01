@@ -8,7 +8,6 @@ import com.elice.homealone.chatting.repository.ChatMessageRepository;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
@@ -37,7 +36,7 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        Member member = authService.findbyToken(accessToken);
+        Member member = authService.findLoginMemberByToken(accessToken);
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
 
         //chatting 테이블 생성해 저장
@@ -97,7 +96,7 @@ public class ChatRoomService {
         }
 
         //Member 도메인 회원 조회 메소드 참고
-        Member member = authService.findbyToken(accessToken);
+        Member member = authService.findLoginMemberByToken(accessToken);
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
 
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());

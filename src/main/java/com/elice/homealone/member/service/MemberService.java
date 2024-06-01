@@ -39,6 +39,10 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
 
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(()->new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
 
     /**
      * 스프링 시큐리티 인증 로직

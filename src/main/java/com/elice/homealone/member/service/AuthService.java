@@ -14,9 +14,6 @@ import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +80,7 @@ public class AuthService{
     /**
      * Token으로 로그인한 회원 정보 조회
      */
-    public Member findbyToken(String accessToken) {
+    public Member findLoginMemberByToken(String accessToken) {
         //토큰 유효성 검사
         if (jwtTokenProvider.validateToken(accessToken)) {
             Member member = memberService.findByEmail(jwtTokenProvider.getEmail(accessToken));
@@ -111,7 +108,7 @@ public class AuthService{
     public Member editMember(MemberDTO memberDTO, String accessToken) {
         //토큰 유효성 검사
         if (jwtTokenProvider.validateToken(accessToken)) {
-            Member member = findbyToken(accessToken);
+            Member member = findLoginMemberByToken(accessToken);
             member.setName(memberDTO.getName());
             member.setBirth(memberDTO.getBirth());
             member.setEmail(memberDTO.getEmail());
@@ -128,10 +125,8 @@ public class AuthService{
     /**
      * 회원 삭제 delete
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteMember(MemberDTO memberDto, String accessToken) {
-
-        Member findedMember = memberService.findByEmail(memberDto.getEmail());
+    public void deleteMember(Long memberId, String accessToken) {
+        Member findedMember = memberService.findById(memberId);
         memberRepository.delete(findedMember);
     }
 
