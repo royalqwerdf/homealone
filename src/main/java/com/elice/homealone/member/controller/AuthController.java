@@ -25,9 +25,14 @@ public class AuthController {
      */
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
-        SignupResponseDTO response = authService.signUp(signupRequestDTO);
-        //일단 회원가입이 성공하든 실패하든 HttpStatus.CREATE로 보내게 만듬
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        SignupResponseDTO response = new SignupResponseDTO();
+        try{
+            response = authService.signUp(signupRequestDTO);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }catch(HomealoneException e){
+            response.setMessage(e.getErrorCode().getMessage());
+            return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+        }
     }
 
     /**
