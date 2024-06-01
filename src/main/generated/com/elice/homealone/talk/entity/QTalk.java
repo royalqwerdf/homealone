@@ -40,6 +40,8 @@ public class QTalk extends EntityPathBase<Talk> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt;
 
+    public final StringPath plainContent = createString("plainContent");
+
     //inherited
     public final ListPath<com.elice.homealone.postlike.entity.PostLike, com.elice.homealone.postlike.entity.QPostLike> postLikes;
 
