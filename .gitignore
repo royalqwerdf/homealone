@@ -40,4 +40,7 @@ application-dev.properties
 
 ### VS Code ###
 .vscode/
+
+# python
+/python_workspace
 .env

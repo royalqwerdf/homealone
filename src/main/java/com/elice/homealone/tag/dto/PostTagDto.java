@@ -1,20 +1,20 @@
 package com.elice.homealone.tag.dto;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostTagDto {
 
     private Long id;
-
-    private String name;
+    private String tagName;
 
     @Builder
-    public PostTagDto(Long id, String name) {
+    public PostTagDto(Long id, String tagName) {
         this.id = id;
-        this.name = name;
+        this.tagName = tagName;
     }
 }

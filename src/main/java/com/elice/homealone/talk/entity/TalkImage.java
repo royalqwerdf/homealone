@@ -3,9 +3,11 @@ package com.elice.homealone.talk.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class TalkImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
