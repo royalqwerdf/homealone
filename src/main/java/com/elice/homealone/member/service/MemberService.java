@@ -16,14 +16,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService{
+public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthService authService;
     /**
      * 회원 전체 조회
      */
@@ -41,45 +39,14 @@ public class MemberService{
                 .orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
 
-    /**
-     * 회원 수정
-     * Auth: User
-     */
-    public Member editMember(MemberDTO memberDTO, String accessToken) {
-        //토큰 유효성 검사
-        if (jwtTokenProvider.validateToken(accessToken)) {
-            Member member = authService.findbyToken(accessToken);
-            member.setName(memberDTO.getName());
-            member.setBirth(memberDTO.getBirth());
-            member.setEmail(memberDTO.getEmail());
-            member.setAddress(memberDTO.getAddress());
-            member.setImageUrl(memberDTO.getImageUrl());
-            member.setCreatedAt(memberDTO.getCreatedAt());
-            member.setModifiedAt(memberDTO.getModifiedAt());
-            return member;
-        }else {
-            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
-        }
-
-    }
-    
-    /**
-     * 회원 삭제 delete
-     */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteMember(MemberDTO memberDto, String accessToken) {
-
-        Member findedMember = findByEmail(memberDto.getEmail());
-        memberRepository.delete(findedMember);
-    }
 
     /**
-     * 회원 탈퇴 withdrawal
+     * 스프링 시큐리티 인증 로직
+     * email을 통해서 SecurityContextHolder에 사용자를 저장해둔다.
      */
-    public void withdrawal(MemberDTO memberDTO) {
-        Member findedMember = findByEmail(memberDTO.getEmail());
-        findedMember.setDeletedAt(true);
-        memberRepository.save(findedMember);
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = findByEmail(email);
+        return member;
     }
-
 }

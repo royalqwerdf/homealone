@@ -19,20 +19,24 @@ public class RecipeDetail extends BaseTimeEntity {
     @Column
     private Long id;
 
-    @Column
+    @Column(length = 1500)
     private String description;
+
+    @Column
+    private String fileName;
 
     @Column
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @Setter
     private Recipe recipe;
 
     @Builder
-    public RecipeDetail(String description, String imageUrl){
+    public RecipeDetail(String description, String fileName ,String imageUrl){
         this.description = description;
+        this.fileName = fileName;
         this.imageUrl = imageUrl;
     }
 
@@ -40,6 +44,7 @@ public class RecipeDetail extends BaseTimeEntity {
         return  RecipeDetailDto.builder()
             .id(this.id)
             .description(this.description)
+            .fileName(this.fileName)
             .imageUrl(this.imageUrl)
             .build();
     }

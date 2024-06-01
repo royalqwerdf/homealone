@@ -7,7 +7,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker //웹소켓 활성화
+@EnableWebSocketMessageBroker //웹소켓 서버 활성화
 public class WebSocketStompConfig implements WebSocketMessageBrokerConfigurer {
 
     //웹소켓 connect를 위한 End Point 설정 "/ws"
@@ -16,7 +16,7 @@ public class WebSocketStompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*") //모든 출처에대한 Cors 설정
+                //.setAllowedOriginPatterns("*") //모든 출처에대한 Cors 설정
                 .withSockJS();
     }
 
@@ -24,11 +24,11 @@ public class WebSocketStompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
 
-        //서버에서 클라이언트로 발행하는 메세지에 대한 endpoint 설정 : 구독 중인 클라이언트에게 보낼 메시지
-        config.enableSimpleBroker("/sub");
+        // "/sub"로 시작되는 메시지가 메시지 브로커로 라우팅 되도록 정의
+        config.enableSimpleBroker("/topic");
 
-        //클라이언트에서 보낸 메시지에 대한 endpoint 설정
-        config.setApplicationDestinationPrefixes("/pub");
+        // "/pub"로 시작되는 메시지가 message-handling methods로 라우팅 되어야 함을 명시
+        config.setApplicationDestinationPrefixes("/app");
 
     }
 

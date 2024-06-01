@@ -7,11 +7,15 @@ import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-public class RecipeRegisterDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class RecipeRequestDto {
     private String title;
     private String description;
     private int portions;
@@ -19,19 +23,24 @@ public class RecipeRegisterDto {
     private RecipeTime recipeTime;
     private Cuisine cuisine;
 
-    private List<String> imageUrls;
-    private List<RecipeIngredientDto> ingredientDtos;
-    private List<RecipeDetailDto> detailDtos;
-    private List<PostTagDto> postTagDtos;
+    private List<RecipeImageDto> images;
+    private List<RecipeIngredientDto> ingredients;
+    private List<RecipeDetailDto> details;
+    private List<PostTagDto> postTags;
 
     @Builder
-    public RecipeRegisterDto(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine) {;
+    public RecipeRequestDto(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<RecipeImageDto> images, List<RecipeIngredientDto> ingredients, List<RecipeDetailDto> details, List<PostTagDto> postTags) {
         this.title = title;
         this.description = description;
         this.portions = portions;
         this.recipeType = recipeType;
         this.recipeTime = recipeTime;
         this.cuisine = cuisine;
+
+        this.images = images;
+        this.ingredients = ingredients;
+        this.details = details;
+        this.postTags = postTags;
     }
 
     public Recipe toBaseEntity(Member member) {

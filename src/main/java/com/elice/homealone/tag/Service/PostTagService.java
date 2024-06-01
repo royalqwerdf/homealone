@@ -17,7 +17,7 @@ public class PostTagService {
 
     public PostTag createPostTag(PostTagDto postTagDto) {
         PostTag postTag = PostTag.builder()
-            .name(postTagDto.getName())
+            .name(postTagDto.getTagName())
             .build();
 
         postTagRepository.save(postTag);

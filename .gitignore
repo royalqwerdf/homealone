@@ -27,6 +27,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 application.properties
+/static
 
 ### NetBeans ###
 /nbproject/private/
@@ -38,4 +39,5 @@ application.properties
 ### VS Code ###
 .vscode/
 
-application.properties
+# python
+/python_workspace

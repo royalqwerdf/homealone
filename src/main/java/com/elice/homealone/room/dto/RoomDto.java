@@ -1,6 +1,7 @@
 package com.elice.homealone.room.dto;
 
 import com.elice.homealone.comment.entity.Comment;
+import com.elice.homealone.global.exception.ErrorMessage;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.entity.Room;
 import jakarta.validation.constraints.NotBlank;
@@ -22,12 +23,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomDto {
-    @NotBlank(message = "제목을 입력해주세요.")
+    @NotBlank(message = ErrorMessage.TITLE_REQUIRED)
     private String title;
-    @NotBlank(message = "내용을 입력해주세요.")
+    @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
     private String content;
     private Post.Type type;
-    @NotBlank(message = "대표이미지를 등록해주세요.")
+    @NotBlank(message = ErrorMessage.THUMBNAIL_URL_REQUIRED)
     private String thumbnailUrl;
 
     @Data
@@ -57,9 +58,34 @@ public class RoomDto {
                     .view(room.getView())
                     .likeCount( room.getPostLikes() != null ? room.getPostLikes().size() : 0)
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
-//                    .memberName(room.getMember().getName())
+                    .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
                     .build();
         }
     }
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RoomInfoDtoForMember extends RoomInfoDto {
+        private Boolean scrap;
+        private Boolean like;
+        public static RoomInfoDtoForMember toRoomInfoDtoForMember(Room room) {
+            return RoomInfoDtoForMember.builder()
+                    .id(room.getId())
+                    .title(room.getTitle())
+                    .thumbnailUrl(room.getThumbnailUrl())
+                    .type(room.getType())
+                    .content(room.getContent())
+                    .createdAt(room.getCreatedAt())
+                    .updatedAt(room.getModifiedAt())
+                    .view(room.getView())
+                    .likeCount( room.getPostLikes() != null ? room.getPostLikes().size() : 0)
+                    .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
+                    .memberName(room.getMember().getName())
+                    .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .build();
+        }
+    }
+
 }
