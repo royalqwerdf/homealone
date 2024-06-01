@@ -19,14 +19,15 @@ public class MemberController {
     private final AuthService authService;
 
     /**
-     * 회원정보 조회
+     * Token으로 로그인한 회원 정보 조회
      */
     @GetMapping("/me")
     public ResponseEntity<MemberDTO> getMemberInfo(@RequestHeader("Authorization") String token) {
         String accessToken = token.substring(7);
         MemberDTO member = new MemberDTO();
         try {
-            member = authService.findbyToken(accessToken);
+            //토큰으로 memberDTO 반환
+            member = authService.findbyToken(accessToken).toDto();
             member.setMessage("회원정보가 성공적으로 조회되었습니다.");
             return new ResponseEntity<>(member, HttpStatus.OK);
         } catch (HomealoneException e) {
@@ -34,4 +35,8 @@ public class MemberController {
             return new ResponseEntity<>(member, e.getErrorCode().getHttpStatus());
         }
     }
+
+
+
+
 }
