@@ -1,8 +1,8 @@
 package com.elice.homealone.room.controller;
 
 import com.elice.homealone.global.exception.Response;
-import com.elice.homealone.room.dto.RoomDto;
-import com.elice.homealone.room.dto.RoomSummaryDto;
+import com.elice.homealone.room.dto.RoomRequestDTO;
+import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,42 +24,43 @@ public class RoomController {
     @GetMapping("")
     public ResponseEntity<?> findAll(@RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
+                                                        @RequestParam(required = false) String tag,
                                                         @RequestParam(required = false) Long memberId,
                                                         @PageableDefault(size = 20) Pageable pageable){
-        Page<RoomSummaryDto> roomSummaryDtos = roomService.searchRoomPost(title, content, memberId, pageable);
-        if(!(title == null || title.isBlank()) || !(content == null && content.isBlank())){
-            if(roomSummaryDtos.isEmpty()){
+        Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberId, pageable);
+        if((title != null && !title.isBlank()) || (content != null && !content.isBlank())){
+            if(RoomResponseDTO.isEmpty()){
                 Response.ApiResponse response = new Response.ApiResponse("검색 결과가 없습니다.");
                 return ResponseEntity.ok(response);
             }
         }
         if(memberId != null){
-            if(roomSummaryDtos.isEmpty()){
+            if(RoomResponseDTO.isEmpty()){
                 Response.ApiResponse response = new Response.ApiResponse("작성하신 게시글이 없습니다.");
                 return ResponseEntity.ok(response);
             }
         }
-        return ResponseEntity.ok().body(roomSummaryDtos);
+        return ResponseEntity.ok().body(RoomResponseDTO);
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createRoomPost(@Validated @RequestBody RoomDto roomDto,
+    public ResponseEntity<?> createRoomPost(@Validated @RequestBody RoomRequestDTO roomDto,
                                             @RequestHeader("Authorization") String token
                                                                 ) {
 
         //사용자 검증 로직
 
-        RoomDto.RoomInfoDto roomInfoDto = roomService.CreateRoomPost(roomDto,token);
+        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.CreateRoomPost(roomDto,token);
         return ResponseEntity.status(HttpStatus.CREATED).body(roomInfoDto);
     }
 
-    @PutMapping("/{roomId}")
+    @PatchMapping("/{roomId}")
     public ResponseEntity<?> editRoomPost(@PathVariable Long roomId
-                                            , @Validated @RequestBody RoomDto roomDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
+                                            , @Validated @RequestBody RoomRequestDTO roomDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
                                             , @RequestHeader("Authorization") String token){
         //사용자 검증 로직
 
-        RoomDto.RoomInfoDto roomInfoDto = roomService.EditRoomPost(token,roomId,roomDto);
+        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.EditRoomPost(token,roomId,roomDto);
         return ResponseEntity.status(HttpStatus.OK).body(roomInfoDto);
 
     }
