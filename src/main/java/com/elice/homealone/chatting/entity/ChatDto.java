@@ -14,9 +14,6 @@ public class ChatDto {
 
     private long id;
     private String chatroomName;
-    private Member sender;
-    private Member receiver;
-
     private String senderName;
     private String receiverName;
     private long senderId;

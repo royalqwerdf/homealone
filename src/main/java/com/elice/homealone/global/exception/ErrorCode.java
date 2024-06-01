@@ -29,6 +29,7 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일입니다"),
     MEMBER_NOT_FOUND(NOT_FOUND,"존재하지 않는 회원입니다. "),
     ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다"),
+    TALK_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다"),
     RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피입니다"),
 
     //500

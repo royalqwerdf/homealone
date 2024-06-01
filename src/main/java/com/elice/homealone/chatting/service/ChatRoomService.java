@@ -6,6 +6,8 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatMessageRepository;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
+import com.elice.homealone.global.exception.ErrorCode;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
@@ -39,10 +41,11 @@ public class ChatRoomService {
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
 
         //chatting 테이블 생성해 저장
-        chatRoomRepository.save(chatDto.toEntity(sender, receiver));
-
-        chatDto.setSender(sender);
-        chatDto.setReceiver(receiver);
+        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(sender, receiver));
+        chatDto.setId(chatroom.getId());
+        chatDto.setSenderName(chatroom.getSender().getName());
+        chatDto.setReceiverName(chatroom.getReceiver().getName());
+        chatDto.setSenderId(chatroom.getSender().getId());
 
         return chatDto;
     }
@@ -85,5 +88,24 @@ public class ChatRoomService {
         result.put("message", "채팅방 메시지 전달 성공");
 
         return result;
+    }
+
+    @Transactional
+    public List<ChatDto> findChatrooms(String accessToken) {
+        if(accessToken == null || accessToken.isEmpty()) {
+            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
+        }
+
+        //Member 도메인 회원 조회 메소드 참고
+        MemberDTO member = authService.findbyToken(accessToken);
+        Member sender = memberRepository.findMemberByEmail(member.getEmail());
+
+        List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());
+        List<ChatDto> chatDtoList = new ArrayList<>();
+        for(Chatting chatting : chattings) {
+            chatDtoList.add(chatting.toDto());
+        }
+
+        return chatDtoList;
     }
 }
