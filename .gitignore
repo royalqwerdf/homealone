@@ -38,3 +38,6 @@ application.properties
 
 ### VS Code ###
 .vscode/
+
+# python
+/python_workspace
