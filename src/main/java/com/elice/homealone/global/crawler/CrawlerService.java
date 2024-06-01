@@ -23,7 +23,7 @@ public class CrawlerService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // JSON 파일을 읽어와서 RecipeRequestDto 형태로 변환
-            List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("python_workspace/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
+            List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
 
             for(RecipeRequestDto requestDto : recipeRequestDtos) {
                 recipeService.createRecipe(requestDto);
