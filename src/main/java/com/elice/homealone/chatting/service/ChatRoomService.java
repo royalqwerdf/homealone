@@ -29,9 +29,6 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final AuthService authService;
 
-    //임시
-    private final StorageClient storageClient;
-
     //중고거래 채팅방 생성 메소드
     @Transactional
     public ChatDto makeChat(String accessToken, ChatDto chatDto) {
