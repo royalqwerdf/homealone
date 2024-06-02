@@ -34,7 +34,8 @@ public enum ErrorCode {
     CHATTING_ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 채팅방입니다"),
 
     //500
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다. 다시 요청해주세요.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다. 다시 요청해주세요."),
+    STORAGE_NOT_FOUNT(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일을 저장할 저장소를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

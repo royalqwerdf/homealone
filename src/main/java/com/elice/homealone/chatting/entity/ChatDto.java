@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class ChatDto {
 
     private List<MessageDto> senderMessages;
     private List<MessageDto> receiverMessages;
+
 
     public Chatting toEntity(Member sender, Member receiver) {
         return Chatting.builder()
