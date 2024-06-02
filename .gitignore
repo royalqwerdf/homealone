@@ -26,8 +26,8 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-resources/application.properties
-resources/serviceAccountKey.json
+src/main/resources/application.properties
+src/main/resources/serviceAccountKey.json
 
 ### NetBeans ###
 /nbproject/private/
