@@ -47,7 +47,7 @@ public class UsedTradeController {
     public ResponseEntity<?> getUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
         UsedTradeResponseDto responseDto = usedTradeService.getUsedTrade(usedtradeId);
         if(responseDto == null) {
-            return new ResponseEntity<>(ErrorCode.POST_NOT_FOUND.getMessage(),ErrorCode.POST_NOT_FOUND.getHttpStatus());
+            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
         }
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }

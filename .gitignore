@@ -4,7 +4,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-!**/src/main/resources/application.properties
+**/src/main/resources/application.properties
+**/src/main/resources/application-dev.properties
 
 ### STS ###
 .apt_generated
@@ -26,7 +27,11 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+src/main/resources/application.properties
+src/main/resources/serviceAccountKey.json
+**/src/main/team7-front
 application.properties
+application-dev.properties
 .env
 
 ### NetBeans ###
@@ -39,4 +44,6 @@ application.properties
 ### VS Code ###
 .vscode/
 
-application.properties
+# python
+/python_workspace
+.env

@@ -3,6 +3,7 @@ package com.elice.homealone.recipe.entity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
+import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
@@ -20,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.CustomLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,19 +32,25 @@ import lombok.NoArgsConstructor;
 public class Recipe extends Post {
 
     @Column
+    @Setter
     private String title;
 
-    @Column
+    @Column(length = 1500)
+    @Setter
     private String description;
 
     @Column
+    @Setter
     private int portions;
 
     @Column
+    @Setter
     private RecipeType recipeType;
     @Column
+    @Setter
     private RecipeTime recipeTime;
     @Column
+    @Setter
     private Cuisine cuisine;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
@@ -61,16 +70,16 @@ public class Recipe extends Post {
         // Recipe
         this.title = title;
         this.description = description;
-        this.portions = portions;
-        this.recipeType = recipeType;
-        this.recipeTime = recipeTime;
-        this.cuisine = cuisine;
+        this.portions = (portions == 0) ? 1 : portions;
+        this.recipeType = (recipeType == null)? RecipeType.ETC : recipeType;
+        this.recipeTime = (recipeTime == null)?RecipeTime.THIRTY : recipeTime;
+        this.cuisine = (cuisine==null)?Cuisine.ETC:cuisine;
     }
 
     // toDto
     public RecipeResponseDto toResponseDto() {
-        List<String> imageUrls = images.stream()
-            .map(RecipeImage::getImageUrl)
+        List<RecipeImageDto> imageDtos = images.stream()
+            .map(RecipeImage::toDto)
             .toList();
 
         List<RecipeIngredientDto> ingredientDtos = ingredients.stream()
@@ -93,10 +102,10 @@ public class Recipe extends Post {
             .recipeType(recipeType)
             .recipeTime(recipeTime)
             .cuisine(cuisine)
-            .imageUrls(imageUrls)
-            .ingredientDtos(ingredientDtos)
-            .detailDtos(detailDtos)
-            .postTagDtos(tagDtos)
+            .images(imageDtos)
+            .ingredients(ingredientDtos)
+            .details(detailDtos)
+            .postTags(tagDtos)
             .build();
     }
 
@@ -128,7 +137,7 @@ public class Recipe extends Post {
         detail.setRecipe(this);
     }
 
-    public void addIngredients(RecipeIngredient ingredient) {
+    public void addIngredients(RecipeIngredient ingredient)  {
         this.ingredients.add(ingredient);
         ingredient.setRecipe(this);
     }

@@ -2,12 +2,15 @@ package com.elice.homealone.room.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.room.dto.RoomDto;
+import com.elice.homealone.room.dto.RoomRequestDTO;
+import com.elice.homealone.room.dto.RoomResponseDTO;
+import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import lombok.experimental.SuperBuilder;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -38,27 +41,31 @@ public class Room extends Post {
     @Builder.Default
     private Integer view = 0;
 
-    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY)
-    private List<RoomImage> roomImages;
+    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<RoomImage> roomImages = new ArrayList<>();
 
-    public static Room toRoom(RoomDto roomDto){
-        return Room.builder()
-                .title(roomDto.getTitle())
-                .content(roomDto.getContent())
-                .thumbnailUrl(roomDto.getThumbnailUrl())
-                .build();
-    }
-
-//    public Room(RoomDto roomDto,Member member) {
-//        super(member,Type.ROOM);
-//        this.title = roomDto.getTitle();
-//        this.content = roomDto.getContent();
-//        this.thumbnailUrl = roomDto.getThumbnailUrl();
+//    public static Room toRoom(RoomRequestDTO roomDto){
+//        return Room.builder()
+//                .title(roomDto.getTitle())
+//                .content(roomDto.getContent())
+//                .thumbnailUrl(roomDto.getThumbnailUrl())
+//                .roomImages(roomDto.getImages())
+//                .build();
 //    }
 
-    public Room(RoomDto roomDto) {
+    public Room(RoomRequestDTO roomDto,Member member) {
+        super(member,Type.ROOM);
+        this.view = 0;
         this.title = roomDto.getTitle();
         this.content = roomDto.getContent();
         this.thumbnailUrl = roomDto.getThumbnailUrl();
+        this.roomImages = roomDto.getImages().stream()
+                .map(url -> new RoomImage(url, this))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addTag(PostTag tag) {
+        super.addTag(tag);
     }
 }
