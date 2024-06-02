@@ -3,6 +3,7 @@ package com.elice.homealone.member.controller;
 
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.MemberDTO;
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class MemberController {
      * Token으로 로그인한 회원 정보 조회
      */
     @GetMapping("/me")
-    public ResponseEntity<MemberDTO> getMemberInfo(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<MemberDTO> getMemberInfo(@RequestHeader(value="Authorization", required = true) String token) {
         String accessToken = token.substring(7);
         MemberDTO member = new MemberDTO();
         try {
