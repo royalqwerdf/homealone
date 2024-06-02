@@ -57,14 +57,7 @@ public class AuthController {
         }
     }
 
-    /**
-     * 회원 조회
-     */
-    @GetMapping("/mypage/me")
-    public ResponseEntity<MemberDTO> getMypage(@RequestHeader(value="Authorization", required = true) String token) {
-        Member member = authService.findLoginMemberByToken(token);
-        return new ResponseEntity<>(member.toDto(), HttpStatus.OK);
-    }
+
 
     /**
      * 회원 탈퇴
