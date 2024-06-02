@@ -4,7 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/src/main/resources/application.properties
+!**/src/main/resources/application.properties
 **/src/main/resources/application-dev.properties
 
 ### STS ###
@@ -27,11 +27,10 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-src/main/resources/application.properties
-**/src/main/resources/application-dev.propertiesgit rm -r --cached .
+!src/main/resources/application.properties
+**/src/main/resources/application-dev.properties
 src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
-application.properties
 
 ### NetBeans ###
 /nbproject/private/
