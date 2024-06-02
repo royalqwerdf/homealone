@@ -65,7 +65,7 @@ public class UsedTradeController {
     public ResponseEntity<String> updateUsedTrade(@RequestBody UsedTradeRequestDto requestDto, @PathVariable("usedtradeId") Long usedtradeId) {
 
         if(!usedTradeService.modifyUsedTrade(usedtradeId,requestDto)){
-            return new ResponseEntity<>(ErrorCode.POST_NOT_FOUND.getMessage(),ErrorCode.POST_NOT_FOUND.getHttpStatus());
+            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
         }
 
         return new ResponseEntity<>("수정 성공",HttpStatus.OK);
@@ -79,7 +79,7 @@ public class UsedTradeController {
         boolean isDeleted = usedTradeService.deleteUsedTrade(usedtradeId);
 
         if(!isDeleted){
-            return new ResponseEntity<>(ErrorCode.POST_NOT_FOUND.getMessage(),ErrorCode.POST_NOT_FOUND.getHttpStatus());
+            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
         }
 
         return new ResponseEntity<>("삭제 완료",HttpStatus.OK);
