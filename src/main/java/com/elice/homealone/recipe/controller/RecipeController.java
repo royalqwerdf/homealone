@@ -33,25 +33,11 @@ public class RecipeController {
     @GetMapping
     public ResponseEntity<Page<RecipePageDto>> getRecipe(Pageable pageable,
         @RequestParam(required = false) String userId,
-        @RequestParam(required = false) String search,
         @RequestParam(required = false) String title,
         @RequestParam(required = false) String description,
         @RequestParam(required = false) List<String> tags
     ) {
-        Page<RecipePageDto> pageDtos = null;
-        if(userId != null) {
-            // 작성자로 조회
-        } else if(search != null) {
-            // 통합 검색
-        } else if(title != null) {
-            pageDtos = recipeService.findByTitle(pageable, title);
-        } else if(description != null) {
-            pageDtos = recipeService.findByDescription(pageable, description);
-        } else if (tags != null) {
-            // 태그
-        } else {
-            pageDtos = recipeService.findAll(pageable);
-        }
+        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, userId, title, description, tags);
 
         return new ResponseEntity<>(pageDtos, HttpStatus.OK);
     }
