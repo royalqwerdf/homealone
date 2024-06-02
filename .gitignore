@@ -28,6 +28,7 @@ out/
 !**/src/test/**/out/
 src/main/resources/application.properties
 src/main/resources/serviceAccountKey.json
+src/main/team7-front
 
 ### NetBeans ###
 /nbproject/private/
