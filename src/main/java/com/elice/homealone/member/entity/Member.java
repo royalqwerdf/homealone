@@ -70,14 +70,19 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     public MemberDTO toDto() {
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setId(this.id);
         memberDTO.setName(this.name);
         memberDTO.setBirth(this.birth);
         memberDTO.setEmail(this.email);
         memberDTO.setAddress(this.address);
         memberDTO.setImageUrl(this.imageUrl);
+        memberDTO.setCreatedAt(this.getCreatedAt());
+        memberDTO.setModifiedAt(this.getModifiedAt());
         return memberDTO;
 
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

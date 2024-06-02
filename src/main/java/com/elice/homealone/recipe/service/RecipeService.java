@@ -132,7 +132,7 @@ public class RecipeService {
 
         // 기본 레시피 수정
         recipe.setTitle(requestDto.getTitle());
-        recipe.setDescription(requestDto.getDescription());;
+        recipe.setDescription(requestDto.getDescription());
         recipe.setPortions(requestDto.getPortions());
         recipe.setRecipeType(requestDto.getRecipeType());
         recipe.setRecipeTime(requestDto.getRecipeTime());
