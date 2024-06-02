@@ -28,12 +28,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 src/main/resources/application.properties
+**/src/main/resources/application-dev.propertiesgit rm -r --cached .
 src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
 application.properties
-src/main/resources/application-dev.properties
-**/src/main/resources/application-dev.properties
-
 
 ### NetBeans ###
 /nbproject/private/
