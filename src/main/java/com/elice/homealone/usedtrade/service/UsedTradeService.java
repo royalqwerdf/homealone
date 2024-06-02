@@ -54,6 +54,12 @@ public class UsedTradeService {
         usedTradeRepository.save(usedTrade);
         return true;
     }
+    //중고거래 게시글 생성
+    public boolean createUsedTrade(UsedTradeRequestDto requestDto) {
+        UsedTrade usedTrade = requestDto.toEntity();
+        usedTradeRepository.save(usedTrade);
+        return true;
+    }
 
     //중고거래 게시글 삭제
     public boolean deleteUsedTrade(Long id) {

@@ -53,9 +53,12 @@ public class UsedTradeController {
     }
 
     @PostMapping
-    public ResponseEntity<UsedTradeResponseDto> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+    public ResponseEntity<?> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+        if(!usedTradeService.createUsedTrade(usedTradeRequestDto)){
+            return new ResponseEntity<>(usedTradeRequestDto,HttpStatus.BAD_REQUEST);
+        }
 
-        return null;
+        return new ResponseEntity<>("생성 완료",HttpStatus.CREATED);
     }
 
     @PutMapping("/{usedtradeId}")
@@ -69,7 +72,6 @@ public class UsedTradeController {
     }
 
     //중고거래 게시글을 조회하고
-    //데이터가 없으면 BAD_REQUEST 반환
     //있다면 삭제하고 OK 반환
     @DeleteMapping("/{usedtradeId}")
     public ResponseEntity<String> deleteUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
