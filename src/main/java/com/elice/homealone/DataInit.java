@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataInit implements CommandLineRunner {
 
-    private final CrawlerService crawlerService;
-    private final RecipeService recipeService;
+    //private final CrawlerService crawlerService;
+    ///private final RecipeService recipeService;
 
     @Override
     public void run(String... args) throws Exception {
-        crawlerService.loadJsonAndSaveRecipe();
+    //    crawlerService.loadJsonAndSaveRecipe();
     }
 }

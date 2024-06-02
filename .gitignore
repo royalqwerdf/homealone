@@ -31,8 +31,6 @@ src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
 application.properties
 src/main/resources/application-dev.properties
-**/src/main/resources/application-dev.properties
-
 
 ### NetBeans ###
 /nbproject/private/
@@ -46,4 +44,5 @@ src/main/resources/application-dev.properties
 
 # python
 /python_workspace
+src/main/resources/.env
 .env
