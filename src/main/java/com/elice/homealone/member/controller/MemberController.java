@@ -33,18 +33,26 @@ public class MemberController {
         }
     }
 
-    
+    /**
+     * 로그인한 회원 내 정보 수정
+     */
+    @PatchMapping("/me")
+    public ResponseEntity<MemberDTO> editMemberInfo(@RequestHeader(value="Authorization", required = true) String token,
+                                                    @RequestBody MemberDTO memberDTO){
+        MemberDTO changedMember = authService.editMember(memberDTO, token).toDto();
+        changedMember.setMessage("회원 정보가 수정되었습니다.");
+        return new ResponseEntity<>(changedMember,HttpStatus.OK);
+    }
+
     /**
      * 로그인한 회원 탈퇴
      */
     @PatchMapping("/me/withdrawal")
-    public ResponseEntity<Long> withdrawal(@RequestHeader(value="Authorization", required = true) String token) {
-        Member member = authService.findLoginMemberByToken(token);
-        authService.withdrawal(member.toDto());
-        return new ResponseEntity<>(member.getId(), HttpStatus.OK);
+    public ResponseEntity<MemberDTO> withdrawal(@RequestHeader(value = "Authorization", required = true) String token) {
+        MemberDTO member = authService.findLoginMemberByToken(token).toDto();
+        MemberDTO withdrawaledMember = authService.withdrawal(member);
+        withdrawaledMember.setMessage("회원 탈퇴가 완료되었습니다.");
+        return new ResponseEntity<>(withdrawaledMember, HttpStatus.OK);
     }
-
-
-
 
 }

@@ -104,20 +104,15 @@ public class AuthService{
      * Auth: User
      */
     public Member editMember(MemberDTO memberDTO, String accessToken) {
-        //토큰 유효성 검사
-        if (jwtTokenProvider.validateToken(accessToken)) {
-            Member member = findLoginMemberByToken(accessToken);
-            member.setName(memberDTO.getName());
-            member.setBirth(memberDTO.getBirth());
-            member.setEmail(memberDTO.getEmail());
-            member.setAddress(memberDTO.getAddress());
-            member.setImageUrl(memberDTO.getImageUrl());
-            member.setCreatedAt(memberDTO.getCreatedAt());
-            member.setModifiedAt(memberDTO.getModifiedAt());
-            return member;
-        }else {
-            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
-        }
+        Member member = findLoginMemberByToken(accessToken);
+        member.setName(memberDTO.getName());
+        member.setBirth(memberDTO.getBirth());
+        member.setEmail(memberDTO.getEmail());
+        member.setAddress(memberDTO.getAddress());
+        member.setImageUrl(memberDTO.getImageUrl());
+        member.setCreatedAt(memberDTO.getCreatedAt());
+        member.setModifiedAt(memberDTO.getModifiedAt());
+        return member;
     }
 
     /**
@@ -131,13 +126,10 @@ public class AuthService{
     /**
      * 회원 탈퇴 withdrawal
      */
-    public Long withdrawal(MemberDTO memberDTO) {
+    public MemberDTO withdrawal(MemberDTO memberDTO) {
         Member findedMember = memberService.findByEmail(memberDTO.getEmail());
         findedMember.setDeletedAt(true);
-        memberRepository.save(findedMember);
-        return findedMember.getId();
+        return memberRepository.save(findedMember).toDto();
     }
-
-
 }
 
