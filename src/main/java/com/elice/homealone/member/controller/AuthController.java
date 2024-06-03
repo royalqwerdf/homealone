@@ -65,19 +65,26 @@ public class AuthController {
     }
 
     /**
-     * 로그아웃
-     */
-
-
-    /**
-     * 회원 정보 전체 조회
+     * 회원 목록 조회
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/member/{memberId}")
+    @GetMapping("/member")
     public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value="Authorization", required = true) String token,
                                                         @PageableDefault(size = 20) Pageable pageable){
         Page<Member> members = memberService.findAll(pageable);
         return new ResponseEntity<>(members, HttpStatus.OK);
+    }
+
+    /**
+     * 회원 조회
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<MemberDTO> getMemberById(@RequestHeader(value = "Authorization", required = true) String token,
+                                                   @PathVariable Long memberId) {
+        MemberDTO memberDTO = memberService.findById(memberId).toDto();
+        memberDTO.setMessage(memberDTO.getId()+"번 회원을 조회했습니다.");
+        return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }
 
     /**
@@ -90,6 +97,11 @@ public class AuthController {
         authService.deleteMember(memberId, token);
         return new ResponseEntity<>(memberId, HttpStatus.OK);
     }
+
+    /**
+     * 로그아웃
+     */
+
 
 
 
