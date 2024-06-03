@@ -57,17 +57,11 @@ public class AuthController {
         }
     }
 
-
-
     /**
-     * 회원 탈퇴
+     * 로그아웃
      */
-    @PatchMapping("/mypage/me/withdrawal")
-    public ResponseEntity<Long> withdrawal(@RequestHeader(value="Authorization", required = true) String token) {
-        Member member = authService.findLoginMemberByToken(token);
-        authService.withdrawal(member.toDto());
-        return new ResponseEntity<>(member.getId(), HttpStatus.OK);
-    }
+
+
 
     /**
      * 회원 삭제
