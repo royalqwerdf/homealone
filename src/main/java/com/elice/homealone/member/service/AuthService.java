@@ -25,6 +25,7 @@ public class AuthService{
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final String GRANT_TYPE = "Bearer ";
 
     /**
      * 회원 가입
@@ -53,15 +54,12 @@ public class AuthService{
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
         // 비밀번호 검증
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
-            String acessToken = jwtTokenProvider.createAccessToken(findMember.getEmail());
-            String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail());
-
+            String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
+            String refreshToken = GRANT_TYPE + jwtTokenProvider.createRefreshToken(findMember.getEmail());
             LoginResponseDTO response = new LoginResponseDTO();
             response.setAccessToken(acessToken);
             response.setMessage("로그인이 성공했습니다.");
-
             storeRefreshToken(refreshToken);
-
             return response;
         } else{
             throw new HomealoneException(ErrorCode.MISMATCHED_PASSWORD);
@@ -80,10 +78,10 @@ public class AuthService{
     /**
      * Token으로 로그인한 회원 정보 조회
      */
-    public Member findLoginMemberByToken(String accessToken) {
+    public Member findLoginMemberByToken(String token) {
         //토큰 유효성 검사
-        if (jwtTokenProvider.validateToken(accessToken)) {
-            Member member = memberService.findByEmail(jwtTokenProvider.getEmail(accessToken));
+        if (jwtTokenProvider.validateToken(token)) {
+            Member member = memberService.findByEmail(jwtTokenProvider.getEmail(token));
             return member;
         } else{
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
@@ -133,10 +131,11 @@ public class AuthService{
     /**
      * 회원 탈퇴 withdrawal
      */
-    public void withdrawal(MemberDTO memberDTO) {
+    public Long withdrawal(MemberDTO memberDTO) {
         Member findedMember = memberService.findByEmail(memberDTO.getEmail());
         findedMember.setDeletedAt(true);
         memberRepository.save(findedMember);
+        return findedMember.getId();
     }
 
 
