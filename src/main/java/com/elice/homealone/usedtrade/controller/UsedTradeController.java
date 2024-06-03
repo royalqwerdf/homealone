@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/usedtrade")
+@RequestMapping("/api/usedtrade")
 public class UsedTradeController {
 
     private final UsedTradeService usedTradeService;

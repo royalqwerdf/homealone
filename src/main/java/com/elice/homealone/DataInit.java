@@ -5,6 +5,7 @@ import com.elice.homealone.recipe.service.RecipeService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,10 +13,11 @@ import org.springframework.stereotype.Component;
 public class DataInit implements CommandLineRunner {
 
     private final CrawlerService crawlerService;
-    private final RecipeService recipeService;
+
 
     @Override
     public void run(String... args) throws Exception {
-        crawlerService.loadJsonAndSaveRecipe();
+        //crawlerService.loadJsonAndSaveRecipe();
+        crawlerService.loadFromMongoAndSaveRecipe();
     }
 }

@@ -39,7 +39,7 @@ public class AuthController {
     /**
      * 로그인
      */
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
             //로그인 성공
