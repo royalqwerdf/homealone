@@ -1,8 +1,12 @@
 package com.elice.homealone.usedtrade.service;
 
+import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.usedtrade.dto.UsedTradeRequestDto;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import com.elice.homealone.usedtrade.entity.UsedTrade;
+import com.elice.homealone.usedtrade.entity.UsedTradeImage;
 import com.elice.homealone.usedtrade.repository.UsedTradeImageRepository;
 import com.elice.homealone.usedtrade.repository.UsedTradeRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ public class UsedTradeService {
 
     private final UsedTradeRepository usedTradeRepository;
     private final UsedTradeImageRepository usedTradeImageRepository;
+    private final MemberRepository memberRepository;
 
     //모든 중고거래 조회
     public Page<UsedTradeResponseDto> getAllUsedTrades(Pageable pageable) {
@@ -56,8 +61,20 @@ public class UsedTradeService {
     }
     //중고거래 게시글 생성
     public boolean createUsedTrade(UsedTradeRequestDto requestDto) {
+
+        Member member = memberRepository.findMemberById(requestDto.getMemberId());
+
         UsedTrade usedTrade = requestDto.toEntity();
+        usedTrade.setMember(member);
+        usedTrade.setType(Post.Type.USEDTRADE);
         usedTradeRepository.save(usedTrade);
+
+        List<UsedTradeImage> usedTradeImage = requestDto.getImages();
+        for(UsedTradeImage image: usedTradeImage){
+            image.setUsedTrade(usedTrade);
+        }
+        usedTradeImageRepository.saveAll(usedTradeImage);
+
         return true;
     }
 

@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
                         .requestMatchers("/", "/static/index.html").permitAll()
-                       .requestMatchers(PathRequest.toH2Console()).permitAll()
+                       //.requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().permitAll()
                 )
                 // enable h2-console

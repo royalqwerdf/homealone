@@ -4,6 +4,7 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
+import com.elice.homealone.usedtrade.dto.UsedTradeImageDto;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +46,18 @@ public class UsedTrade extends Post {
             tagDtos.add(postTag);
         }
 
+        //메인이미지 찾기
+        //이미지들 dto화
+        List<UsedTradeImageDto> imageDtos = new ArrayList<>();
+        List<UsedTradeImage> images = this.getImages();
+        String mainImage="";
+
+        for(UsedTradeImage image : images){
+            imageDtos.add(image.toDto());
+            if(image.isMain()){
+                mainImage = image.getUrl();
+            }
+        }
 
         return UsedTradeResponseDto.builder()
                 .id(super.getId())
@@ -54,19 +67,23 @@ public class UsedTrade extends Post {
                 .price(this.getPrice())
                 .location(this.getLocation())
                 .content(this.getContent())
-                .images(this.getImages())
+                .mainImage(mainImage)
+                .images(imageDtos)
                 .build();
     }
 
     public UsedTradeResponseDto toAllListDto(){
+
+        //메인이미지 찾기
         List<UsedTradeImage> allImages = this.getImages();
-        UsedTradeImage mainImage = null;
+        String mainImage = null;
         for(UsedTradeImage image : allImages){
             if(image.isMain()){
-                mainImage = image;
+                mainImage = image.getUrl();
                 break;
             }
         }
+
         return UsedTradeResponseDto.builder()
                 .id(super.getId())
                 .member(this.getMember().toDto())
