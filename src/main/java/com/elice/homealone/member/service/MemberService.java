@@ -25,7 +25,6 @@ public class MemberService implements UserDetailsService {
     /**
      * 회원 전체 조회
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<Member> findAll(Pageable pageable) {
         return memberRepository.findAll(pageable);
     }
