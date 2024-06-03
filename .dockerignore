@@ -1,6 +1,5 @@
 # Build and test directories
 target/
-build/
 **/src/test/**
 
 # IDEs and editors
