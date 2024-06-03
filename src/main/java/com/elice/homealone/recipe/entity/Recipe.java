@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.CustomLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class Recipe extends Post {
     @Setter
     private String title;
 
-    @Column
+    @Column(length = 1500)
     @Setter
     private String description;
 
@@ -69,10 +70,10 @@ public class Recipe extends Post {
         // Recipe
         this.title = title;
         this.description = description;
-        this.portions = portions;
-        this.recipeType = recipeType;
-        this.recipeTime = recipeTime;
-        this.cuisine = cuisine;
+        this.portions = (portions == 0) ? 1 : portions;
+        this.recipeType = (recipeType == null)? RecipeType.ETC : recipeType;
+        this.recipeTime = (recipeTime == null)?RecipeTime.THIRTY : recipeTime;
+        this.cuisine = (cuisine==null)?Cuisine.ETC:cuisine;
     }
 
     // toDto

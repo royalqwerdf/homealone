@@ -32,7 +32,7 @@ public class MessageController {
     private final MessageService messageService;
 
     @MessageMapping("/chat-sendMessage/{chatroomId}")
-    @SendTo("/topic/public")
+    @SendTo("/topic/public/{chatroomId}")
     public MessageModel sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
         String content = messageModel.getContent();
         String chatType = messageModel.getType().toString();

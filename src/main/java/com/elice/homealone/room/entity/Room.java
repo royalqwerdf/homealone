@@ -8,6 +8,7 @@ import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,10 @@ public class Room extends Post {
     @Builder.Default
     private Integer view = 0;
 
-    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<RoomImage> roomImages;
+
+    @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<RoomImage> roomImages = new ArrayList<>();
+
 
 //    public static Room toRoom(RoomRequestDTO roomDto){
 //        return Room.builder()

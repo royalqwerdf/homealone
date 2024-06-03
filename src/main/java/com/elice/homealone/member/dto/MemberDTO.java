@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class MemberDTO {
+    private Long id;
     private String name;
     private LocalDate birth;
     private String email;
