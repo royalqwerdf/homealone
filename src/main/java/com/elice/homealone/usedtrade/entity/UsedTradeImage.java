@@ -1,5 +1,6 @@
 package com.elice.homealone.usedtrade.entity;
 
+import com.elice.homealone.usedtrade.dto.UsedTradeImageDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,4 +24,12 @@ public class UsedTradeImage {
     @ManyToOne
     @JoinColumn(name="used_trade_id")
     private UsedTrade usedTrade;
+
+    public UsedTradeImageDto toDto(){
+        return UsedTradeImageDto.builder()
+                .id(this.id)
+                .main(this.main)
+                .url(this.url)
+                .build();
+    }
 }

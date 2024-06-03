@@ -40,6 +40,11 @@ public class RecipeDetail extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
+    @Builder
+    public RecipeDetail(String description){
+        this.description = description;
+    }
+
     public RecipeDetailDto toDto() {
         return  RecipeDetailDto.builder()
             .id(this.id)

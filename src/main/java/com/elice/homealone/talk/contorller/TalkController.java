@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/talk")
+@RequestMapping("/api/talk")
 public class TalkController {
     @Autowired
     private TalkService talkService;
