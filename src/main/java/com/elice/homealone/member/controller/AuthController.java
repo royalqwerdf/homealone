@@ -10,6 +10,7 @@ import com.elice.homealone.member.dto.response.SignupResponseDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,20 +48,21 @@ public class AuthController {
      * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO,
+                                                  HttpServletResponse response) {
         try {
             //로그인 성공
-            LoginResponseDTO response = authService.login(loginRequestDTO);
+            LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO, response);
 
             HttpHeaders headers = new   HttpHeaders();
-            headers.set("Authorization", response.getAccessToken());
+            headers.set("Authorization", loginResponseDTO.getAccessToken());
 
-            return new ResponseEntity<>(response, headers, HttpStatus.OK);
+            return new ResponseEntity<>(loginResponseDTO, headers, HttpStatus.OK);
         } catch (HomealoneException e) {
             //로그인 실패
-            LoginResponseDTO response = new LoginResponseDTO();
-            response.setMessage(e.getErrorCode().getMessage());
-            return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+            loginResponseDTO.setMessage(e.getErrorCode().getMessage());
+            return new ResponseEntity<>(loginResponseDTO, e.getErrorCode().getHttpStatus());
         }
     }
 
@@ -68,8 +70,9 @@ public class AuthController {
      * 로그아웃
      */
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader(value = "Authorization", required = true) String token){
-
+    public ResponseEntity<Void> logout(@RequestHeader(value = "Authorization", required = true) String accessToken,
+                                       HttpServletResponse httpServletResponse){
+        authService.logout(accessToken, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -79,9 +82,8 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member")
-    public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value = "Authorization", required = true) String token,
+    public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value = "Authorization", required = true) String accessToken,
                                                      @PageableDefault(size = 20) Pageable pageable) {
-
         Page<Member> members = memberService.findAll(pageable);
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
@@ -91,7 +93,7 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<MemberDTO> getMemberById(@RequestHeader(value = "Authorization", required = true) String token,
+    public ResponseEntity<MemberDTO> getMemberById(@RequestHeader(value = "Authorization", required = true) String accessToken,
                                                    @PathVariable Long memberId) {
         MemberDTO memberDTO = memberService.findById(memberId).toDto();
         memberDTO.setMessage(memberDTO.getId()+"번 회원을 조회했습니다.");
@@ -103,9 +105,9 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<Void> deleteMember(@RequestHeader(value="Authorization", required = true) String token,
+    public ResponseEntity<Void> deleteMember(@RequestHeader(value="Authorization", required = true) String accessToken,
                                              @PathVariable Long memberId) {
-        authService.deleteMember(memberId, token);
+        authService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
