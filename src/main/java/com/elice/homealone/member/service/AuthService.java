@@ -59,7 +59,7 @@ public class AuthService{
         // 비밀번호 검증
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
-            String refreshToken = GRANT_TYPE + jwtTokenProvider.createRefreshToken(findMember.getEmail());
+            String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
             LoginResponseDTO response = new LoginResponseDTO();
             response.setAccessToken(acessToken);
             response.setMessage("로그인이 성공했습니다.");
@@ -76,6 +76,7 @@ public class AuthService{
      */
 
     public void logout(String acccessToken, HttpServletResponse httpServletResponse){
+        System.out.println("이거 실행되고 있는건지?");
         //0. accessToken 검증
         jwtTokenProvider.validateToken(acccessToken);
         //1. accessToken을 블랙리스트 redis에 저장
