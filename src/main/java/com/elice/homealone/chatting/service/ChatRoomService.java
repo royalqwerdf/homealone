@@ -76,18 +76,27 @@ public class ChatRoomService {
                 new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
 
         //sender의 메시지 dto 리스트
-        List<MessageDto> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
+        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
+        List<MessageDto> senderMessages = new ArrayList<>();
+        for(ChatMessage message : senderChatList) {
+            senderMessages.add(message.toDto());
+        }
 
         //receiver의 메시지 dto 리스트
-        List<MessageDto> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
+        List<ChatMessage> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
+        List<MessageDto> receiverMessages = new ArrayList<>();
+        for(ChatMessage message : receiverChatList) {
+            receiverMessages.add(message.toDto());
+        }
+
 
         ChatDto responseDtos = ChatDto.builder()
                 .id(chatroomId)
                 .chatroomName(chatting.getChatroomName())
                 .senderName(chatting.getSender().getName())
                 .receiverName(chatting.getReceiver().getName())
-                .senderMessages(senderChatList)
-                .receiverMessages(receiverChatList)
+                .senderMessages(senderMessages)
+                .receiverMessages(receiverMessages)
                 .build();
 
         return responseDtos;
