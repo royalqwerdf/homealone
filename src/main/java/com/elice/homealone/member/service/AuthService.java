@@ -80,15 +80,11 @@ public class AuthService{
      */
     public Member findLoginMemberByToken(String token) {
         //토큰 유효성 검사
-        if (jwtTokenProvider.validateToken(token)) {
-            Member member = memberService.findByEmail(jwtTokenProvider.getEmail(token));
-            return member;
-        } else{
-            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
-        }
+        jwtTokenProvider.validateToken(token);
+        Member member = memberService.findByEmail(jwtTokenProvider.getEmail(token));
+        return member;
     }
 
-//    public MemberDto findMemberByToken
 
     /**
      * 이메일 중복여부 검사

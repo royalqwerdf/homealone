@@ -65,12 +65,23 @@ public class AuthController {
     }
 
     /**
+     * 로그아웃
+     */
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader(value = "Authorization", required = true) String token){
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    /**
      * 회원 목록 조회
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member")
-    public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value="Authorization", required = true) String token,
-                                                        @PageableDefault(size = 20) Pageable pageable){
+    public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value = "Authorization", required = true) String token,
+                                                     @PageableDefault(size = 20) Pageable pageable) {
+
         Page<Member> members = memberService.findAll(pageable);
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
@@ -92,17 +103,11 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<Long> deleteMember(@RequestHeader(value="Authorization", required = true) String token,
+    public ResponseEntity<Void> deleteMember(@RequestHeader(value="Authorization", required = true) String token,
                                              @PathVariable Long memberId) {
         authService.deleteMember(memberId, token);
-        return new ResponseEntity<>(memberId, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    /**
-     * 로그아웃
-     */
-
-
 
 
 }

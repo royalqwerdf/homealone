@@ -1,6 +1,9 @@
 package com.elice.homealone.global.jwt;
 
+import com.elice.homealone.global.exception.ErrorCode;
+import com.elice.homealone.global.exception.HomealoneException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
@@ -65,10 +68,12 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         String accessToken = token.substring(7);
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (ExpiredJwtException e) { // 토큰 만료
+            throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
+        } catch (Exception e){ // 그 외의 예외상황(유효하지 않은 토큰 등)
+            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         }
     }
 
