@@ -21,16 +21,8 @@ public class MemberController {
      */
     @GetMapping("/me")
     public ResponseEntity<MemberDTO> getMemberInfo(@RequestHeader(value="Authorization", required = true) String token) {
-        MemberDTO member = new MemberDTO();
-        try {
-            //토큰으로 memberDTO 반환
-            member = authService.findLoginMemberByToken(token).toDto();
-            member.setMessage("회원정보가 성공적으로 조회되었습니다.");
-            return new ResponseEntity<>(member, HttpStatus.OK);
-        } catch (HomealoneException e) {
-            member.setMessage(e.getErrorCode().getMessage());
-            return new ResponseEntity<>(member, e.getErrorCode().getHttpStatus());
-        }
+        MemberDTO member = authService.findLoginMemberByToken(token);
+        return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
     /**
@@ -49,7 +41,7 @@ public class MemberController {
      */
     @PatchMapping("/me/withdrawal")
     public ResponseEntity<MemberDTO> withdrawal(@RequestHeader(value = "Authorization", required = true) String token) {
-        MemberDTO member = authService.findLoginMemberByToken(token).toDto();
+        MemberDTO member = authService.findLoginMemberByToken(token);
         MemberDTO withdrawaledMember = authService.withdrawal(member);
         withdrawaledMember.setMessage("회원 탈퇴가 완료되었습니다.");
         return new ResponseEntity<>(withdrawaledMember, HttpStatus.OK);

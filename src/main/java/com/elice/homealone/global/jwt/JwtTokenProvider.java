@@ -66,14 +66,16 @@ public class JwtTokenProvider {
      * JWT 토큰 유효성 검증
      */
     public boolean validateToken(String token) {
-        String accessToken = token.substring(7);
         try {
+            String accessToken = token.substring(7);
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
             return true;
         } catch (ExpiredJwtException e) { // 토큰 만료
             throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
-        } catch (Exception e){ // 그 외의 예외상황(유효하지 않은 토큰 등)
+        } catch (IllegalArgumentException e) { // 그 외의 예외상황(유효하지 않은 토큰 등)
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
+        } catch (Exception e) {
+            return false;
         }
     }
 

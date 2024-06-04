@@ -76,7 +76,6 @@ public class AuthService{
      */
 
     public void logout(String acccessToken, HttpServletResponse httpServletResponse){
-        System.out.println("이거 실행되고 있는건지?");
         //0. accessToken 검증
         jwtTokenProvider.validateToken(acccessToken);
         //1. accessToken을 블랙리스트 redis에 저장
@@ -101,10 +100,17 @@ public class AuthService{
     /**
      * Token으로 로그인한 회원 정보 조회
      */
-    public Member findLoginMemberByToken(String acccessToken) {
-        //토큰 유효성 검사
-        jwtTokenProvider.validateToken(acccessToken);
-        Member member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken));
+    public MemberDTO findLoginMemberByToken(String acccessToken) {
+        MemberDTO member = new MemberDTO();
+        try {
+            jwtTokenProvider.validateToken(acccessToken);
+            member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
+            member.setMessage("회원정보가 성공적으로 조회되었습니다.");
+        } catch (HomealoneException e) {
+            member.setMessage(e.getErrorCode().getMessage());
+        }
+
+
         return member;
     }
 
@@ -123,7 +129,8 @@ public class AuthService{
      * Auth: User
      */
     public Member editMember(MemberDTO memberDTO, String accessToken) {
-        Member member = findLoginMemberByToken(accessToken);
+        MemberDTO findMember = findLoginMemberByToken(accessToken);
+        Member member = memberService.findById(findMember.getId());
         member.setName(memberDTO.getName());
         member.setBirth(memberDTO.getBirth());
         member.setEmail(memberDTO.getEmail());

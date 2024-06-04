@@ -8,10 +8,12 @@ import com.elice.homealone.chatting.repository.ChatMessageRepository;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
 
+import com.elice.homealone.member.service.MemberService;
 import com.google.firebase.cloud.StorageClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
     private final AuthService authService;
+    private final MemberService memberService;
 
 
     //중고거래 채팅방 생성 메소드
@@ -37,8 +40,8 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        Member member = authService.findLoginMemberByToken(accessToken);
-        Member sender = memberRepository.findMemberByEmail(member.getEmail());
+        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        Member sender = memberService.findById(member.getId());
 
         if(receiver_id == sender.getId()) {
             throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
@@ -100,8 +103,8 @@ public class ChatRoomService {
         }
 
         //Member 도메인 회원 조회 메소드 참고
-        Member member = authService.findLoginMemberByToken(accessToken);
-        Member sender = memberRepository.findMemberByEmail(member.getEmail());
+        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        Member sender = memberService.findById(member.getId());
 
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());
         List<ChatDto> chatDtoList = new ArrayList<>();

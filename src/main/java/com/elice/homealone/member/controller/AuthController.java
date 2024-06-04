@@ -34,14 +34,8 @@ public class AuthController {
      */
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
-        SignupResponseDTO response = new SignupResponseDTO();
-        try{
-            response = authService.signUp(signupRequestDTO);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }catch(HomealoneException e){
-            response.setMessage(e.getErrorCode().getMessage());
-            return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
-        }
+        SignupResponseDTO response = authService.signUp(signupRequestDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -50,20 +44,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO,
                                                   HttpServletResponse response) {
-        try {
-            //로그인 성공
-            LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO, response);
-
-            HttpHeaders headers = new   HttpHeaders();
-            headers.set("Authorization", loginResponseDTO.getAccessToken());
-
-            return new ResponseEntity<>(loginResponseDTO, headers, HttpStatus.OK);
-        } catch (HomealoneException e) {
-            //로그인 실패
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-            loginResponseDTO.setMessage(e.getErrorCode().getMessage());
-            return new ResponseEntity<>(loginResponseDTO, e.getErrorCode().getHttpStatus());
-        }
+        //로그인 성공
+        LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO, response);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", loginResponseDTO.getAccessToken());
+        return new ResponseEntity<>(loginResponseDTO, headers, HttpStatus.OK);
     }
 
     /**
@@ -76,14 +61,12 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     /**
      * 회원 목록 조회
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member")
-    public ResponseEntity<Page<Member>> getAllMember(@RequestHeader(value = "Authorization", required = true) String accessToken,
-                                                     @PageableDefault(size = 20) Pageable pageable) {
+    public ResponseEntity<Page<Member>> getAllMember(@PageableDefault(size = 3) Pageable pageable) {
         Page<Member> members = memberService.findAll(pageable);
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
