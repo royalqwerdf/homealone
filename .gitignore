@@ -29,7 +29,6 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
 application.properties
 src/main/resources/application.properties
