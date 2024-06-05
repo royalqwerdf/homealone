@@ -45,7 +45,7 @@ public class SecurityConfig {
                         //정적 자원 허용
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
-                        .requestMatchers("/", "/static/index.html").permitAll()
+                        //.requestMatchers("/", "/static/index.html").permitAll()
                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().permitAll()
                 )

@@ -4,7 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/src/main/resources/application.properties
 **/src/main/resources/application-dev.properties
 data/
 
@@ -28,12 +27,13 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
 src/main/resources/serviceAccountKey.json
-**/src/main/team7-front
+.env
+
 application.properties
-src/main/resources/application.properties
 src/main/resources/application-dev.properties
+**/src/main/resources/application-dev.properties
+
 
 
 ### NetBeans ###
