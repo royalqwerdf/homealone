@@ -20,6 +20,4 @@ public class MemberDTO {
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    public String message;
-
 }

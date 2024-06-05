@@ -1,15 +1,14 @@
 package com.elice.homealone.member.controller;
 
 
-import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
-import com.elice.homealone.member.dto.response.SignupResponseDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,9 +31,9 @@ public class AuthController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
-        SignupResponseDTO response = authService.signUp(signupRequestDTO);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<String> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
+        authService.signUp(signupRequestDTO);
+        return new ResponseEntity<>("회원가입에 성공했습니다.", HttpStatus.OK);
     }
 
     /**
@@ -56,16 +53,16 @@ public class AuthController {
      * 로그아웃
      */
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader(value = "Authorization", required = true) String accessToken,
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse){
-        authService.logout(accessToken, httpServletResponse);
+        authService.logout(httpServletRequest, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
      * 회원 목록 조회
      */
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member")
     public ResponseEntity<Page<Member>> getAllMember(@PageableDefault(size = 3) Pageable pageable) {
         Page<Member> members = memberService.findAll(pageable);
@@ -77,10 +74,8 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<MemberDTO> getMemberById(@RequestHeader(value = "Authorization", required = true) String accessToken,
-                                                   @PathVariable Long memberId) {
+    public ResponseEntity<MemberDTO> getMemberById(@PathVariable Long memberId) {
         MemberDTO memberDTO = memberService.findById(memberId).toDto();
-        memberDTO.setMessage(memberDTO.getId()+"번 회원을 조회했습니다.");
         return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }
 
@@ -89,8 +84,7 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<Void> deleteMember(@RequestHeader(value="Authorization", required = true) String accessToken,
-                                             @PathVariable Long memberId) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
         authService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
