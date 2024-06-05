@@ -39,6 +39,6 @@ public class DataInit implements CommandLineRunner {
             memberRepository.save(admin);
         }
 
-        crawlerService.loadFromMongoAndSaveRecipe();
+        //crawlerService.loadFromMongoAndSaveRecipe();
     }
 }

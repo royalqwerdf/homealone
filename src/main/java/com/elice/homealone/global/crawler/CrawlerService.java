@@ -20,7 +20,7 @@ public class CrawlerService {
 
     private final RecipeService recipeService;
     private final RecipeMongoRepository recipeMongoRepository;
-
+/*
     public void loadJsonAndSaveRecipe() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -35,6 +35,8 @@ public class CrawlerService {
         }
     }
 
+ */
+/*
     public void loadFromMongoAndSaveRecipe() {
         // MongoDB에서 Recipe 데이터를 읽어옴
         List<RecipeRequest> recipes = recipeMongoRepository.findAll();
@@ -45,4 +47,6 @@ public class CrawlerService {
             recipeService.createRecipe(requestDto);
         }
     }
+
+ */
 }
