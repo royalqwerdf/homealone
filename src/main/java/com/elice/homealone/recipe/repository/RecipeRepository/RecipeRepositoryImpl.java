@@ -15,6 +15,8 @@ import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,24 +25,19 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory jpaQueryFactory;
+    private final QRecipe qRecipe = QRecipe.recipe;
 
     @Override
-    public Page<Recipe> findRecipes(Pageable pageable, String userId, String title,
+    public List<Recipe> findRecipes(Pageable pageable, String userId, String title,
         String description, List<String> tags) {
 
-        // JPA 쿼리 팩토리를 생성하고 실행
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        // QueryDSL에서 제공하는 QRecipe 객체를 생성
-        QRecipe recipe = QRecipe.recipe;
-
         // 레시피 엔티티를 선택하고 where을 통해 검색 조건을 적용하여 레시피 리스트를 가져옴
-        List<Recipe> recipes = queryFactory
-            .selectFrom(recipe)
+        return jpaQueryFactory
+            .selectFrom(qRecipe)
             .where(
                 containsTitle(title),
                 containsDescription(description)
@@ -49,19 +46,6 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-
-        // 조건에 부합하는 레시피 엔티티의 수를 가져옴
-        Long total = queryFactory
-            .select(recipe.count())
-            .from(recipe)
-            .where(
-                containsTitle(title),
-                containsDescription(description)
-            )
-            .fetchOne();
-
-        long totalCount = total != null ? total : 0L;
-        return new PageImpl<>(recipes, pageable, totalCount);
     }
 
     private BooleanExpression containsTitle(String title) {
@@ -91,5 +75,19 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 
+    public Long countRecipes(
+        String userId,
+        String title,
+        String description,
+        List<String> tags) {
+        return jpaQueryFactory
+            .select(qRecipe.count())
+            .from(qRecipe)
+            .where(
+                containsTitle(title),
+                containsDescription(description)
+            )
+            .fetchOne();
+    }
     // TODO : userId와 tags에 대한 처리 로직 추가 필요
 }

@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -91,8 +93,14 @@ public class RecipeService {
         String description,
         List<String> tags
     ) {
-        Page<Recipe> recipePage = recipeRepository.findRecipes(pageable, userId, title, description, tags);
-        return recipePage.map(Recipe::toPageDto);
+        List<Recipe> recipes = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        Page<Recipe> recipePage = PageableExecutionUtils.getPage(
+            recipes,
+            pageable,
+            () -> recipeRepository.countRecipes(userId, title, description, tags)
+        );
+
+       return recipePage.map(Recipe::toPageDto);
     }
 
     // 레시피 리스트 전체 조회
@@ -151,7 +159,6 @@ public class RecipeService {
         recipeIngredientService.addRecipeIngredients(recipe, ingredientDtos);
 
         // 레시피 디테일 수정
-        // 레시피와 관련된 레시피 디테일 제거
         recipeDetailService.deleteDetailByRecipe(recipe);
         List<RecipeDetailDto> detailDtos = requestDto.getDetails();
         recipeDetailService.addRecipeDetails(recipe, detailDtos);
@@ -188,18 +195,4 @@ public class RecipeService {
             }
         }
     }
-
-    public void updateRecipeDetails(Recipe recipe, List<RecipeDetailDto> updateRecipeDetailDtos) {
-        // 레시피 디테일 전체 삭제
-        recipeDetailService.deleteDetailByRecipe(recipe);
-    }
-
-    public void deleteDetailsByRecipe(Recipe recipe) {
-        List<RecipeDetail> recipeDetails = recipe.getDetails();
-
-        for(RecipeDetail detail : recipeDetails) {
-            recipeDetailService.deleteDetail(detail);
-        }
-    }
-
 }
