@@ -15,3 +15,6 @@ target/
 
 # Development environment configuration
 **/src/main/resources/application-dev.properties
+
+# Q클래스
+/src/main/generated/
