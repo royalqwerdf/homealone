@@ -1,9 +1,10 @@
-HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/src/main/resources/application-dev.properties
+**/src/main/resources/application-test.properties
 data/
 
 ### STS ###
@@ -27,8 +28,11 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
+application.properties
+src/main/resources/application.properties
+src/main/resources/application-dev.properties
+src/main/resources/application-test.properties
 
 ### NetBeans ###
 /nbproject/private/
@@ -42,11 +46,14 @@ src/main/resources/serviceAccountKey.json
 
 # python
 /python_workspace
-
-# 환경변수
+src/main/resources/.env
 .env
 
+HELP.md
+src/main/resources/serviceAccountKey.json
+
 # Q클래스
-/src/main/generated/
+/src/main/generated
 
 # sql
+/src/main/resources/data.sql
