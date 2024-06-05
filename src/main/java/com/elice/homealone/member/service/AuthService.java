@@ -110,7 +110,6 @@ public class AuthService{
             member.setMessage(e.getErrorCode().getMessage());
         }
 
-
         return member;
     }
 

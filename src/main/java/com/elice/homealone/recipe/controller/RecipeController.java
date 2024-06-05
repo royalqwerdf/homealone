@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.controller;
 
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -24,8 +26,8 @@ public class RecipeController {
 
     // 레시피 등록
     @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(HttpServletRequest request, @RequestBody RecipeRequestDto requestDto) {
-        RecipeResponseDto responseDto = recipeService.createRecipe(requestDto);
+    public ResponseEntity<RecipeResponseDto> createRecipe(@AuthenticationPrincipal Member member, @RequestBody RecipeRequestDto requestDto) {
+        RecipeResponseDto responseDto = recipeService.createRecipe(member, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 

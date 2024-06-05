@@ -3,6 +3,7 @@ package com.elice.homealone.recipe.service;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
@@ -17,6 +18,7 @@ import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.tag.Service.PostTagService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
@@ -41,17 +43,15 @@ public class RecipeService {
     private final RecipeIngredientService recipeIngredientService;
     private final MemberService memberService;
     private final PostTagService postTagService;
+    private final AuthService authService;
 
     // 레시피 등록
     @Transactional
-    public RecipeResponseDto createRecipe(RecipeRequestDto requestDto) {
-
-        // 임시 멤버 생성
-        Member testMember = memberService.findByEmail("john.doe@example.com");
+    public RecipeResponseDto createRecipe(Member member, RecipeRequestDto requestDto) {
 
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
-            Recipe recipe = requestDto.toBaseEntity(testMember);
+            Recipe recipe = requestDto.toBaseEntity(member);
             recipeRepository.save(recipe);
 
             // 레시피 dto 이미지 리스트로 레시피 이미지 생성 후 레시피 엔티티에 추가
