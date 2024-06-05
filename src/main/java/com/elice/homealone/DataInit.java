@@ -14,7 +14,6 @@ public class DataInit implements CommandLineRunner {
 
     private final CrawlerService crawlerService;
 
-
     @Override
     public void run(String... args) throws Exception {
         //crawlerService.loadJsonAndSaveRecipe();
