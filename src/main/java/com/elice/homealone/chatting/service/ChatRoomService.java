@@ -65,29 +65,25 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public Map<String, Object> findChatList(Long chatroomId) {
+    public ChatDto findChatList(Long chatroomId) {
         Chatting chatting = chatRoomRepository.findChattingById(chatroomId);
 
-        //sender의 메시지 dto 리스트
-        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
-        List<MessageDto> senderDatas = new ArrayList<>();
-        for(ChatMessage senderChat : senderChatList) {
-            senderDatas.add(senderChat.toDto());
+        //채팅 참여자들의 메시지 dto 리스트
+        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdOrderBySendDateAsc(chatroomId);
+        List<MessageDto> Messages = new ArrayList<>();
+        for(ChatMessage message : senderChatList) {
+            Messages.add(message.toDto());
         }
 
-        //receiver의 메시지 dto 리스트
-        List<ChatMessage> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
-        List<MessageDto> receiverDatas = new ArrayList<>();
-        for(ChatMessage receiverChat : receiverChatList) {
-            receiverDatas.add(receiverChat.toDto());
-        }
+        ChatDto responseDtos = ChatDto.builder()
+                .id(chatroomId)
+                .chatroomName(chatting.getChatroomName())
+                .senderName(chatting.getSender().getName())
+                .receiverName(chatting.getReceiver().getName())
+                .Messages(Messages)
+                .build();
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("senderData", senderDatas);
-        result.put("receiverData", receiverDatas);
-        result.put("message", "채팅방 메시지 전달 성공");
-
-        return result;
+        return responseDtos;
     }
 
     @Transactional

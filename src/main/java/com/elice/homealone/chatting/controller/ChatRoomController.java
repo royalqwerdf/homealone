@@ -3,6 +3,7 @@ package com.elice.homealone.chatting.controller;
 import com.elice.homealone.chatting.entity.ChatDto;
 import com.elice.homealone.chatting.entity.ChatMessage;
 import com.elice.homealone.chatting.entity.Chatting;
+import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.chatting.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api")
+@CrossOrigin
 @RestController
 public class ChatRoomController {
 
@@ -37,11 +40,9 @@ public class ChatRoomController {
 
     //선택 채팅방 조회
     @GetMapping("/chatting/{chatroomId}")
-    public ResponseEntity<Map<String, Object>> chatroomInfo(@PathVariable Long chatroomId) {
+    public ResponseEntity<ChatDto> chatroomInfo(@PathVariable Long chatroomId) {
 
-        Map<String, Object> chatMessages = chatRoomService.findChatList(chatroomId);
-
-        return ResponseEntity.ok().body(chatMessages);
+        return ResponseEntity.ok().body(chatRoomService.findChatList(chatroomId));
     }
 
     //채팅방 생성

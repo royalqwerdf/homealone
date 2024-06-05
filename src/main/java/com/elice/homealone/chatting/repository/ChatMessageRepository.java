@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
-    List<ChatMessage> findAllChatMessageByChattingIdAndMemberId(Long chatroomId, Long MemberId);
+    List<ChatMessage> findAllChatMessageByChattingIdOrderBySendDateAsc(Long chatroomId);
 }
