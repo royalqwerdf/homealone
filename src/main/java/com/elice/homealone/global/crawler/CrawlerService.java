@@ -1,7 +1,6 @@
 package com.elice.homealone.global.crawler;
 
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
-import com.elice.homealone.recipe.dto.RecipeResponseDto;
 import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeType;

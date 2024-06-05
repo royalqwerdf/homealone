@@ -7,10 +7,14 @@ import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeRequestDto {
     private String title;
     private String description;

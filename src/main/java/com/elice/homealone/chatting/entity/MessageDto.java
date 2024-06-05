@@ -17,8 +17,8 @@ public class MessageDto {
 
     private long id;
     private String content;
-    private String sendTime;
     private Date sendDate;
+    private String sendTime;
 
     private long memberId;
     private long chatRoomId;

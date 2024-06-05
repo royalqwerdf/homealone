@@ -3,10 +3,8 @@
 var usernamePage = document.querySelector('#username-page');
 var chatPage = document.querySelector('#chat-page');
 var usernameForm = document.querySelector('#usernameForm');
-var messageForm = document.querySelector('#messageForm');
-var messageInput = document.querySelector('#message');
-var messageArea = document.querySelector('#messageArea');
-var connectingElement = document.querySelector('.connecting');
+var messageFormChat001 = document.querySelector('#messageForm-chat-001');
+var messageFormChat002 = document.querySelector('#messageForm-chat-002');
 
 var stompClient = null;
 var username = null;
@@ -16,61 +14,62 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
-function connect(event) {
-    username = document.querySelector('#name').value.trim();
+document.getElementById('subscribe-chat-001').addEventListener('click', function() {
+    subscribeAndAddUser('1');
+    const button = document.querySelector('#btn-chat-001');
+    button.disabled = false;
+});
 
+function saveUserNameTosessionStorage(event) {
+    event.preventDefault();
+    username = document.querySelector('#name').value.trim();
     if(username) {
+        sessionStorage.setItem("username", username);
         usernamePage.classList.add('hidden');
         chatPage.classList.remove('hidden');
-
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, onConnected, onError);
     }
-    event.preventDefault();
 }
 
-
-function onConnected() {
-    // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
-
-    // Tell your username to the server
-    stompClient.send("/app/chat-addUser",
-        {},
-        JSON.stringify({sender: username, type: 'JOIN'})
-    )
-
+function subscribeAndAddUser(chatUuid) {
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({
+        login: sessionStorage.getItem("username")
+    }, function () {
+        onConnected(chatUuid);
+    }, onError);
+    let connectingElement = document.querySelector(`.connecting-${chatUuid}`);
     connectingElement.classList.add('hidden');
 }
 
-
-function onError(error) {
-    connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
-    connectingElement.style.color = 'red';
+function onConnected(chatUuid) {
+    // Subscribe to the Public Topic
+    stompClient.subscribe('/topic/public/'+chatUuid, onMessageReceived);
 }
 
-
 function sendMessage(event) {
-    var messageContent = messageInput.value.trim();
+    let chatUuid = event.currentTarget.name;
+    let messageInput = document.querySelector(`#message-${chatUuid}`);
+    let messageContent = messageInput.value.trim();
     if(messageContent && stompClient) {
-        var chatMessage = {
-            sender: username,
+        let chatMessage = {
+            sender: sessionStorage.getItem("username"),
             content: messageInput.value,
+            chatUuid: chatUuid,
             type: 'CHAT'
         };
-        stompClient.send("/app/chat-sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send("/app/chat-sendMessage/"+chatUuid, {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
 }
 
-
 function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
 
-    var messageElement = document.createElement('li');
+    let message = JSON.parse(payload.body);
+    console.log(message.chatUuid);
+
+    let messageElement = document.createElement('li');
 
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
@@ -81,38 +80,45 @@ function onMessageReceived(payload) {
     } else {
         messageElement.classList.add('chat-message');
 
-        var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(message.sender[0]);
+        let avatarElement = document.createElement('i');
+        let avatarText = document.createTextNode(message.sender[0]);
         avatarElement.appendChild(avatarText);
         avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
         messageElement.appendChild(avatarElement);
 
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
+        let usernameElement = document.createElement('span');
+        let usernameText = document.createTextNode(message.sender);
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }
 
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
+    let textElement = document.createElement('p');
+    let messageText = document.createTextNode(message.content);
     textElement.appendChild(messageText);
 
     messageElement.appendChild(textElement);
-
+    let chatUuid = message.chatUuid;
+    let messageArea = document.querySelector(`#messageArea-${chatUuid}`);
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
+function onError(error) {
+    // connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
+    // connectingElement.style.color = 'red';
+    // sessionStorage.removeItem("username");
+}
 
 function getAvatarColor(messageSender) {
-    var hash = 0;
-    for (var i = 0; i < messageSender.length; i++) {
+    let hash = 0;
+    for (let i = 0; i < messageSender.length; i++) {
         hash = 31 * hash + messageSender.charCodeAt(i);
     }
-    var index = Math.abs(hash % colors.length);
+    let index = Math.abs(hash % colors.length);
     return colors[index];
 }
 
-usernameForm.addEventListener('submit', connect, true)
-messageForm.addEventListener('submit', sendMessage, true)
+usernameForm.addEventListener('submit', saveUserNameTosessionStorage, true)
+messageFormChat001.addEventListener('submit', sendMessage, true)
+messageFormChat002.addEventListener('submit', sendMessage, true)
