@@ -2,6 +2,7 @@ package com.elice.homealone.global.config;
 
 import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -31,6 +32,10 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
 //
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,8 +46,7 @@ public class SecurityConfig {
                         //정적 자원 허용
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
-                        //.requestMatchers("/", "/static/index.html").permitAll()
-                       .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        .requestMatchers("/", "/static/index.html").permitAll()
                         .anyRequest().permitAll()
                 )
                 // enable h2-console
@@ -51,6 +55,15 @@ public class SecurityConfig {
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 // 필터 요청 전에 passwordEncorder 사용
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getWriter().flush();
+                        })
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -68,10 +81,10 @@ public class SecurityConfig {
     }
 
     // h2 콘솔에 대한 요청이 스프링 시큐리티 필터를 통과 하지 않도록 하는 설정
-    @Bean
-    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
-    public WebSecurityCustomizer configureH2ConsoleEnable() {
-        return web -> web.ignoring()
-            .requestMatchers(PathRequest.toH2Console());
-    }
+//    @Bean
+//    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
+//    public WebSecurityCustomizer configureH2ConsoleEnable() {
+//        return web -> web.ignoring()
+//            .requestMatchers(PathRequest.toH2Console());
+//    }
 }

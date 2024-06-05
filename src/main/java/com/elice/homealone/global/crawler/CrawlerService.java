@@ -1,6 +1,7 @@
 package com.elice.homealone.global.crawler;
 
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
+import com.elice.homealone.recipe.dto.RecipeResponseDto;
 import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeType;
@@ -19,7 +20,7 @@ public class CrawlerService {
 
     private final RecipeService recipeService;
     private final RecipeMongoRepository recipeMongoRepository;
-
+/*
     public void loadJsonAndSaveRecipe() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -34,6 +35,8 @@ public class CrawlerService {
         }
     }
 
+ */
+/*
     public void loadFromMongoAndSaveRecipe() {
         // MongoDB에서 Recipe 데이터를 읽어옴
         List<RecipeRequest> recipes = recipeMongoRepository.findAll();
@@ -44,4 +47,6 @@ public class CrawlerService {
             recipeService.createRecipe(requestDto);
         }
     }
+
+ */
 }

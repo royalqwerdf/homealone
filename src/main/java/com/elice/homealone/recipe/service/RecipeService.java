@@ -17,6 +17,7 @@ import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.tag.Service.PostTagService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +26,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,14 +45,11 @@ public class RecipeService {
 
     // 레시피 등록
     @Transactional
-    public RecipeResponseDto createRecipe(RecipeRequestDto requestDto) {
-
-        // 임시 멤버 생성
-        Member testMember = memberService.findByEmail("john.doe@example.com");
+    public RecipeResponseDto createRecipe(Member member, RecipeRequestDto requestDto) {
 
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
-            Recipe recipe = requestDto.toBaseEntity(testMember);
+            Recipe recipe = requestDto.toBaseEntity(member);
             recipeRepository.save(recipe);
 
             // 레시피 dto 이미지 리스트로 레시피 이미지 생성 후 레시피 엔티티에 추가
@@ -91,8 +91,14 @@ public class RecipeService {
         String description,
         List<String> tags
     ) {
-        Page<Recipe> recipePage = recipeRepository.findRecipes(pageable, userId, title, description, tags);
-        return recipePage.map(Recipe::toPageDto);
+        List<Recipe> recipes = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        Page<Recipe> recipePage = PageableExecutionUtils.getPage(
+            recipes,
+            pageable,
+            () -> recipeRepository.countRecipes(userId, title, description, tags)
+        );
+
+       return recipePage.map(Recipe::toPageDto);
     }
 
     // 레시피 리스트 전체 조회
@@ -151,7 +157,6 @@ public class RecipeService {
         recipeIngredientService.addRecipeIngredients(recipe, ingredientDtos);
 
         // 레시피 디테일 수정
-        // 레시피와 관련된 레시피 디테일 제거
         recipeDetailService.deleteDetailByRecipe(recipe);
         List<RecipeDetailDto> detailDtos = requestDto.getDetails();
         recipeDetailService.addRecipeDetails(recipe, detailDtos);
@@ -188,18 +193,4 @@ public class RecipeService {
             }
         }
     }
-
-    public void updateRecipeDetails(Recipe recipe, List<RecipeDetailDto> updateRecipeDetailDtos) {
-        // 레시피 디테일 전체 삭제
-        recipeDetailService.deleteDetailByRecipe(recipe);
-    }
-
-    public void deleteDetailsByRecipe(Recipe recipe) {
-        List<RecipeDetail> recipeDetails = recipe.getDetails();
-
-        for(RecipeDetail detail : recipeDetails) {
-            recipeDetailService.deleteDetail(detail);
-        }
-    }
-
 }
