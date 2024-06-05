@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageModel {
-    private String sender;
+    private Long memberId;
     private String content;
     private Long chatroomId;
     private MessageType type;
@@ -17,8 +17,8 @@ public class MessageModel {
         LEAVE
     }
 
-    public MessageModel(String sender, String content, Long chatroomId, MessageType type) {
-        this.sender = sender;
+    public MessageModel(Long memberId, String content, Long chatroomId, MessageType type) {
+        this.memberId = memberId;
         this.content = content;
         this.chatroomId = chatroomId;
         this.type = type;
