@@ -1,6 +1,5 @@
 package com.elice.homealone.member.service;
 
-
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
@@ -9,14 +8,12 @@ import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
-import com.elice.homealone.member.dto.response.SignupResponseDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +31,7 @@ public class AuthService{
     /**
      * 회원 가입
      */
-    //exception 잡는 로직을 서비스단에서 던질지 컨트롤러단에서 던질지고민
-    //회원가입은 서비스에서 오류를 안던지고 로그인은 서비스에서 오류를 던짐;;
-    public SignupResponseDTO signUp(SignupRequestDTO signupRequestDTO){
-        SignupResponseDTO response = new SignupResponseDTO();
+    public void signUp(SignupRequestDTO signupRequestDTO){
         //이메일 중복검사
         emailExists(signupRequestDTO.getEmail());
         //비밀번호 암호화
@@ -46,8 +40,6 @@ public class AuthService{
         savedMember.setPassword(password);
         //회원 저장
         memberRepository.save(savedMember);
-        response.setMessage("회원 가입이 성공적으로 완료되었습니다.");
-        return response;
     }
 
     /**
@@ -62,7 +54,6 @@ public class AuthService{
             String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
             LoginResponseDTO response = new LoginResponseDTO();
             response.setAccessToken(acessToken);
-            response.setMessage("로그인이 성공했습니다.");
             //refreshToken 쿠키 저장
             httpServletResponse.addCookie(storeRefreshToken(refreshToken));
             return response;
@@ -75,7 +66,8 @@ public class AuthService{
      * 로그아웃
      */
 
-    public void logout(String acccessToken, HttpServletResponse httpServletResponse){
+    public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        String acccessToken = httpServletRequest.getHeader("Authorization");
         //0. accessToken 검증
         jwtTokenProvider.validateToken(acccessToken);
         //1. accessToken을 블랙리스트 redis에 저장
@@ -102,15 +94,8 @@ public class AuthService{
      */
     public MemberDTO findLoginMemberByToken(String acccessToken) {
         MemberDTO member = new MemberDTO();
-        try {
-            jwtTokenProvider.validateToken(acccessToken);
-            member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
-            member.setMessage("회원정보가 성공적으로 조회되었습니다.");
-        } catch (HomealoneException e) {
-            member.setMessage(e.getErrorCode().getMessage());
-        }
-
-
+        jwtTokenProvider.validateToken(acccessToken);
+        member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
         return member;
     }
 
@@ -128,17 +113,16 @@ public class AuthService{
      * 회원 수정
      * Auth: User
      */
-    public Member editMember(MemberDTO memberDTO, String accessToken) {
-        MemberDTO findMember = findLoginMemberByToken(accessToken);
-        Member member = memberService.findById(findMember.getId());
-        member.setName(memberDTO.getName());
-        member.setBirth(memberDTO.getBirth());
-        member.setEmail(memberDTO.getEmail());
-        member.setAddress(memberDTO.getAddress());
-        member.setImageUrl(memberDTO.getImageUrl());
-        member.setCreatedAt(memberDTO.getCreatedAt());
-        member.setModifiedAt(memberDTO.getModifiedAt());
-        return member;
+    public Member editMember(Member member, MemberDTO memberDTO) {
+        Member changeMember = memberService.findById(member.getId());
+        changeMember.setName(memberDTO.getName());
+        changeMember.setBirth(memberDTO.getBirth());
+        changeMember.setEmail(memberDTO.getEmail());
+        changeMember.setAddress(memberDTO.getAddress());
+        changeMember.setImageUrl(memberDTO.getImageUrl());
+        changeMember.setCreatedAt(memberDTO.getCreatedAt());
+        changeMember.setModifiedAt(memberDTO.getModifiedAt());
+        return changeMember;
     }
 
     /**
@@ -152,8 +136,8 @@ public class AuthService{
     /**
      * 회원 탈퇴 withdrawal
      */
-    public MemberDTO withdrawal(MemberDTO memberDTO) {
-        Member findedMember = memberService.findByEmail(memberDTO.getEmail());
+    public MemberDTO withdrawal(Member member) {
+        Member findedMember = memberService.findByEmail(member.getEmail());
         findedMember.setDeletedAt(true);
         return memberRepository.save(findedMember).toDto();
     }

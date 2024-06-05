@@ -34,19 +34,16 @@ public class MemberService implements UserDetailsService {
      * email으로 member를 찾는다.
      */
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
 
     /**
      * 회원 조회
      * memberID로 member를 찾는다
      */
-
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(()->new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
     }
-
 
     /**
      * 스프링 시큐리티 인증 로직

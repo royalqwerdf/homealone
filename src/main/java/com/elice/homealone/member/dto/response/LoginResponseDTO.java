@@ -9,6 +9,4 @@ import lombok.Setter;
 @Setter
 public class LoginResponseDTO {
     public String accessToken;
-    public String message;
-
 }
