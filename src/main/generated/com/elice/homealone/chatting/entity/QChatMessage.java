@@ -38,6 +38,8 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
+    public final DateTimePath<java.util.Date> sendDate = createDateTime("sendDate", java.util.Date.class);
+
     public final StringPath sendTime = createString("sendTime");
 
     public QChatMessage(String variable) {

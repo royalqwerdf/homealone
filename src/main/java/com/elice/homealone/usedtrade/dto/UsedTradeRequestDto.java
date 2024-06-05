@@ -20,7 +20,7 @@ public class UsedTradeRequestDto {
     private String content;
     private List<UsedTradeImage> images = new ArrayList<>();
     private Long memberId;
-    private PostTag tag;
+    private List<PostTag> tag;
 
     public UsedTrade toEntity(){
         return UsedTrade.builder()

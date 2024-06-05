@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 @Service
 public class MessageService {
@@ -20,7 +22,7 @@ public class MessageService {
 
     //채팅방 입장 후 전솧한 메시지를 저장하는 메서드
     @Transactional
-    public ChatMessage saveMessage(Long chatroomId, String content, String time, String chatType) {
+    public ChatMessage saveMessage(Long chatroomId, String content, Date date, String time, String chatType) {
 
         //메시지를 보내는 사람
         Member sender = chatRoomRepository.findChattingById(chatroomId).getSender();
@@ -28,6 +30,7 @@ public class MessageService {
         //메시지 저장
         ChatMessage message = ChatMessage.builder()
                 .content(content)
+                .sendDate(date)
                 .sendTime(time)
                 .member(sender)
                 .chatting(chatRoomRepository.findChattingById(chatroomId))
