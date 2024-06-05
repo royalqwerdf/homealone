@@ -46,6 +46,10 @@ public class MemberService implements UserDetailsService {
     }
 
     /**
+     * jpa 멤버 엔티티 반환
+     */
+
+    /**
      * 스프링 시큐리티 인증 로직
      * email을 통해서 SecurityContextHolder에 사용자를 저장해둔다.
      */
