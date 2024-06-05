@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 **/src/main/resources/application-dev.properties
+**/src/main/resources/application-test.properties
 data/
 
 ### STS ###
@@ -27,14 +28,13 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
 src/main/resources/serviceAccountKey.json
-.env
-
+**/src/main/team7-front
 application.properties
+src/main/resources/application.properties
 src/main/resources/application-dev.properties
-**/src/main/resources/application-dev.properties
-
-
+src/main/resources/application-test.properties
 
 ### NetBeans ###
 /nbproject/private/
@@ -48,4 +48,5 @@ src/main/resources/application-dev.properties
 
 # python
 /python_workspace
+src/main/resources/.env
 .env

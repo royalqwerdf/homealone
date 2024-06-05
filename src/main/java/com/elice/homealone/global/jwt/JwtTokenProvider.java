@@ -63,8 +63,9 @@ public class JwtTokenProvider {
      * JWT 토큰 유효성 검증
      */
     public boolean validateToken(String token) {
+        String accessToken = token.substring(7);
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
             return true;
         } catch (Exception e) {
             return false;
@@ -75,7 +76,8 @@ public class JwtTokenProvider {
      * JWT 토큰으로 email 반환받는다.
      */
     public String getEmail(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        String accessToken = token.substring(7);
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody().getSubject();
     }
 
 
