@@ -45,7 +45,7 @@ public class RecipeService {
     public RecipeResponseDto createRecipe(RecipeRequestDto requestDto) {
 
         // 임시 멤버 생성
-        Member testMember = memberService.findByEmail("john.doe@example.com");
+        Member testMember = memberService.findByEmail("geobukseon@homealone.co.kr");
 
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
