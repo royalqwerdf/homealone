@@ -25,7 +25,6 @@ public class MemberService implements UserDetailsService {
     /**
      * 회원 전체 조회
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<Member> findAll(Pageable pageable) {
         return memberRepository.findAll(pageable);
     }
@@ -38,6 +37,11 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.EMAIL_NOT_FOUND));
     }
+
+    /**
+     * 회원 조회
+     * memberID로 member를 찾는다
+     */
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(()->new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));

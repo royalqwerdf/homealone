@@ -1,11 +1,13 @@
 package com.elice.homealone.global.socket.handler;
 
+import com.elice.homealone.global.exception.HomealoneException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,17 +21,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     //connection이 성립된 이후 작동되는 메서드(유저가 채팅방에 입장했을 때)
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("{} 연결됨", session.getId());
-        final String sessionId = session.getId();
-        sessions.put(sessionId, session);
-
-        sessions.values().forEach((s) -> {
-            try {
-                if(!s.getId().equals(sessionId) && s.isOpen()) {
-                    s.sendMessage(new TextMessage("새 사용자가 입장했습니다"));
-                }
-            } catch (IOException e) {}
-        });
+        String chatroomId = getChatRoomId(session);
+        log.info("now chatting room number : {}", chatroomId);
 
     }
 
@@ -59,5 +52,23 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Override
     public boolean supportsPartialMessages() {
         return false;
+    }
+
+    //웹소켓이 연결된 채팅방의 id를 반환할 메소드
+    private String getChatRoomId(WebSocketSession session) {
+        // URI에서 쿼리 파라미터 추출
+        URI uri = session.getUri();
+        if (uri != null) {
+            String query = uri.getQuery();
+            if (query != null) {
+                for (String param : query.split("&")) {
+                    String[] pair = param.split("=");
+                    if (pair.length > 1 && "chatRoomId".equals(pair[0])) {
+                        return pair[1];
+                    }
+                }
+            }
+        }
+        return "default"; // 기본 채팅방 ID
     }
 }
