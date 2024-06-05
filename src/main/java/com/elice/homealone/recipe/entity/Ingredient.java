@@ -23,7 +23,7 @@ public class Ingredient extends BaseTimeEntity {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
     private List<RecipeIngredient> ingredients = new ArrayList<>();
 
     @Builder

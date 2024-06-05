@@ -17,6 +17,7 @@ import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostTag {
     @Id
@@ -44,7 +45,7 @@ public class PostTag {
     public PostTagDto toDto() {
         return PostTagDto.builder()
             .id(this.id)
-            .name(this.name)
+            .tagName(this.name)
             .build();
     }
 }

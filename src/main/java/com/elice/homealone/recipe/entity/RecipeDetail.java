@@ -19,7 +19,7 @@ public class RecipeDetail extends BaseTimeEntity {
     @Column
     private Long id;
 
-    @Column
+    @Column(length = 1500)
     private String description;
 
     @Column
@@ -28,7 +28,7 @@ public class RecipeDetail extends BaseTimeEntity {
     @Column
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @Setter
     private Recipe recipe;

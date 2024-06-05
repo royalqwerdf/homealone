@@ -37,8 +37,12 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDTO member = authService.findbyToken(accessToken);
+        Member member = authService.findLoginMemberByToken(accessToken);
         Member sender = memberRepository.findMemberByEmail(member.getEmail());
+
+        if(receiver_id == sender.getId()) {
+            throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
+        }
 
         //chatting 테이블 생성해 저장
         Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(sender, receiver));
@@ -66,7 +70,10 @@ public class ChatRoomService {
 
     @Transactional
     public ChatDto findChatList(Long chatroomId) {
-        Chatting chatting = chatRoomRepository.findChattingById(chatroomId);
+
+        //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
+        Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
+                new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
 
         //채팅 참여자들의 메시지 dto 리스트
         List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdOrderBySendDateAsc(chatroomId);

@@ -17,6 +17,7 @@ public class MessageDto {
 
     private long id;
     private String content;
+    private Date sendDate;
     private String sendTime;
     private Date sendDate;
 
