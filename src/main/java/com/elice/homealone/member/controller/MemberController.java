@@ -5,6 +5,7 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
+import com.elice.homealone.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/mypage")
 public class MemberController {
     private final AuthService authService;
+    private final MemberService memberService;
 
     /**
      * 로그인한 회원 정보 조회
      */
     @GetMapping("/me")
     public ResponseEntity<MemberDTO> getMemberInfo(@AuthenticationPrincipal Member member) {
-        return new ResponseEntity<>(member.toDto(), HttpStatus.OK);
+        MemberDTO memberDTO = memberService.findById(member.getId()).toDto();
+        return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }
 
     /**
