@@ -67,8 +67,8 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            String accessToken = token.substring(7);
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
+            // String accessToken = token.substring(7);
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             return true;
         } catch (ExpiredJwtException e) { // 토큰 만료
             throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
@@ -83,8 +83,8 @@ public class JwtTokenProvider {
      * JWT 토큰으로 email 반환받는다.
      */
     public String getEmail(String token) {
-        String accessToken = token.substring(7);
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody().getSubject();
+        //String accessToken = token.substring(7);
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
 
