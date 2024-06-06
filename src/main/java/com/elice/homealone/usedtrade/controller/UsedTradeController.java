@@ -26,21 +26,14 @@ public class UsedTradeController {
 
     //중고거래 전체 조회
     @GetMapping
-    public ResponseEntity<Map<String,?>> getAllUsedTrades(
+    public ResponseEntity<?> getAllUsedTrades(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<UsedTradeResponseDto> responseDtos = usedTradeService.getAllUsedTrades(pageable);
 
-        //Map으로 메시지와 중고거래 리스트를 반환
-        Map<String,Object> response = new HashMap<>();
-        response.put("data", responseDtos);
-
-        //예시 메시지
-        response.put("message", "전체 조회 성공");
-
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(responseDtos,HttpStatus.OK);
     }
 
     @GetMapping("/{usedtradeId}")
@@ -54,11 +47,8 @@ public class UsedTradeController {
 
     @PostMapping
     public ResponseEntity<?> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
-        if(!usedTradeService.createUsedTrade(usedTradeRequestDto)){
-            return new ResponseEntity<>(usedTradeRequestDto,HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>("생성 완료",HttpStatus.CREATED);
+        Long usedTradeId = usedTradeService.createUsedTrade(usedTradeRequestDto);
+        return new ResponseEntity<>(usedTradeId,HttpStatus.CREATED);
     }
 
     @PutMapping("/{usedtradeId}")
