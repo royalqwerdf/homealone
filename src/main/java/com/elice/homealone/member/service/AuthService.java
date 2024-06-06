@@ -71,7 +71,6 @@ public class AuthService{
         //0. accessToken 검증
         jwtTokenProvider.validateToken(acccessToken);
         //1. accessToken을 블랙리스트 redis에 저장
-        String email = jwtTokenProvider.getEmail(acccessToken);
         redisUtil.setBlackList("email", acccessToken);
         //2. refreshToken을 쿠키에서 삭제
         Cookie cookie = new Cookie("refreshToken", null);
