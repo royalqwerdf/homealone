@@ -65,12 +65,11 @@ public class RoomService {
 
         String plainContent = Jsoup.clean(roomDto.getContent(),Safelist.none());
         roomOriginal.setPlainContent(plainContent);
-        List<RoomImage> newImages = roomDto.getImages().stream()
+        //이미지새로 생성후 이전 이미지 테이블 전체 삭제 후 새로운 이미지로 대체
+        List<RoomImage> newImages = roomDto.getRoomImages().stream()
                 .map(url -> new RoomImage(url,roomOriginal))
                 .collect(Collectors.toList());
         roomOriginal.getRoomImages().clear();
-
-
         roomOriginal.getRoomImages().addAll(newImages);
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
@@ -114,8 +113,12 @@ public class RoomService {
                 spec = spec.and(RoomSpecification.hasMemberId(memberId));
             }
 
-            return roomRepository.findAll(spec, pageable).map(RoomResponseDTO ::toRoomResponseDTO);
+        Page<Room> findRoom = roomRepository.findAll(spec, pageable);
+            if(findRoom.isEmpty()){
+                throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
+            }
 
+        return findRoom.map(RoomResponseDTO:: toRoomResponseDTO);
 
     }
 

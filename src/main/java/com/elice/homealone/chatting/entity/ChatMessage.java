@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name="message")
@@ -31,6 +32,9 @@ public class ChatMessage extends BaseTimeEntity {
     private String content;
 
     @Column(nullable = false)
+    private Date sendDate;
+
+    @Column(nullable = false)
     private String sendTime;
 
     @ManyToOne
@@ -44,6 +48,7 @@ public class ChatMessage extends BaseTimeEntity {
     public MessageDto toDto() {
         return MessageDto.builder()
                 .content(this.content)
+                .sendDate(this.sendDate)
                 .sendTime(this.sendTime)
                 .memberId(this.member.getId())
                 .chatRoomId(this.chatting.getId())

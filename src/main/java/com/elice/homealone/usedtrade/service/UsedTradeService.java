@@ -60,14 +60,14 @@ public class UsedTradeService {
         return true;
     }
     //중고거래 게시글 생성
-    public boolean createUsedTrade(UsedTradeRequestDto requestDto) {
+    public Long createUsedTrade(UsedTradeRequestDto requestDto) {
 
         Member member = memberRepository.findMemberById(requestDto.getMemberId());
 
         UsedTrade usedTrade = requestDto.toEntity();
         usedTrade.setMember(member);
         usedTrade.setType(Post.Type.USEDTRADE);
-        usedTradeRepository.save(usedTrade);
+        UsedTrade saveData = usedTradeRepository.save(usedTrade);
 
         List<UsedTradeImage> usedTradeImage = requestDto.getImages();
         for(UsedTradeImage image: usedTradeImage){
@@ -75,7 +75,7 @@ public class UsedTradeService {
         }
         usedTradeImageRepository.saveAll(usedTradeImage);
 
-        return true;
+        return saveData.getId();
     }
 
     //중고거래 게시글 삭제

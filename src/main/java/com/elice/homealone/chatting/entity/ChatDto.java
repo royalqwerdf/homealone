@@ -22,8 +22,7 @@ public class ChatDto {
     private long senderId;
     private long receiverId;
 
-    private List<MessageDto> senderMessages;
-    private List<MessageDto> receiverMessages;
+    private List<MessageDto> Messages;
 
 
     public Chatting toEntity(Member sender, Member receiver) {

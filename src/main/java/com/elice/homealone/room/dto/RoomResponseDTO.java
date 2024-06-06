@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
-        private List<String> roomImages;
+        private List<String> roomImages = new ArrayList<>();
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()

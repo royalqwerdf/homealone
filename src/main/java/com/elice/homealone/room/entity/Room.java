@@ -61,7 +61,7 @@ public class Room extends Post {
         this.title = roomDto.getTitle();
         this.content = roomDto.getContent();
         this.thumbnailUrl = roomDto.getThumbnailUrl();
-        this.roomImages = roomDto.getImages().stream()
+        this.roomImages = roomDto.getRoomImages().stream()
                 .map(url -> new RoomImage(url, this))
                 .collect(Collectors.toList());
     }

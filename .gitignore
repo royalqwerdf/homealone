@@ -1,9 +1,10 @@
-HELP.md
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/src/main/resources/application.properties
 **/src/main/resources/application-dev.properties
 **/src/main/resources/application-test.properties
 data/
@@ -29,7 +30,6 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-src/main/resources/serviceAccountKey.json
 **/src/main/team7-front
 application.properties
 src/main/resources/application.properties
@@ -46,13 +46,16 @@ src/main/resources/application-test.properties
 ### VS Code ###
 .vscode/
 
-<<<<<<< HEAD
-# Ignore Firebase service account key
-/src/main/resources/firebase-service-account
-
-=======
 # python
 /python_workspace
-src/main/resources/.env
+
 .env
->>>>>>> a526c93ee4f449094f5fa54022bcbd2c76f63e8e
+
+HELP.md
+
+# Q클래스
+/src/main/generated
+
+# sql
+/src/main/resources/data.sql
+

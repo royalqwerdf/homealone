@@ -36,11 +36,7 @@ public class TalkService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PostTagService postTagService;
     @Transactional
-    public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto, String token){ ///회원 정의 추가해야함.
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto, String email){ ///회원 정의 추가해야함.
         Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
                  );
@@ -55,11 +51,7 @@ public class TalkService {
     }
 
     @Transactional
-    public TalkResponseDTO.TalkInfoDto EditTalkPost(String token,Long talkId, TalkRequestDTO talkDto){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public TalkResponseDTO.TalkInfoDto EditTalkPost(String email,Long talkId, TalkRequestDTO talkDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -71,16 +63,13 @@ public class TalkService {
         List<TalkImage> talkImage = talkDto.getImages().stream()
                 .map(url -> new TalkImage(url,talkOriginal))
                 .collect(Collectors.toList());
+        talkOriginal.getTalkImages().clear();
         talkOriginal.getTalkImages().addAll(talkImage);
         return TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talkOriginal);
     }
 
     @Transactional
-    public void deleteRoomPost(String token,Long talkId){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public void deleteRoomPost(String email,Long talkId){
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -116,9 +105,12 @@ public class TalkService {
                 spec = spec.and(TalkSpecification.hasMemberId(memberId));
             }
 
-            return talkRepository.findAll(spec, pageable).map(TalkResponseDTO::toTalkResponseDTO);
+        Page<Talk> findTalks = talkRepository.findAll(spec, pageable);
+            if(findTalks.isEmpty()){
+                throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
+            }
 
-
+        return findTalks.map(TalkResponseDTO::toTalkResponseDTO);
     }
 
     @Transactional
@@ -132,8 +124,7 @@ public class TalkService {
 
 
     @Transactional
-    public TalkResponseDTO.TalkInfoDtoForMember findByTalkIdForMember(Long talkId, String token){
-            String email = jwtTokenProvider.getEmail(token);
+    public TalkResponseDTO.TalkInfoDtoForMember findByTalkIdForMember(Long talkId, String email){
             Member member = memberRepository.findByEmail(email).orElseThrow(
                     ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
             );

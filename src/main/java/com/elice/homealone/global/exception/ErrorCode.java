@@ -18,7 +18,7 @@ public enum ErrorCode {
     //401
     MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
     INVALID_TOKEN(UNAUTHORIZED, "유효하지 않는 토큰입니다."),
-
+    EXPIRED_TOKEN(UNAUTHORIZED, "만료된 토큰입니다"),
     //409
     EMAIL_ALREADY_EXISTS(CONFLICT, "중복된 이메일 입니다."),
 
@@ -34,6 +34,7 @@ public enum ErrorCode {
     RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피입니다"),
     CHATTING_ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 채팅방입니다"),
     USEDTRADE_NOT_FOUND(NOT_FOUND,"존재하지 않는 게시물입니다"),
+    SEARCH_NOT_FOUND(NOT_FOUND,"검색결과가 존해하지 않습니다"),
 
     //500
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다. 다시 요청해주세요."),
