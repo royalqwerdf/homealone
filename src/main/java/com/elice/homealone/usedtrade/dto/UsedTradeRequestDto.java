@@ -1,5 +1,6 @@
 package com.elice.homealone.usedtrade.dto;
 
+import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.usedtrade.entity.UsedTrade;
 import com.elice.homealone.usedtrade.entity.UsedTradeImage;
 import lombok.*;
@@ -18,6 +19,8 @@ public class UsedTradeRequestDto {
     private String location;
     private String content;
     private List<UsedTradeImage> images = new ArrayList<>();
+    private Long memberId;
+    private List<PostTag> tag;
 
     public UsedTrade toEntity(){
         return UsedTrade.builder()

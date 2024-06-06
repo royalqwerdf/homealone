@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.dto;
 
+import com.elice.homealone.global.crawler.RecipeRequest;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.recipe.enums.Cuisine;
@@ -7,10 +8,15 @@ import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeRequestDto {
     private String title;
     private String description;
@@ -50,5 +56,20 @@ public class RecipeRequestDto {
             .cuisine(this.getCuisine())
             .build();
         return recipe;
+    }
+
+    public static RecipeRequestDto from(RecipeRequest recipeRequest) {
+        return RecipeRequestDto.builder()
+            .title(recipeRequest.getTitle())
+            .description(recipeRequest.getDescription())
+            .portions(recipeRequest.getPortions() == null ? 2 : recipeRequest.getPortions())
+            .recipeType(recipeRequest.getRecipeType())
+            .recipeTime(recipeRequest.getRecipeTime())
+            .cuisine(recipeRequest.getCuisine())
+            .images(recipeRequest.getImages())
+            .ingredients(recipeRequest.getIngredients())
+            .details(recipeRequest.getDetails())
+            .postTags(recipeRequest.getPostTags())
+            .build();
     }
 }

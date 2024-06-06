@@ -1,9 +1,12 @@
 package com.elice.homealone.recipe.dto;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeDetailDto {
 
     private Long id;
@@ -17,5 +20,11 @@ public class RecipeDetailDto {
         this.description = description;
         this.fileName = fileName;
         this.imageUrl = imageUrl;
+    }
+
+    @Builder
+    public RecipeDetailDto(Long id, String description) {
+        this.id = id;
+        this.description = description;
     }
 }

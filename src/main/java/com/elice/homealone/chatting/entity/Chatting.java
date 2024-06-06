@@ -37,7 +37,7 @@ public class Chatting extends BaseTimeEntity {
     private Member receiver;
 
     @OneToMany(mappedBy = "chatting")
-    private List<ChatMessage> chatMessages = new ArrayList<>();
+    private List<ChatMessage> chatMessages;
 
 
     public ChatDto toDto() {
@@ -50,4 +50,5 @@ public class Chatting extends BaseTimeEntity {
                 .receiverId(this.receiver.getId())
                 .build();
     }
+
 }

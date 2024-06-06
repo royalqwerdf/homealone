@@ -1,2 +1,0 @@
-INSERT INTO member (id, name, birth, email, address, phone, image_url, role, password, deleted_at, created_at, modified_at)
-VALUES (1, 'John Doe', '1990-01-01', 'john.doe@example.com', '123 Main St', '123-456-7890', 'http://example.com/image.jpg', 'ROLE_USER', 'password123', 0, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());

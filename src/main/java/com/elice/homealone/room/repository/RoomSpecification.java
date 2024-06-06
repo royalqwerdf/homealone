@@ -1,7 +1,11 @@
 package com.elice.homealone.room.repository;
 
 import com.elice.homealone.room.entity.Room;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+import  com.elice.homealone.tag.entity.PostTag;
 
 public class RoomSpecification {
     public static Specification<Room> containsTitle(String title){
@@ -23,5 +27,17 @@ public class RoomSpecification {
                         criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
                         criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%")
                 );
+    }
+
+    public static Specification<Room> containsTag(String tagName) {
+        return (root, query, criteriaBuilder) -> {
+            // Room과 PostTag를 조인
+            Join<Room, PostTag> tags = root.join("tags", JoinType.INNER);
+
+            // PostTag의 name 필드에 대해 LIKE
+            Predicate tagPredicate = criteriaBuilder.like(tags.get("name"), "%" + tagName + "%");
+
+            return tagPredicate;
+        };
     }
 }

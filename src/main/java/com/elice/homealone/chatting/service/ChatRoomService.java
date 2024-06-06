@@ -12,14 +12,15 @@ import com.elice.homealone.member.dto.MemberDTO;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
+
+import com.elice.homealone.member.service.MemberService;
+import com.google.firebase.cloud.StorageClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +30,8 @@ public class ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
     private final AuthService authService;
+    private final MemberService memberService;
+
 
     //중고거래 채팅방 생성 메소드
     @Transactional
@@ -37,8 +40,12 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDTO member = authService.findbyToken(accessToken);
-        Member sender = memberRepository.findMemberByEmail(member.getEmail());
+        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        Member sender = memberService.findById(member.getId());
+
+        if(receiver_id == sender.getId()) {
+            throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
+        }
 
         //chatting 테이블 생성해 저장
         Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(sender, receiver));
@@ -65,29 +72,30 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public Map<String, Object> findChatList(Long chatroomId) {
-        Chatting chatting = chatRoomRepository.findChattingById(chatroomId);
+    public ChatDto findChatList(Long chatroomId) {
 
-        //sender의 메시지 dto 리스트
-        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getSender().getId());
-        List<MessageDto> senderDatas = new ArrayList<>();
-        for(ChatMessage senderChat : senderChatList) {
-            senderDatas.add(senderChat.toDto());
+        //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
+        Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
+                new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
+
+        //채팅 참여자들의 메시지 dto 리스트
+        List<ChatMessage> senderChatList = chatMessageRepository.findAllChatMessageByChattingIdOrderBySendDateAsc(chatroomId);
+        List<MessageDto> Messages = new ArrayList<>();
+        for(ChatMessage message : senderChatList) {
+            Messages.add(message.toDto());
         }
 
-        //receiver의 메시지 dto 리스트
-        List<ChatMessage> receiverChatList = chatMessageRepository.findAllChatMessageByChattingIdAndMemberId(chatroomId, chatting.getReceiver().getId());
-        List<MessageDto> receiverDatas = new ArrayList<>();
-        for(ChatMessage receiverChat : receiverChatList) {
-            receiverDatas.add(receiverChat.toDto());
-        }
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("senderData", senderDatas);
-        result.put("receiverData", receiverDatas);
-        result.put("message", "채팅방 메시지 전달 성공");
 
-        return result;
+        ChatDto responseDtos = ChatDto.builder()
+                .id(chatroomId)
+                .chatroomName(chatting.getChatroomName())
+                .senderName(chatting.getSender().getName())
+                .receiverName(chatting.getReceiver().getName())
+                .Messages(Messages)
+                .build();
+
+        return responseDtos;
     }
 
     @Transactional
@@ -97,8 +105,8 @@ public class ChatRoomService {
         }
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDTO member = authService.findbyToken(accessToken);
-        Member sender = memberRepository.findMemberByEmail(member.getEmail());
+        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        Member sender = memberService.findById(member.getId());
 
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());
         List<ChatDto> chatDtoList = new ArrayList<>();

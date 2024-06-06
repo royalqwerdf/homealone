@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.controller;
 
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
@@ -12,11 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 public class RecipeController {
 
@@ -24,8 +26,8 @@ public class RecipeController {
 
     // 레시피 등록
     @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(HttpServletRequest request, @RequestBody RecipeRequestDto requestDto) {
-        RecipeResponseDto responseDto = recipeService.createRecipe(requestDto);
+    public ResponseEntity<RecipeResponseDto> createRecipe(@AuthenticationPrincipal Member member, @RequestBody RecipeRequestDto requestDto) {
+        RecipeResponseDto responseDto = recipeService.createRecipe(member, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -33,25 +35,11 @@ public class RecipeController {
     @GetMapping
     public ResponseEntity<Page<RecipePageDto>> getRecipe(Pageable pageable,
         @RequestParam(required = false) String userId,
-        @RequestParam(required = false) String search,
         @RequestParam(required = false) String title,
         @RequestParam(required = false) String description,
         @RequestParam(required = false) List<String> tags
     ) {
-        Page<RecipePageDto> pageDtos = null;
-        if(userId != null) {
-            // 작성자로 조회
-        } else if(search != null) {
-            // 통합 검색
-        } else if(title != null) {
-            pageDtos = recipeService.findByTitle(pageable, title);
-        } else if(description != null) {
-            pageDtos = recipeService.findByDescription(pageable, description);
-        } else if (tags != null) {
-            // 태그
-        } else {
-            pageDtos = recipeService.findAll(pageable);
-        }
+        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, userId, title, description, tags);
 
         return new ResponseEntity<>(pageDtos, HttpStatus.OK);
     }
