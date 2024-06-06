@@ -4,23 +4,31 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.MemberService;
+import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.dto.RecipePageDto;
 import com.elice.homealone.recipe.dto.RecipeResponseDto;
-import com.elice.homealone.recipe.repository.RecipeRepository;
-import com.elice.homealone.recipe.dto.RecipeDetailDto;
+
+import com.elice.homealone.recipe.entity.RecipeDetail;
+
+import com.elice.homealone.recipe.entity.RecipeIngredient;
+import com.elice.homealone.recipe.repository.RecipeRepository.RecipeRepository;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.entity.Recipe;
-import com.elice.homealone.recipe.repository.RecipeRepository;
 import com.elice.homealone.tag.Service.PostTagService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,23 +45,17 @@ public class RecipeService {
 
     // 레시피 등록
     @Transactional
-    public RecipeResponseDto createRecipe(RecipeRequestDto requestDto) {
-
-        // 임시 멤버 생성
-        Member testMember = memberService.findByEmail("john.doe@example.com");
+    public RecipeResponseDto createRecipe(Member member, RecipeRequestDto requestDto) {
 
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
-            Recipe recipe = requestDto.toBaseEntity(testMember);
+            Member loginMember = memberService.findById(member.getId());
+            Recipe recipe = requestDto.toBaseEntity(loginMember);
             recipeRepository.save(recipe);
 
             // 레시피 dto 이미지 리스트로 레시피 이미지 생성 후 레시피 엔티티에 추가
             List<RecipeImageDto> images = requestDto.getImages();
-            if(images != null) {
-                for(RecipeImageDto imageDto : images) {
-                    recipe.addImage(recipeImageService.createImage(imageDto));
-                }
-            }
+            recipeImageService.addRecipeImages(recipe, images);
 
             // 레시피 dto 재료 리스트를 통해 레시피 재료 생성 후 레시피 엔티티에 추가
             List<RecipeIngredientDto> ingredientDtos = requestDto.getIngredients();
@@ -82,6 +84,24 @@ public class RecipeService {
         }
     }
 
+    // QueryDsl 레시피 페이지 조회
+    public Page<RecipePageDto> findRecipes(
+        Pageable pageable,
+        String userId,
+        String title,
+        String description,
+        List<String> tags
+    ) {
+        List<Recipe> recipes = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        Page<Recipe> recipePage = PageableExecutionUtils.getPage(
+            recipes,
+            pageable,
+            () -> recipeRepository.countRecipes(userId, title, description, tags)
+        );
+
+       return recipePage.map(Recipe::toPageDto);
+    }
+
     // 레시피 리스트 전체 조회
     public Page<RecipePageDto> findAll(Pageable pageable) {
         try {
@@ -89,26 +109,6 @@ public class RecipeService {
             return recipePage.map(Recipe::toPageDto);
         } catch (Exception e) {
             throw new HomealoneException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    // 레시피 리스트 제목으로 조회
-    public Page<RecipePageDto> findByTitle(Pageable pageable, String title) {
-        try {
-            Page<Recipe> recipePage = recipeRepository.findByTitleContaining(pageable, title);
-            return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.BAD_REQUEST);
-        }
-    }
-
-    // 레시피 리스트 내용으로 조회
-    public Page<RecipePageDto> findByDescription(Pageable pageable, String description) {
-        try {
-            Page<Recipe> recipePage = recipeRepository.findByDescriptionContaining(pageable, description);
-            return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.BAD_REQUEST);
         }
     }
 
@@ -131,6 +131,7 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
+    // 레시피 업데이트
     @Transactional
     public RecipeResponseDto patchRecipe(Long id, RecipeRequestDto requestDto) {
         Recipe recipe = recipeRepository.findById(id)
@@ -138,26 +139,59 @@ public class RecipeService {
 
         // 기본 레시피 수정
         recipe.setTitle(requestDto.getTitle());
-        recipe.setDescription(requestDto.getDescription());;
+        recipe.setDescription(requestDto.getDescription());
         recipe.setPortions(requestDto.getPortions());
         recipe.setRecipeType(requestDto.getRecipeType());
         recipe.setRecipeTime(requestDto.getRecipeTime());
         recipe.setCuisine(requestDto.getCuisine());
 
         // 연관 관계 수정 (이미지, 재료, 디테일, 태그)
-        // TODO : 이미지 저장 로직을 다시 보고 수정
-        List<RecipeImageDto> imageDtos = requestDto.getImages();
-        if(imageDtos != null) {
-            for(RecipeImageDto imageDto : imageDtos) {
 
+        // 이미지 전체 삭제 후 재생성
+        recipeImageService.deleteImageByRecipe(recipe);
+        List<RecipeImageDto> imageDtos = requestDto.getImages();
+        recipeImageService.addRecipeImages(recipe, imageDtos);
+
+        // 재료 수정
+        recipeIngredientService.deleteRecipeIngredientByRecipe(recipe);
+        List<RecipeIngredientDto> ingredientDtos = requestDto.getIngredients();
+        recipeIngredientService.addRecipeIngredients(recipe, ingredientDtos);
+
+        // 레시피 디테일 수정
+        recipeDetailService.deleteDetailByRecipe(recipe);
+        List<RecipeDetailDto> detailDtos = requestDto.getDetails();
+        recipeDetailService.addRecipeDetails(recipe, detailDtos);
+
+        Recipe updatedRecipe;
+        updatedRecipe = recipeRepository.saveAndFlush(recipe);
+
+        return updatedRecipe.toResponseDto();
+    }
+
+    public void updateRecipeIngredients(Recipe recipe, List<RecipeIngredientDto> updateIngredientDtos) {
+        List<Long> updateIngredientIds = updateIngredientDtos.stream()
+            .map(RecipeIngredientDto::getId)
+            .toList();
+
+        // 기존 재료
+        List<RecipeIngredient> ingredientDtos = recipe.getIngredients();
+
+        // 기존 재료 중 업데이트 재료 리스트에 없는 재료를 삭제
+        Iterator<RecipeIngredient> iterator = ingredientDtos.iterator();
+        while(iterator.hasNext()) {
+            RecipeIngredient ingredient = iterator.next();
+            if(!updateIngredientIds.contains(ingredient.getId())){
+                iterator.remove();
+                recipeIngredientService.deleteRecipeIngredient(ingredient);
             }
         }
 
-        // 재료 수정
-
-
-        Recipe updatedRecipe = recipeRepository.save(recipe);
-
-        return updatedRecipe.toResponseDto();
+        // 변경할 재료 중에서 기존 재료 리스트에 없는 재료를 찾아 추가해준다.
+        for(RecipeIngredientDto updateIngredientDto : updateIngredientDtos) {
+            if(updateIngredientDto.getId() == null){
+                RecipeIngredient newIngredient = recipeIngredientService.createRecipeIngredient(updateIngredientDto);
+                recipe.addIngredients(newIngredient);
+            }
+        }
     }
 }

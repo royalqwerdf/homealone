@@ -27,7 +27,7 @@ public class RecipeImage extends BaseTimeEntity {
     @Column
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @Setter
     private Recipe recipe;
