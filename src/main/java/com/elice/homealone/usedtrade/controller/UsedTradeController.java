@@ -24,11 +24,10 @@ import java.util.Map;
 public class UsedTradeController {
 
     private final UsedTradeService usedTradeService;
-    private final UsedTradeImageService usedtradeImageService;
 
     //중고거래 전체 조회
     @GetMapping
-    public ResponseEntity<?> getAllUsedTrades(
+    public ResponseEntity<Page<UsedTradeResponseDto>> getAllUsedTrades(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
 
@@ -48,7 +47,7 @@ public class UsedTradeController {
 
     //중고거래 게시글 작성
     @PostMapping
-    public ResponseEntity<?> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+    public ResponseEntity<Long> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
 
         Long usedTradeId = usedTradeService.createUsedTrade(usedTradeRequestDto);
 
@@ -77,7 +76,7 @@ public class UsedTradeController {
 
     //중고거래 게시글 검색
     @GetMapping("/search")
-    public ResponseEntity<Map<String,?>> searchUsedTrades(
+    public ResponseEntity<Map<String,Object>> searchUsedTrades(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "title", required = false) String title,
