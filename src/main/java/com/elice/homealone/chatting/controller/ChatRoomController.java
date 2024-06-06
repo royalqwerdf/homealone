@@ -19,6 +19,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;

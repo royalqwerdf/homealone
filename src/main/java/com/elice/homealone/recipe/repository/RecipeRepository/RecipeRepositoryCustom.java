@@ -6,11 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface RecipeRepositoryCustom {
-    Page<Recipe> findRecipes(
+    List<Recipe> findRecipes(
         Pageable pageable,
         String userId,
         String title,
         String description,
         List<String> tags
     );
+
+    public Long countRecipes(
+        String userId,
+        String title,
+        String description,
+        List<String> tags);
 }

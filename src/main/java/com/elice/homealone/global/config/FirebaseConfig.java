@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class FirebaseConfig {
 
+    /*
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream serviceAccount =
@@ -36,6 +37,8 @@ public class FirebaseConfig {
     public Bucket bucket() throws IOException {
         return StorageClient.getInstance(firebaseApp()).bucket();
     }
+     */
+
 }
 //package com.elice.homealone.global.config;
 //

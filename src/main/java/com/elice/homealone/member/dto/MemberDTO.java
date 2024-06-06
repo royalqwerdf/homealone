@@ -1,6 +1,7 @@
 package com.elice.homealone.member.dto;
 
 
+import com.elice.homealone.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +20,4 @@ public class MemberDTO {
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    public String message;
 }

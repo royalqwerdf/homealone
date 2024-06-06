@@ -18,7 +18,7 @@ public enum ErrorCode {
     //401
     MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
     INVALID_TOKEN(UNAUTHORIZED, "유효하지 않는 토큰입니다."),
-
+    EXPIRED_TOKEN(UNAUTHORIZED, "만료된 토큰입니다"),
     //409
     EMAIL_ALREADY_EXISTS(CONFLICT, "중복된 이메일 입니다."),
 
