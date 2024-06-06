@@ -93,6 +93,7 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .build();
         }
     }

@@ -22,8 +22,6 @@ public class RoomRequestDTO {
     private String title;
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
     private String content;
-    private Post.Type type;
-    @NotEmpty(message = ErrorMessage.TAGS_REQUIRED)
     private List<PostTagDto> tags;
     @NotBlank(message = ErrorMessage.THUMBNAIL_URL_REQUIRED)
     private String thumbnailUrl;

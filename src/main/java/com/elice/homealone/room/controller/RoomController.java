@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,66 +29,58 @@ public class RoomController {
                                                         @RequestParam(required = false) Long memberId,
                                                         @PageableDefault(size = 20) Pageable pageable){
         Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberId, pageable);
-        if((title != null && !title.isBlank()) || (content != null && !content.isBlank())){
             if(RoomResponseDTO.isEmpty()){
-                Response.ApiResponse response = new Response.ApiResponse("검색 결과가 없습니다.");
+                Response.ApiResponse response = new Response.ApiResponse("결과가 없습니다.");
                 return ResponseEntity.ok(response);
             }
-        }
-        if(memberId != null){
-            if(RoomResponseDTO.isEmpty()){
-                Response.ApiResponse response = new Response.ApiResponse("작성하신 게시글이 없습니다.");
-                return ResponseEntity.ok(response);
-            }
-        }
         return ResponseEntity.ok().body(RoomResponseDTO);
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createRoomPost(@Validated @RequestBody RoomRequestDTO roomDto,
-                                            @RequestHeader("Authorization") String token
+    public ResponseEntity<RoomResponseDTO.RoomInfoDto> createRoomPost(@Validated @RequestBody RoomRequestDTO roomDto,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails
                                                                 ) {
 
         //사용자 검증 로직
-
-        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.CreateRoomPost(roomDto,token);
+        String username = userDetails.getUsername();
+        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.CreateRoomPost(roomDto,username);
         return ResponseEntity.status(HttpStatus.CREATED).body(roomInfoDto);
     }
 
     @PatchMapping("/{roomId}")
-    public ResponseEntity<?> editRoomPost(@PathVariable Long roomId
+    public ResponseEntity<RoomResponseDTO.RoomInfoDto> editRoomPost(@PathVariable Long roomId
                                             , @Validated @RequestBody RoomRequestDTO roomDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
-                                            , @RequestHeader("Authorization") String token){
+                                            ,  @AuthenticationPrincipal CustomUserDetails userDetails){
         //사용자 검증 로직
-
-        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.EditRoomPost(token,roomId,roomDto);
+        String username = userDetails.getUsername();
+        RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.EditRoomPost(username,roomId,roomDto);
         return ResponseEntity.status(HttpStatus.OK).body(roomInfoDto);
 
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long roomId
-            , @RequestHeader("Authorization") String token){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
-        roomService.deleteRoomPost(token,roomId);
+    public ResponseEntity<Response.ApiResponse> deletePost(@PathVariable Long roomId
+            ,  @AuthenticationPrincipal CustomUserDetails userDetails){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
+
+        String username = userDetails.getUsername();
+        roomService.deleteRoomPost(username,roomId);
         Response.ApiResponse response = new Response.ApiResponse("방자랑 "+roomId+"번 게시글이 성공적으로 지워졌습니다.");
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<?> findRoomById ( @RequestHeader(value = "Authorization",required = false) String token,
-            @PathVariable Long roomId){
-        Object byRoomId;
-        if(token.isEmpty() || token == null)
-        {
-             byRoomId =  roomService.findByRoomId(roomId);
-        }
-        else {
-             byRoomId = roomService.findByRoomIdForMember(roomId, token);
-        }
-        return ResponseEntity.ok().body(byRoomId);
+    public ResponseEntity<?> findRoomById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
+        RoomResponseDTO roomInfo;
 
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            roomInfo = roomService.findByRoomIdForMember(roomId, username);
+        } else {
+            roomInfo = roomService.findByRoomId(roomId);
+        }
+
+        return ResponseEntity.ok(roomInfo);
     }
-
 
 
 

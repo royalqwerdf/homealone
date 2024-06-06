@@ -22,8 +22,6 @@ public class TalkRequestDTO {
     private String title;
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
     private String content;
-    private Post.Type type;
-    @NotEmpty(message = ErrorMessage.TAGS_REQUIRED)
     private List<PostTagDto> tags;
     private List<String> images;
 

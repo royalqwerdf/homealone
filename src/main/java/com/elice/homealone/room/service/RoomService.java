@@ -32,15 +32,10 @@ import java.util.stream.Collectors;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
     @Transactional
-    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String token){ ///회원 정의 추가해야함.
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String email){ ///회원 정의 추가해야함.
         Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
                  );
@@ -55,11 +50,7 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDTO.RoomInfoDto EditRoomPost(String token,Long roomId, RoomRequestDTO roomDto){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public RoomResponseDTO.RoomInfoDto EditRoomPost(String email,Long roomId, RoomRequestDTO roomDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -85,11 +76,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoomPost(String token,Long roomId){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
+    public void deleteRoomPost(String email,Long roomId){
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -143,8 +130,7 @@ public class RoomService {
 
 
     @Transactional
-    public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String token){
-            String email = jwtTokenProvider.getEmail(token);
+    public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String email){
             Member member = memberRepository.findByEmail(email).orElseThrow(
                     ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
             );
