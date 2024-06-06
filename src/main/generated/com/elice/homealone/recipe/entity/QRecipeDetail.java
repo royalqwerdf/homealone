@@ -58,7 +58,7 @@ public class QRecipeDetail extends EntityPathBase<RecipeDetail> {
 
     public QRecipeDetail(Class<? extends RecipeDetail> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.recipe = inits.isInitialized("recipe") ? new QRecipe(forProperty("recipe")) : null;
+        this.recipe = inits.isInitialized("recipe") ? new QRecipe(forProperty("recipe"), inits.get("recipe")) : null;
     }
 
 }
