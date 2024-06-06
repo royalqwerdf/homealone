@@ -5,12 +5,14 @@ import com.elice.homealone.usedtrade.dto.UsedTradeRequestDto;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import com.elice.homealone.usedtrade.service.UsedTradeImageService;
 import com.elice.homealone.usedtrade.service.UsedTradeService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,11 +24,10 @@ import java.util.Map;
 public class UsedTradeController {
 
     private final UsedTradeService usedTradeService;
-    private final UsedTradeImageService usedtradeImageService;
 
     //중고거래 전체 조회
     @GetMapping
-    public ResponseEntity<?> getAllUsedTrades(
+    public ResponseEntity<Page<UsedTradeResponseDto>> getAllUsedTrades(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
 
@@ -35,28 +36,29 @@ public class UsedTradeController {
 
         return new ResponseEntity<>(responseDtos,HttpStatus.OK);
     }
-
+    //중고거래 상세페이지 조회
     @GetMapping("/{usedtradeId}")
-    public ResponseEntity<?> getUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
+    public ResponseEntity<UsedTradeResponseDto> getUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
+
         UsedTradeResponseDto responseDto = usedTradeService.getUsedTrade(usedtradeId);
-        if(responseDto == null) {
-            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
-        }
+
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
+    //중고거래 게시글 작성
     @PostMapping
-    public ResponseEntity<?> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+    public ResponseEntity<Long> createUsedTrade(@RequestBody UsedTradeRequestDto usedTradeRequestDto) {
+
         Long usedTradeId = usedTradeService.createUsedTrade(usedTradeRequestDto);
+
         return new ResponseEntity<>(usedTradeId,HttpStatus.CREATED);
     }
 
+    //중고거래 게시글 수정
     @PutMapping("/{usedtradeId}")
     public ResponseEntity<String> updateUsedTrade(@RequestBody UsedTradeRequestDto requestDto, @PathVariable("usedtradeId") Long usedtradeId) {
 
-        if(!usedTradeService.modifyUsedTrade(usedtradeId,requestDto)){
-            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
-        }
+        usedTradeService.modifyUsedTrade(usedtradeId,requestDto);
 
         return new ResponseEntity<>("수정 성공",HttpStatus.OK);
     }
@@ -66,11 +68,7 @@ public class UsedTradeController {
     @DeleteMapping("/{usedtradeId}")
     public ResponseEntity<String> deleteUsedTrade(@PathVariable("usedtradeId") Long usedtradeId) {
 
-        boolean isDeleted = usedTradeService.deleteUsedTrade(usedtradeId);
-
-        if(!isDeleted){
-            return new ResponseEntity<>(ErrorCode.USEDTRADE_NOT_FOUND.getMessage(),ErrorCode.USEDTRADE_NOT_FOUND.getHttpStatus());
-        }
+        usedTradeService.deleteUsedTrade(usedtradeId);
 
         return new ResponseEntity<>("삭제 완료",HttpStatus.OK);
 
@@ -78,7 +76,7 @@ public class UsedTradeController {
 
     //중고거래 게시글 검색
     @GetMapping("/search")
-    public ResponseEntity<Map<String,?>> searchUsedTrades(
+    public ResponseEntity<Map<String,Object>> searchUsedTrades(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "title", required = false) String title,
