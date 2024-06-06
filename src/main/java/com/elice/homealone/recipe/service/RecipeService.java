@@ -49,7 +49,8 @@ public class RecipeService {
 
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
-            Recipe recipe = requestDto.toBaseEntity(member);
+            Member loginMember = memberService.findById(member.getId());
+            Recipe recipe = requestDto.toBaseEntity(loginMember);
             recipeRepository.save(recipe);
 
             // 레시피 dto 이미지 리스트로 레시피 이미지 생성 후 레시피 엔티티에 추가

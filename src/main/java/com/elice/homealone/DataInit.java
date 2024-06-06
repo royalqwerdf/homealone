@@ -19,13 +19,10 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class DataInit implements CommandLineRunner {
 
-    private final CrawlerService crawlerService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args) throws Exception {
-        //crawlerService.loadJsonAndSaveRecipe();
-
         String email = "geobukseon@homealone.co.kr";
         if (!memberRepository.existsByEmail(email)) {
             Member admin = Member.builder()
@@ -39,6 +36,5 @@ public class DataInit implements CommandLineRunner {
             memberRepository.save(admin);
         }
 
-        //crawlerService.loadFromMongoAndSaveRecipe();
     }
 }
