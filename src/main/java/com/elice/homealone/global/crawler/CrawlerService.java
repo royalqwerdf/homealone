@@ -54,10 +54,17 @@ public class CrawlerService {
         // MongoDB에서 Recipe 데이터를 읽어옴
         List<RecipeRequest> recipes = recipeMongoRepository.findAllWithCreatedDateAfter(date);
 
+        int totalRecipes = recipes.size();
+        int processCount = 0;
         for(RecipeRequest recipe : recipes) {
             // 변환된 RecipeRequestDto를 사용하여 레시피 생성
             RecipeRequestDto requestDto = RecipeRequestDto.from(recipe);
             recipeService.createRecipe(member, requestDto);
+            processCount++;
+            int progress = processCount / totalRecipes * 100;
+            if(progress%10 == 0){
+                System.out.printf("진행도: %d\n", progress);
+            }
         }
     }
 
