@@ -1,15 +1,19 @@
 package com.elice.homealone.member.controller;
 
+import com.elice.homealone.member.dto.OAuthToken;
 import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
 import com.elice.homealone.member.service.AuthService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -70,8 +74,34 @@ public class AuthController {
                 String.class // 요청 시 반환되는 데이터 타입
         );
 
-        return"카카오 로그인 토큰 발급:"+response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        OAuthToken oAuthToken = null;
+        try {
+            oAuthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        RestTemplate rt2 = new RestTemplate();
+
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.add("Authorization", "Bearer " + oAuthToken.getAccess_token());
+        headers2.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        // 요청하기 위해 헤더(Header)와 데이터(Body)를 합친다.
+        // kakaoTokenRequest는 데이터(Body)와 헤더(Header)를 Entity가 된다.
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest2 = new HttpEntity<>(headers2);
+
+        // POST 방식으로 Http 요청한다. 그리고 response 변수의 응답 받는다.
+        ResponseEntity<String> response2 = rt2.exchange(
+                "https://kapi.kakao.com/v2/user/me", // https://{요청할 서버 주소}
+                HttpMethod.POST, // 요청할 방식
+                kakaoTokenRequest2, // 요청할 때 보낼 데이터
+                String.class // 요청 시 반환되는 데이터 타입
+        );
+        return response2.getBody();
     }
+
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
