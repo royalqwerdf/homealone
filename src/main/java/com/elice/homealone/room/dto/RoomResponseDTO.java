@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
-        private List<String> roomImages;
+        private List<String> roomImages = new ArrayList<>();
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
@@ -93,6 +94,7 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .build();
         }
     }
