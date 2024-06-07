@@ -121,26 +121,22 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId){
+    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId,String email){
+        if(email != null && !email.isEmpty()){
+            Member member = memberService.findByEmail(email);
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
+            room.setView(room.getView()+1);
+            RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
+            //TODO:회원이 스크랩했는지 안했는지 check로직 필요
+            roomInfoDto.setLike(true);
+            roomInfoDto.setScrap(true);
+            return roomInfoDto;
+        }
          Room room = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView()+1);
         return  RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-
-    }
-
-
-    @Transactional
-    public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String email){
-            Member member = memberService.findByEmail(email);
-            Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-            room.setView(room.getView()+1);
-        RoomResponseDTO.RoomInfoDtoForMember roomInfoDtoForMember = RoomResponseDTO.RoomInfoDtoForMember.toRoomInfoDtoForMember(room);
-            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
-            roomInfoDtoForMember.setScrap(true);
-            roomInfoDtoForMember.setLike(true);
-            return roomInfoDtoForMember;
 
     }
 

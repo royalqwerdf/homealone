@@ -112,7 +112,17 @@ public class TalkService {
     }
 
     @Transactional
-    public TalkResponseDTO.TalkInfoDto findByTalkId(Long talkId){
+    public TalkResponseDTO.TalkInfoDto findByTalkId(Long talkId, String email){
+        if(email != null && !email.isEmpty()){
+            Member member = memberService.findByEmail(email);
+            Talk talk = talkRepository.findById(talkId)
+                    .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
+            talk.setView(talk.getView()+1);
+            TalkResponseDTO.TalkInfoDto talkInfoDtoForMember = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
+            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
+            talkInfoDtoForMember.setScrap(true);
+            talkInfoDtoForMember.setLike(true);
+        }
         Talk talk = talkRepository.findById(talkId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
         talk.setView(talk.getView()+1);
@@ -120,20 +130,6 @@ public class TalkService {
 
     }
 
-
-    @Transactional
-    public TalkResponseDTO.TalkInfoDtoForMember findByTalkIdForMember(Long talkId, String email){
-        Member member = memberService.findByEmail(email);
-            Talk talk = talkRepository.findById(talkId)
-                    .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-            talk.setView(talk.getView()+1);
-        TalkResponseDTO.TalkInfoDtoForMember talkInfoDtoForMember = TalkResponseDTO.TalkInfoDtoForMember.toTalkInfoDtoForMember(talk);
-        //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
-            talkInfoDtoForMember.setScrap(true);
-            talkInfoDtoForMember.setLike(true);
-            return talkInfoDtoForMember;
-
-    }
 
     @Transactional
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
