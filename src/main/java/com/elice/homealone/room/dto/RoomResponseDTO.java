@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,9 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
-        private List<String> roomImages;
+        private List<String> roomImages = new ArrayList<>();
+        private Boolean scrap;
+        private Boolean like;
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
@@ -69,32 +72,12 @@ public class RoomResponseDTO {
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
+                    .scrap(false)
+                    .like(false)
                     .build();
         }
     }
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RoomInfoDtoForMember extends RoomResponseDTO.RoomInfoDto {
-        private Boolean scrap;
-        private Boolean like;
-        public static RoomInfoDtoForMember toRoomInfoDtoForMember(Room room) {
-            return RoomInfoDtoForMember.builder()
-                    .id(room.getId())
-                    .title(room.getTitle())
-                    .thumbnailUrl(room.getThumbnailUrl())
-                    .tags(room.getTags().stream().map(postTag -> postTag.toDto()).collect(Collectors.toList()))
-                    .content(room.getContent())
-                    .createdAt(room.getCreatedAt())
-                    .updatedAt(room.getModifiedAt())
-                    .view(room.getView())
-                    .likeCount( room.getPostLikes() != null ? room.getPostLikes().size() : 0)
-                    .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
-                    .memberName(room.getMember().getName())
-                    .commentCount(room.getComments() != null ? room.getComments().size() : 0)
-                    .build();
-        }
-    }
+
+
 
 }

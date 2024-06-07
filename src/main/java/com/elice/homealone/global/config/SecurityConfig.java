@@ -1,10 +1,12 @@
 package com.elice.homealone.global.config;
 
+import com.elice.homealone.global.exception.CustomAccessDeniedHandler;
+import com.elice.homealone.global.exception.JwtAuthenticationEntryPoint;
 import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
+import com.elice.homealone.global.redis.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,10 +32,16 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
+
+    //401,403스프링 시큐리티가 던지는 에러 handler
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final RedisUtil redisUtil;
 //
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService, redisUtil);
     }
 
     @Bean
@@ -47,8 +54,13 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
                         .requestMatchers("/", "/static/index.html").permitAll()
+                        .requestMatchers("/api/recipes/getRecipe/**").permitAll()
                         .anyRequest().permitAll()
-                )
+                ) //인증 실패와 권한 부족 authenticationEntryPoint,accessDeniedHandler에서 관리
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                .authenticationEntryPoint(unauthorizedHandler)
+                .accessDeniedHandler(accessDeniedHandler)
+        )
                 // enable h2-console
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
@@ -64,7 +76,7 @@ public class SecurityConfig {
                             response.getWriter().flush();
                         })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

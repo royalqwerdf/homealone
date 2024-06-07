@@ -41,8 +41,10 @@ public class Room extends Post {
     @Builder.Default
     private Integer view = 0;
 
+
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
+
 
 //    public static Room toRoom(RoomRequestDTO roomDto){
 //        return Room.builder()
@@ -59,7 +61,7 @@ public class Room extends Post {
         this.title = roomDto.getTitle();
         this.content = roomDto.getContent();
         this.thumbnailUrl = roomDto.getThumbnailUrl();
-        this.roomImages = roomDto.getImages().stream()
+        this.roomImages = roomDto.getRoomImages().stream()
                 .map(url -> new RoomImage(url, this))
                 .collect(Collectors.toList());
     }

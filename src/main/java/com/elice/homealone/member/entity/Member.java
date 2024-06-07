@@ -4,13 +4,12 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
-import com.elice.homealone.member.dto.MemberDTO;
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.postlike.entity.PostLike;
 import com.elice.homealone.scrap.entity.Scrap;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,9 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -68,8 +64,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.password=password;
     }
 
-    public MemberDTO toDto() {
-        MemberDTO memberDTO = new MemberDTO();
+    public MemberDto toDto() {
+        MemberDto memberDTO = new MemberDto();
         memberDTO.setId(this.id);
         memberDTO.setName(this.name);
         memberDTO.setBirth(this.birth);

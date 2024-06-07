@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class RecipeController {
 
     // 레시피 페이지 조회
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Page<RecipePageDto>> getRecipe(Pageable pageable,
         @RequestParam(required = false) String userId,
         @RequestParam(required = false) String title,
@@ -46,6 +48,7 @@ public class RecipeController {
 
     // 레시피 상세 조회
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<RecipeResponseDto> getRecipeById(@PathVariable Long id) {
         RecipeResponseDto recipe = recipeService.findById(id);
         return new ResponseEntity<>(recipe, HttpStatus.OK);

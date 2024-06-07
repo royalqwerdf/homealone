@@ -1,22 +1,13 @@
 package com.elice.homealone.global.crawler;
 
-import com.elice.homealone.member.dto.request.SignupRequestDTO;
+import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.entity.Role;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
-import com.elice.homealone.recipe.dto.RecipeResponseDto;
-import com.elice.homealone.recipe.entity.Recipe;
-import com.elice.homealone.recipe.enums.Cuisine;
-import com.elice.homealone.recipe.enums.RecipeType;
 import com.elice.homealone.recipe.service.RecipeService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.rpc.context.AttributeContext.Auth;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
+
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +59,7 @@ public class CrawlerService {
         }
     }
 
-    public void adminSignUp(SignupRequestDTO signupRequestDTO) {
+    public void adminSignUp(SignupRequestDto signupRequestDTO) {
         String email = signupRequestDTO.getEmail();
         if (!memberRepository.existsByEmail(email)) {
             Member admin = Member.builder()

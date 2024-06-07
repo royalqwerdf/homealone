@@ -35,12 +35,11 @@ public class JwtTokenProvider {
      * email을 받아서 access 토큰 생성
      */
     public String createAccessToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -51,12 +50,11 @@ public class JwtTokenProvider {
      * email을 받아서 refresh 토큰 생성
      */
     public String createRefreshToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -67,11 +65,12 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            // String accessToken = token.substring(7);
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            String email = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
             return true;
         } catch (ExpiredJwtException e) { // 토큰 만료
-            throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
+            // 만료된 토큰에 대한 처리 로직
+            //throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
+            return false;
         } catch (IllegalArgumentException e) { // 그 외의 예외상황(유효하지 않은 토큰 등)
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         } catch (Exception e) {
@@ -83,7 +82,6 @@ public class JwtTokenProvider {
      * JWT 토큰으로 email 반환받는다.
      */
     public String getEmail(String token) {
-        //String accessToken = token.substring(7);
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
