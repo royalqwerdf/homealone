@@ -14,6 +14,8 @@ import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
 import com.elice.homealone.tag.Service.PostTagService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -42,14 +44,15 @@ public class RoomService {
         Member member = memberService.findByEmail(email);
         Room room = new Room(roomDto,member);
         roomRepository.save(room);
+        //HTML태그 제거
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
+        System.out.println(plainContent);
         room.setPlainContent(plainContent);
         roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
                 .forEach(postTag-> room.addTag(postTag));
-        //HTML태그 제거
+
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
     }
-
     @Transactional
     public RoomResponseDTO.RoomInfoDto EditRoomPost(String email,Long roomId, RoomRequestDTO roomDto){
         Member member = memberService.findByEmail(email);

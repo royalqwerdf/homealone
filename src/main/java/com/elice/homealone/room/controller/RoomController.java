@@ -5,6 +5,8 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.service.RoomService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,14 +17,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+@Tag(name ="RoomController",description = "방자랑 게시글 관련 API")
 @Slf4j
 @RestController
 @RequestMapping("/api/room")
 public class RoomController {
     @Autowired
     private RoomService roomService;
-
+    @Operation(summary = "방자랑 게시글 조회, 검색")
     @GetMapping("")
     public ResponseEntity<Page<RoomResponseDTO>> findAll(@RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
@@ -32,7 +34,7 @@ public class RoomController {
         Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberName, pageable);
         return ResponseEntity.ok().body(RoomResponseDTO);
     }
-
+    @Operation(summary = "방자랑 게시글 생성")
     @PostMapping("")
     public ResponseEntity<RoomResponseDTO.RoomInfoDto> createRoomPost(@Validated @RequestBody RoomRequestDTO roomDto,
                                            @AuthenticationPrincipal Member member
@@ -43,7 +45,7 @@ public class RoomController {
         RoomResponseDTO.RoomInfoDto roomInfoDto = roomService.CreateRoomPost(roomDto,email);
         return ResponseEntity.status(HttpStatus.CREATED).body(roomInfoDto);
     }
-
+    @Operation(summary = "방자랑 게시글 수정")
     @PatchMapping("/{roomId}")
     public ResponseEntity<RoomResponseDTO.RoomInfoDto> editRoomPost(@PathVariable Long roomId
                                             , @Validated @RequestBody RoomRequestDTO roomDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
@@ -54,7 +56,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(roomInfoDto);
 
     }
-
+    @Operation(summary = "방자랑 게시글 삭제")
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Response.ApiResponse> deletePost(@PathVariable Long roomId
             ,  @AuthenticationPrincipal Member member){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
@@ -64,7 +66,7 @@ public class RoomController {
         Response.ApiResponse response = new Response.ApiResponse("방자랑 "+roomId+"번 게시글이 성공적으로 지워졌습니다.");
         return ResponseEntity.ok().body(response);
     }
-
+    @Operation(summary = "방자랑 게시글 상세 조회")
     @GetMapping("/{roomId}")
     public ResponseEntity<?> findRoomById( @AuthenticationPrincipal Member member, @PathVariable Long roomId) {
         RoomResponseDTO roomInfo;
@@ -78,13 +80,13 @@ public class RoomController {
 
         return ResponseEntity.ok(roomInfo);
     }
-
+    @Operation(summary = "방자랑 게시글 인기글 조회")
     @GetMapping("/view")
     public ResponseEntity<Page<RoomResponseDTO>> findTopRoomByView(@PageableDefault(size = 5) Pageable pageable){
         Page<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView(pageable);
         return ResponseEntity.ok(topRoomByView);
     }
-
+    @Operation(summary = "방자랑 게시글 회원으로 조회")
     @GetMapping("/member")
     public ResponseEntity<Page<RoomResponseDTO>> findRoomByMember(@PageableDefault(size = 10) Pageable pageable
             ,@AuthenticationPrincipal Member member){

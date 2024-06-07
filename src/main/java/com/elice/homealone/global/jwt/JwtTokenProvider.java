@@ -35,12 +35,11 @@ public class JwtTokenProvider {
      * email을 받아서 access 토큰 생성
      */
     public String createAccessToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -51,12 +50,11 @@ public class JwtTokenProvider {
      * email을 받아서 refresh 토큰 생성
      */
     public String createRefreshToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -67,8 +65,7 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            // String accessToken = token.substring(7);
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            String email = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
             return true;
         } catch (ExpiredJwtException e) { // 토큰 만료
             throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
@@ -83,7 +80,6 @@ public class JwtTokenProvider {
      * JWT 토큰으로 email 반환받는다.
      */
     public String getEmail(String token) {
-        //String accessToken = token.substring(7);
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 

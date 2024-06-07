@@ -4,6 +4,7 @@ import com.elice.homealone.global.exception.CustomAccessDeniedHandler;
 import com.elice.homealone.global.exception.JwtAuthenticationEntryPoint;
 import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
+import com.elice.homealone.global.redis.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -31,13 +32,16 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
+
     //401,403스프링 시큐리티가 던지는 에러 handler
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-     //
+    private final RedisUtil redisUtil;
+//
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService, redisUtil);
     }
 
     @Bean
@@ -71,7 +75,7 @@ public class SecurityConfig {
                             response.getWriter().flush();
                         })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

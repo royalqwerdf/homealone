@@ -61,9 +61,9 @@ public class CrawlerService {
             RecipeRequestDto requestDto = RecipeRequestDto.from(recipe);
             recipeService.createRecipe(member, requestDto);
             processCount++;
-            int progress = processCount / totalRecipes * 100;
-            if(progress%10 == 0){
-                System.out.printf("진행도: %d\n", progress);
+            if(processCount % (totalRecipes / 10) == 0){
+                int progress = (int) ((double) processCount / totalRecipes * 100);
+                System.out.printf("진행도: %d%%\n", progress);
             }
         }
     }

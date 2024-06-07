@@ -1,12 +1,7 @@
 package com.elice.homealone.usedtrade.dto;
 
 import com.elice.homealone.member.dto.MemberDTO;
-import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.tag.dto.PostTagDto;
-import com.elice.homealone.tag.entity.PostTag;
-import com.elice.homealone.usedtrade.entity.UsedTradeImage;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.ArrayList;

@@ -68,11 +68,8 @@ public class AuthService{
 
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
         String acccessToken = httpServletRequest.getHeader("Authorization");
-        //0. accessToken 검증
-        jwtTokenProvider.validateToken(acccessToken);
         //1. accessToken을 블랙리스트 redis에 저장
-        String email = jwtTokenProvider.getEmail(acccessToken);
-        redisUtil.setBlackList("email", acccessToken);
+        redisUtil.setBlackList(acccessToken.substring(7),"blacklist");
         //2. refreshToken을 쿠키에서 삭제
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
