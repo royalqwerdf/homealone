@@ -68,7 +68,9 @@ public class JwtTokenProvider {
             String email = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
             return true;
         } catch (ExpiredJwtException e) { // 토큰 만료
-            throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
+            // 만료된 토큰에 대한 처리 로직
+            //throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
+            return false;
         } catch (IllegalArgumentException e) { // 그 외의 예외상황(유효하지 않은 토큰 등)
             throw new HomealoneException(ErrorCode.INVALID_TOKEN);
         } catch (Exception e) {

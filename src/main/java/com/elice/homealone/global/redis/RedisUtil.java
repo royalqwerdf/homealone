@@ -55,6 +55,9 @@
         }
 
         public boolean hasKeyBlackList(String key) {
-            return redisBlackListTemplate.hasKey(key);
+            if (redisBlackListTemplate == null) {
+                throw new IllegalStateException("redisBlackListTemplate is not initialized");
+            }
+            return Boolean.TRUE.equals(redisBlackListTemplate.hasKey(key));
         }
     }

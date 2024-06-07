@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         //임시로 root부터 허용
                         .requestMatchers("/", "/static/index.html").permitAll()
+                        .requestMatchers("/api/recipes/getRecipe/**").permitAll()
                         .anyRequest().permitAll()
                 ) //인증 실패와 권한 부족 authenticationEntryPoint,accessDeniedHandler에서 관리
                 .exceptionHandling(exceptionHandling -> exceptionHandling
