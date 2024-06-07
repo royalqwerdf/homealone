@@ -46,7 +46,6 @@ public class RoomService {
         roomRepository.save(room);
         //HTML태그 제거
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
-        System.out.println(plainContent);
         room.setPlainContent(plainContent);
         roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
                 .forEach(postTag-> room.addTag(postTag));
