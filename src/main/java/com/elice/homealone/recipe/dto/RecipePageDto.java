@@ -18,9 +18,10 @@ public class RecipePageDto {
     private String cuisine;
 
     private String imageUrl;
+    private String userId;
 
     @Builder
-    public RecipePageDto(Long id, String title, String description, int portions, String recipeType, int recipeTime, String cuisine, String imageUrl) {
+    public RecipePageDto(Long id, String title, String description, int portions, String recipeType, int recipeTime, String cuisine, String imageUrl, String userId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -30,5 +31,6 @@ public class RecipePageDto {
         this.cuisine = cuisine;
 
         this.imageUrl = imageUrl;
+        this.userId = userId;
     }
 }

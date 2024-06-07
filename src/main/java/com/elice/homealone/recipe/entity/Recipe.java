@@ -114,7 +114,7 @@ public class Recipe extends Post {
         if(images != null){
             imageUrl = images.get(0).getImageUrl();
         }
-
+        String userId = this.getMember().getUsername().split("@")[0];
         return RecipePageDto.builder()
             .id(this.getId())
             .title(title)
@@ -124,6 +124,7 @@ public class Recipe extends Post {
             .recipeTime(recipeTime.getTime())
             .cuisine(cuisine.getCuisine())
             .imageUrl(imageUrl)
+            .userId(userId)
             .build();
     }
 
