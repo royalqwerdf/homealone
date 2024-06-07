@@ -4,8 +4,8 @@ import com.elice.homealone.member.dto.request.LoginRequestDTO;
 import com.elice.homealone.member.dto.request.SignupRequestDTO;
 import com.elice.homealone.member.dto.response.LoginResponseDTO;
 import com.elice.homealone.member.service.AuthService;
-import com.elice.homealone.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "AuthController", description = "인증 관리 API")
 public class AuthController {
     private final AuthService authService;
     
@@ -37,6 +38,11 @@ public class AuthController {
         headers.set("Authorization", loginResponseDTO.getAccessToken());
         return new ResponseEntity<>(loginResponseDTO, headers, HttpStatus.OK);
     }
+    @Operation(summary = "OAUTH2.0 카카오 로그인")
+    @GetMapping("/kakao/login")
+    public @ResponseBody String login(String code) {
+        return"카카오 로그인 완료"+code;
+    }
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
@@ -45,4 +51,7 @@ public class AuthController {
         authService.logout(httpServletRequest, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+
 }
