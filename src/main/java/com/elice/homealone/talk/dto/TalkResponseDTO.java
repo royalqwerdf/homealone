@@ -3,6 +3,7 @@ package com.elice.homealone.talk.dto;
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.tag.dto.PostTagDto;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class TalkResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TalkInfoDto extends TalkResponseDTO {
+        @JsonRawValue
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
