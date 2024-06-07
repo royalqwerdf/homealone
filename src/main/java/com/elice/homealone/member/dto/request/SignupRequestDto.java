@@ -2,20 +2,18 @@ package com.elice.homealone.member.dto.request;
 
 
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.entity.Role;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupRequestDTO {
+public class SignupRequestDto {
     private String name;
     private LocalDate birth;
     @NotNull

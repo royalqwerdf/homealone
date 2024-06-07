@@ -8,13 +8,12 @@ import com.elice.homealone.chatting.repository.ChatMessageRepository;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.member.dto.MemberDTO;
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
 
 import com.elice.homealone.member.service.MemberService;
-import com.google.firebase.cloud.StorageClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        MemberDto member = authService.findLoginMemberByToken(accessToken);
         Member sender = memberService.findById(member.getId());
 
         if(receiver_id == sender.getId()) {
@@ -118,7 +117,7 @@ public class ChatRoomService {
         }
 
         //Member 도메인 회원 조회 메소드 참고
-        MemberDTO member = authService.findLoginMemberByToken(accessToken);
+        MemberDto member = authService.findLoginMemberByToken(accessToken);
         Member sender = memberService.findById(member.getId());
 
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());

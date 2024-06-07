@@ -3,7 +3,7 @@ package com.elice.homealone.member.dto;
 import lombok.Data;
 
 @Data
-public class OAuthToken {
+public class OAuthTokenDto {
     private String access_token;
     private String token_type;
     private String refresh_token;
