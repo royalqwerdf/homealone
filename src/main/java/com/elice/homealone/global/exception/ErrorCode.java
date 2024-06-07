@@ -14,6 +14,7 @@ public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     RECIPE_CREATION_FAILED(HttpStatus.BAD_REQUEST, "레시피 생성에 실패했습니다."),
     CHATROOM_CREATION_FAILED(HttpStatus.BAD_REQUEST, "자신의 게시물에 메시지를 요청할 수 없습니다"),
+    NOT_MY_CHATROOM(HttpStatus.BAD_REQUEST, "접근할 수 없는 채팅방입니다"),
 
     //401
     MISMATCHED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
