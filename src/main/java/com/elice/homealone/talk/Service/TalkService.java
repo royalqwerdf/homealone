@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,6 +138,13 @@ public class TalkService {
             talkInfoDtoForMember.setLike(true);
             return talkInfoDtoForMember;
 
+    }
+
+    @Transactional
+    public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        Page<TalkResponseDTO> talkResponseDTO = talkRepository.findTopTalkByView(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        return talkResponseDTO;
     }
 
 }

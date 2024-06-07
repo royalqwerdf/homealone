@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Range;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +79,11 @@ public class TalkController {
 
     }
 
-
+    @GetMapping("/topView")
+    public ResponseEntity<Page<TalkResponseDTO>> findTopTalkByView(@PageableDefault(size = 5) Pageable pageable){
+        Page<TalkResponseDTO> topTalkByView = talkService.findTopTalkByView(pageable);
+        return ResponseEntity.ok(topTalkByView);
+    }
 
 
 }

@@ -6,6 +6,7 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
@@ -20,9 +21,11 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,14 +34,12 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String email){ ///회원 정의 추가해야함.
-        Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-                 );
+        Member member = memberService.findByEmail(email);
         Room room = new Room(roomDto,member);
         roomRepository.save(room);
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
@@ -51,9 +52,7 @@ public class RoomService {
 
     @Transactional
     public RoomResponseDTO.RoomInfoDto EditRoomPost(String email,Long roomId, RoomRequestDTO roomDto){
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member member = memberService.findByEmail(email);
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
@@ -76,9 +75,7 @@ public class RoomService {
 
     @Transactional
     public void deleteRoomPost(String email,Long roomId){
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member member = memberService.findByEmail(email);
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember() != member){
@@ -91,7 +88,7 @@ public class RoomService {
 
 
     @Transactional
-    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,Long memberId,Pageable pageable){
+    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,String memberName,Pageable pageable){
         Specification<Room> spec = Specification.where(null);
 
             if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
@@ -108,9 +105,8 @@ public class RoomService {
             else if(tag != null && !tag.isEmpty()){
                 spec =spec.and(RoomSpecification.containsTag(tag));
             }
-
-            if(memberId != null){
-                spec = spec.and(RoomSpecification.hasMemberId(memberId));
+            else if (memberName != null){
+                spec = spec.and(RoomSpecification.hasMemberId(memberName));
             }
 
         Page<Room> findRoom = roomRepository.findAll(spec, pageable);
@@ -134,9 +130,7 @@ public class RoomService {
 
     @Transactional
     public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String email){
-            Member member = memberRepository.findByEmail(email).orElseThrow(
-                    ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-            );
+            Member member = memberService.findByEmail(email);
             Room room = roomRepository.findById(roomId)
                     .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
             room.setView(room.getView()+1);
@@ -145,6 +139,25 @@ public class RoomService {
             roomInfoDtoForMember.setScrap(true);
             roomInfoDtoForMember.setLike(true);
             return roomInfoDtoForMember;
+
+    }
+
+    @Transactional
+    public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findTopRoomByView(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+
+        return roomResponseDTOS;
+    }
+
+    @Transactional
+    public Page<RoomResponseDTO> findRoomByMember(String email, Pageable pageable){
+        Member member = memberService.findByEmail(email);
+        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findRoomByMember(member, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        if(roomResponseDTOS.isEmpty()){
+            throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
+        }
+        return roomResponseDTOS;
 
     }
 

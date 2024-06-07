@@ -27,9 +27,9 @@ public class RoomController {
     public ResponseEntity<Page<RoomResponseDTO>> findAll(@RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
                                                         @RequestParam(required = false) String tag,
-                                                        @RequestParam(required = false) Long memberId,
+                                                        @RequestParam(required = false) String memberName,
                                                         @PageableDefault(size = 20) Pageable pageable){
-        Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberId, pageable);
+        Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberName, pageable);
         return ResponseEntity.ok().body(RoomResponseDTO);
     }
 
@@ -79,6 +79,17 @@ public class RoomController {
         return ResponseEntity.ok(roomInfo);
     }
 
+    @GetMapping("/view")
+    public ResponseEntity<Page<RoomResponseDTO>> findTopRoomByView(@PageableDefault(size = 5) Pageable pageable){
+        Page<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView(pageable);
+        return ResponseEntity.ok(topRoomByView);
+    }
 
-
+    @GetMapping("/member")
+    public ResponseEntity<Page<RoomResponseDTO>> findRoomByMember(@PageableDefault(size = 10) Pageable pageable
+            ,@AuthenticationPrincipal Member member){
+        String email = member.getUsername();
+        Page<RoomResponseDTO> roomByMember = roomService.findRoomByMember(email, pageable);
+        return ResponseEntity.ok(roomByMember);
+    }
 }
