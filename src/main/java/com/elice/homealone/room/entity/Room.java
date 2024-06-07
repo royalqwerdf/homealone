@@ -3,8 +3,9 @@ package com.elice.homealone.room.entity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.dto.RoomRequestDTO;
-import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.tag.entity.PostTag;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,9 +29,11 @@ public class Room extends Post {
 
     @Column(nullable = false, name = "content")
     @Lob
+    @JsonSerialize(using = RawContentSerializer.class)
     private String content;
 
     @Column(name = "plain_content")
+    @Lob
     private String plainContent;
 
     @Column(name = "thumbnail_url")
