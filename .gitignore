@@ -48,7 +48,7 @@ src/main/resources/application-test.properties
 
 # python
 /python_workspace
-src/main/resources/.env
+
 .env
 
 HELP.md
@@ -58,3 +58,4 @@ HELP.md
 
 # sql
 /src/main/resources/data.sql
+
