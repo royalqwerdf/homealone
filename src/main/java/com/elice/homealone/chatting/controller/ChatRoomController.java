@@ -3,12 +3,15 @@ package com.elice.homealone.chatting.controller;
 import com.elice.homealone.chatting.entity.ChatDto;
 import com.elice.homealone.chatting.entity.ChatMessage;
 import com.elice.homealone.chatting.entity.Chatting;
+import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.chatting.service.ChatRoomService;
+import com.elice.homealone.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,8 +21,9 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
 @RequestMapping("/api")
+@CrossOrigin
+@RestController
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -39,9 +43,9 @@ public class ChatRoomController {
 
     //선택 채팅방 조회
     @GetMapping("/chatting/{chatroomId}")
-    public ResponseEntity<ChatDto> chatroomInfo(@PathVariable Long chatroomId) {
+    public ResponseEntity<ChatDto> chatroomInfo(@AuthenticationPrincipal Member member, @PathVariable Long chatroomId) {
 
-        return ResponseEntity.ok().body(chatRoomService.findChatList(chatroomId));
+        return ResponseEntity.ok().body(chatRoomService.findChatList(member, chatroomId));
     }
 
     //채팅방 생성
@@ -52,6 +56,12 @@ public class ChatRoomController {
         ChatDto createdRoom = chatRoomService.makeChat(accessToken, chatDto);
 
         return ResponseEntity.ok().body(createdRoom);
+    }
+
+    //채팅방 삭제
+    @DeleteMapping("/chatting/{chatroomId}")
+    public void deleteChatroom(@AuthenticationPrincipal Member member, @PathVariable Long chatroomId) {
+        chatRoomService.deleteChatroom(member, chatroomId);
     }
 
 }
