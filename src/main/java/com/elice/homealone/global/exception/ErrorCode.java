@@ -28,6 +28,7 @@ public enum ErrorCode {
     NO_JWT_TOKEN(FORBIDDEN,"JWT토큰이 비어있습니다."),
 
     //404
+    POST_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다."),
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일입니다"),
     MEMBER_NOT_FOUND(NOT_FOUND,"존재하지 않는 회원입니다. "),
     ROOM_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다"),
