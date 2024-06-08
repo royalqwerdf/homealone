@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class JobStatusService {
-    private JobStatusRepository jobStatusRepository;
+    private final JobStatusRepository jobStatusRepository;
 
     public JobStatus createJobStatus(String jobId) {
         JobStatus jobStatus = JobStatus.builder()
