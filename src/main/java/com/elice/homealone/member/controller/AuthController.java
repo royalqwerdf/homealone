@@ -59,6 +59,7 @@ public class AuthController {
         return new ResponseEntity<>(loginResponseDTO, httpHeaders, HttpStatus.OK);
     }
 
+
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest,
@@ -66,7 +67,6 @@ public class AuthController {
         authService.logout(httpServletRequest, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
 }
