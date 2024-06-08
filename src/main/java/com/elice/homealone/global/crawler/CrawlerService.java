@@ -1,5 +1,7 @@
 package com.elice.homealone.global.crawler;
 
+import com.elice.homealone.global.jobstatus.JobStatus;
+import com.elice.homealone.global.jobstatus.JobStatusService;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.entity.Role;
@@ -10,7 +12,9 @@ import com.elice.homealone.recipe.service.RecipeService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +26,7 @@ public class CrawlerService {
     private final RecipeMongoRepository recipeMongoRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthService authService;
+    private final JobStatusService jobStatusService;
 
 /*
     public void loadJsonAndSaveRecipe() {
@@ -40,8 +44,9 @@ public class CrawlerService {
     }
 
  */
-
-    public void loadFromMongoAndSaveRecipe(Member member,Date date) {
+    @Async
+    public void loadFromMongoAndSaveRecipe(Member member,Date date, String jobId) {
+        JobStatus jobStatus = jobStatusService.createJobStatus(jobId);
         // MongoDB에서 Recipe 데이터를 읽어옴
         List<RecipeRequest> recipes = recipeMongoRepository.findAllWithCreatedDateAfter(date);
 
@@ -54,9 +59,10 @@ public class CrawlerService {
             processCount++;
             if(processCount % (totalRecipes / 10) == 0){
                 int progress = (int) ((double) processCount / totalRecipes * 100);
-                System.out.printf("진행도: %d%%\n", progress);
+                jobStatusService.updateJobStatusProgress(jobId, progress);
             }
         }
+        jobStatusService.markJobAsCompleted(jobId);
     }
 
     public void adminSignUp(SignupRequestDto signupRequestDTO) {
