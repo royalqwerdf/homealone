@@ -8,6 +8,7 @@ import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.member.dto.response.LoginResponseDto;
 import com.elice.homealone.member.service.AuthService;
+import com.elice.homealone.member.service.OAuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 @Tag(name = "AuthController", description = "인증 관리 API")
 public class AuthController {
     private final AuthService authService;
+    private final OAuthService oAuthService;
     
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
@@ -48,72 +50,14 @@ public class AuthController {
     @Operation(summary = "카카오 로그인")
     @GetMapping("/kakao/callback")
     public  ResponseEntity<LoginResponseDto> login(String code, HttpServletResponse httpServletResponse) {
-        RestTemplate rt = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "03ad25e0e92f5d885ecab9be8a98c3db");
-        params.add("redirect_uri", "34.64.55.198/api/kakao/callback");
-        params.add("code", code);
-
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
-
-        ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token", // https://{요청할 서버 주소}
-                HttpMethod.POST, // 요청할 방식
-                kakaoTokenRequest, // 요청할 때 보낼 데이터
-                String.class // 요청 시 반환되는 데이터 타입
-        );
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        OAuthTokenDto oAuthTokenDTO = null;
-        try {
-            oAuthTokenDTO = objectMapper.readValue(response.getBody(), OAuthTokenDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        RestTemplate rt2 = new RestTemplate();
-
-        HttpHeaders headers2 = new HttpHeaders();
-        headers2.add("Authorization", "Bearer " + oAuthTokenDTO.getAccess_token());
-        headers2.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest2 = new HttpEntity<>(headers2);
-
-        ResponseEntity<String> response2 = rt2.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
-                kakaoTokenRequest2,
-                String.class
-        );
-        //카카오 정보 받아옴
-        ObjectMapper objectMapper2 = new ObjectMapper();
-        KakaoUserDto kakaoUserDto = null;
-        try {
-            kakaoUserDto = objectMapper2.readValue(response2.getBody(), KakaoUserDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        authService.signUp(kakaoUserDto.toSignupRequestDto());
-
-        try {
-            //카카오 계정이 없을 시에 회원가입
-            if (!authService.isEmailDuplicate(kakaoUserDto.getKakao_account().getEmail())) {
-                authService.signUp(kakaoUserDto.toSignupRequestDto());
-            }
-        } catch (HomealoneException e) {}
-
+        OAuthTokenDto oAuthTokenDto = oAuthService.getOAuthToken(code);
+        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(oAuthTokenDto);
         //자동 로그인
         LoginResponseDto loginResponseDTO = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", loginResponseDTO.getAccessToken());
-
         return new ResponseEntity<>(loginResponseDTO, httpHeaders, HttpStatus.OK);
     }
-
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
@@ -122,7 +66,6 @@ public class AuthController {
         authService.logout(httpServletRequest, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
 }
