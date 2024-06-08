@@ -94,6 +94,9 @@ public class Recipe extends Post {
             .map(PostTag::toDto)
             .toList();
 
+        Long userId = this.getMember().getId();
+        String userName = this.getMember().getName();
+
         return RecipeResponseDto.builder()
             .id(this.getId())
             .title(title)
@@ -106,6 +109,8 @@ public class Recipe extends Post {
             .ingredients(ingredientDtos)
             .details(detailDtos)
             .postTags(tagDtos)
+            .userId(userId)
+            .userName(userName)
             .build();
     }
 
@@ -114,7 +119,9 @@ public class Recipe extends Post {
         if(images != null){
             imageUrl = images.get(0).getImageUrl();
         }
-        String userId = this.getMember().getUsername().split("@")[0];
+        Long userId = this.getMember().getId();
+        String userName = this.getMember().getName();
+
         return RecipePageDto.builder()
             .id(this.getId())
             .title(title)
@@ -125,6 +132,7 @@ public class Recipe extends Post {
             .cuisine(cuisine.getCuisine())
             .imageUrl(imageUrl)
             .userId(userId)
+            .userName(userName)
             .build();
     }
 
