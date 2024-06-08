@@ -1,5 +1,5 @@
 
-package com.elice.homealone.global.config;
+package com.elice.homealone.global.firebase;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class FirebaseConfig {
 
-    /*
+
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream serviceAccount =
@@ -38,7 +38,5 @@ public class FirebaseConfig {
     public Bucket bucket() throws IOException {
         return StorageClient.getInstance(firebaseApp()).bucket();
     }
-     */
-
 }
 

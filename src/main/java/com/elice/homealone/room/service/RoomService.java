@@ -3,7 +3,6 @@ package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.MemberService;
@@ -26,6 +25,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.HtmlUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,14 +44,15 @@ public class RoomService {
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String email){ ///회원 정의 추가해야함.
         Member member = memberService.findByEmail(email);
         Room room = new Room(roomDto,member);
-        roomRepository.save(room);
+        Room save = roomRepository.save(room);
         //HTML태그 제거
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
-        room.setPlainContent(plainContent);
+        save.setContent(StringEscapeUtils.unescapeHtml4(roomDto.getContent()));
+        save.setPlainContent(plainContent);
         roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
-                .forEach(postTag-> room.addTag(postTag));
+                .forEach(postTag-> save.addTag(postTag));
 
-        return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
+        return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(save);
     }
     @Transactional
     public RoomResponseDTO.RoomInfoDto EditRoomPost(String email,Long roomId, RoomRequestDTO roomDto){
@@ -121,26 +123,22 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId){
+    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId,String email){
+        if(email != null && !email.isEmpty()){
+            Member member = memberService.findByEmail(email);
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
+            room.setView(room.getView()+1);
+            RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
+            //TODO:회원이 스크랩했는지 안했는지 check로직 필요
+            roomInfoDto.setLike(true);
+            roomInfoDto.setScrap(true);
+            return roomInfoDto;
+        }
          Room room = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView()+1);
         return  RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-
-    }
-
-
-    @Transactional
-    public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String email){
-            Member member = memberService.findByEmail(email);
-            Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-            room.setView(room.getView()+1);
-        RoomResponseDTO.RoomInfoDtoForMember roomInfoDtoForMember = RoomResponseDTO.RoomInfoDtoForMember.toRoomInfoDtoForMember(room);
-            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
-            roomInfoDtoForMember.setScrap(true);
-            roomInfoDtoForMember.setLike(true);
-            return roomInfoDtoForMember;
 
     }
 

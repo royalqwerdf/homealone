@@ -1,8 +1,6 @@
 package com.elice.homealone.member.dto;
 
 
-import com.elice.homealone.member.entity.Member;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class MemberDTO {
+public class MemberDto {
     private Long id;
     private String name;
     private LocalDate birth;

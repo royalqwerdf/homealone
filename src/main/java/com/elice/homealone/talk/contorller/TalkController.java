@@ -38,7 +38,7 @@ public class TalkController {
     }
     @Operation(summary = "혼잣말 게시글 생성")
     @PostMapping("")
-    public ResponseEntity<?> createRoomPost(@Validated @RequestBody TalkRequestDTO talkDto,
+    public ResponseEntity<TalkResponseDTO.TalkInfoDto> createRoomPost(@Validated @RequestBody TalkRequestDTO talkDto,
                                             @AuthenticationPrincipal Member member
                                                                 ) {
         String email = member.getUsername();
@@ -47,7 +47,7 @@ public class TalkController {
     }
     @Operation(summary = "혼잣말 게시글 수정")
     @PatchMapping("/{talkId}")
-    public ResponseEntity<?> editRoomPost(@PathVariable Long talkId
+    public ResponseEntity<TalkResponseDTO.TalkInfoDto> editRoomPost(@PathVariable Long talkId
                                             , @Validated @RequestBody TalkRequestDTO talkDto//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
                                             ,  @AuthenticationPrincipal Member member){
         String email = member.getUsername();
@@ -57,7 +57,7 @@ public class TalkController {
     }
     @Operation(summary = "혼잣말 게시글 삭제")
     @DeleteMapping("/{talkId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long talkId
+    public ResponseEntity<Response.ApiResponse> deletePost(@PathVariable Long talkId
             , @AuthenticationPrincipal Member member){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
         String email = member.getUsername();
         talkService.deleteRoomPost(email,talkId);
@@ -66,18 +66,12 @@ public class TalkController {
     }
     @Operation(summary = "혼잣말 게시글 상세 조회")
     @GetMapping("/{talkId}")
-    public ResponseEntity<?> findRoomById (@AuthenticationPrincipal Member member,
+    public ResponseEntity<TalkResponseDTO.TalkInfoDto> findRoomById (@AuthenticationPrincipal Member member,
             @PathVariable Long talkId){
-        Object byRoomId;
-        String email = member.getUsername();
-        if(email == null || email.isEmpty())
-        {
-             byRoomId =  talkService.findByTalkId(talkId);
-        }
-        else {
-             byRoomId = talkService.findByTalkIdForMember(talkId, email);
-        }
-        return ResponseEntity.ok().body(byRoomId);
+
+        String email = (member != null)? member.getEmail() : null;
+        TalkResponseDTO.TalkInfoDto byTalkId = talkService.findByTalkId(talkId, email);
+        return ResponseEntity.ok().body(byTalkId);
 
     }
     @Operation(summary = "혼잣말 인기 게시글 조회")

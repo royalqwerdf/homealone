@@ -68,17 +68,12 @@ public class RoomController {
     }
     @Operation(summary = "방자랑 게시글 상세 조회")
     @GetMapping("/{roomId}")
-    public ResponseEntity<?> findRoomById( @AuthenticationPrincipal Member member, @PathVariable Long roomId) {
-        RoomResponseDTO roomInfo;
+    public ResponseEntity<RoomResponseDTO.RoomInfoDto> findRoomById( @AuthenticationPrincipal Member member, @PathVariable Long roomId) {
+        //로그인한 상태가 아니면 null보냄
+        String email = (member != null) ? member.getUsername() : null;
+        RoomResponseDTO.RoomInfoDto byRoomId = roomService.findByRoomId(roomId, email);
 
-        if (member != null) {
-            String email = member.getUsername();
-            roomInfo = roomService.findByRoomIdForMember(roomId, email);
-        } else {
-            roomInfo = roomService.findByRoomId(roomId);
-        }
-
-        return ResponseEntity.ok(roomInfo);
+        return ResponseEntity.ok(byRoomId);
     }
     @Operation(summary = "방자랑 게시글 인기글 조회")
     @GetMapping("/view")

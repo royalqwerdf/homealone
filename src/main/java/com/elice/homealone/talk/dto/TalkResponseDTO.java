@@ -3,6 +3,7 @@ package com.elice.homealone.talk.dto;
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.tag.dto.PostTagDto;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class TalkResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TalkInfoDto extends TalkResponseDTO {
+        @JsonRawValue
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -47,7 +49,8 @@ public class TalkResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
-
+        private Boolean scrap;
+        private Boolean like;
         public static TalkInfoDto toTalkInfoDto(Talk talk) {
             return TalkInfoDto.builder()
                     .id(talk.getId())
@@ -61,29 +64,8 @@ public class TalkResponseDTO {
                     .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
                     .memberName(talk.getMember().getName())
                     .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
-                    .build();
-        }
-    }
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TalkInfoDtoForMember extends TalkResponseDTO.TalkInfoDto {
-        private Boolean scrap;
-        private Boolean like;
-        public static TalkInfoDtoForMember toTalkInfoDtoForMember(Talk talk) {
-            return TalkInfoDtoForMember.builder()
-                    .id(talk.getId())
-                    .title(talk.getTitle())
-                    .tags(talk.getTags().stream().map(postTag -> postTag.toDto()).collect(Collectors.toList()))
-                    .content(talk.getContent())
-                    .createdAt(talk.getCreatedAt())
-                    .updatedAt(talk.getModifiedAt())
-                    .view(talk.getView())
-                    .likeCount( talk.getPostLikes() != null ? talk.getPostLikes().size() : 0)
-                    .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
-                    .memberName(talk.getMember().getName())
-                    .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
+                    .scrap(false)
+                    .like(false)
                     .build();
         }
     }

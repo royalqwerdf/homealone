@@ -2,13 +2,14 @@ package com.elice.homealone.global.crawler;
 
 import com.elice.homealone.global.jobstatus.JobStatus;
 import com.elice.homealone.global.jobstatus.JobStatusService;
-import com.elice.homealone.member.dto.request.SignupRequestDTO;
+import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.entity.Role;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.service.RecipeService;
+
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -64,7 +65,7 @@ public class CrawlerService {
         jobStatusService.markJobAsCompleted(jobId);
     }
 
-    public void adminSignUp(SignupRequestDTO signupRequestDTO) {
+    public void adminSignUp(SignupRequestDto signupRequestDTO) {
         String email = signupRequestDTO.getEmail();
         if (!memberRepository.existsByEmail(email)) {
             Member admin = Member.builder()
