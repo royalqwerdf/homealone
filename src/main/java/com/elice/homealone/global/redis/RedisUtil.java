@@ -14,7 +14,7 @@
     public class RedisUtil {
         private final RedisTemplate<String, Object> redisTemplate;
         private final RedisTemplate<String, Object> redisBlackListTemplate;
-        @Value("${spring.jwt.token.access-expiration-time}")
+        @Value("${spring.jwt.token.refresh-expiration-time}")
         private long expirationTime;
 
 
