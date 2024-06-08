@@ -4,10 +4,10 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.global.redis.RedisUtil;
-import com.elice.homealone.member.dto.MemberDTO;
-import com.elice.homealone.member.dto.request.LoginRequestDTO;
-import com.elice.homealone.member.dto.request.SignupRequestDTO;
-import com.elice.homealone.member.dto.response.LoginResponseDTO;
+import com.elice.homealone.member.dto.MemberDto;
+import com.elice.homealone.member.dto.request.LoginRequestDto;
+import com.elice.homealone.member.dto.request.SignupRequestDto;
+import com.elice.homealone.member.dto.response.LoginResponseDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -31,9 +31,9 @@ public class AuthService{
     /**
      * 회원 가입
      */
-    public void signUp(SignupRequestDTO signupRequestDTO){
+    public void signUp(SignupRequestDto signupRequestDTO){
         //이메일 중복검사
-        emailExists(signupRequestDTO.getEmail());
+        isEmailDuplicate(signupRequestDTO.getEmail());
         //비밀번호 암호화
         String password = passwordEncoder.encode(signupRequestDTO.getPassword());
         Member savedMember = signupRequestDTO.toEntity();
@@ -45,14 +45,14 @@ public class AuthService{
     /**
      * 로그인
      */
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, HttpServletResponse httpServletResponse) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDTO, HttpServletResponse httpServletResponse) {
         // 이메일 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
         // 비밀번호 검증
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
             String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
-            LoginResponseDTO response = new LoginResponseDTO();
+            LoginResponseDto response = new LoginResponseDto();
             response.setAccessToken(acessToken);
             //refreshToken 쿠키 저장
             httpServletResponse.addCookie(storeRefreshToken(refreshToken));
@@ -89,8 +89,8 @@ public class AuthService{
     /**
      * Token으로 로그인한 회원 정보 조회
      */
-    public MemberDTO findLoginMemberByToken(String acccessToken) {
-        MemberDTO member = new MemberDTO();
+    public MemberDto findLoginMemberByToken(String acccessToken) {
+        MemberDto member = new MemberDto();
         jwtTokenProvider.validateToken(acccessToken);
         member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
         return member;
@@ -100,17 +100,20 @@ public class AuthService{
     /**
      * 이메일 중복여부 검사
      */
-    public void emailExists(String email) {
+    public boolean isEmailDuplicate(String email) {
         if(memberRepository.findByEmail(email).isPresent()){
             throw new HomealoneException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
+        return false;
     }
+
+
 
     /**
      * 회원 수정
      * Auth: User
      */
-    public Member editMember(Member member, MemberDTO memberDTO) {
+    public Member editMember(Member member, MemberDto memberDTO) {
         Member changeMember = memberService.findById(member.getId());
         changeMember.setName(memberDTO.getName());
         changeMember.setBirth(memberDTO.getBirth());
@@ -133,7 +136,7 @@ public class AuthService{
     /**
      * 회원 탈퇴 withdrawal
      */
-    public MemberDTO withdrawal(Member member) {
+    public MemberDto withdrawal(Member member) {
         Member findedMember = memberService.findByEmail(member.getEmail());
         findedMember.setDeletedAt(true);
         return memberRepository.save(findedMember).toDto();

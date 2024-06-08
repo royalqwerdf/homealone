@@ -5,6 +5,7 @@ import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class RoomResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RoomInfoDto extends RoomResponseDTO {
+        @JsonRawValue
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
