@@ -21,10 +21,4 @@ public class RecipeDetailDto {
         this.fileName = fileName;
         this.imageUrl = imageUrl;
     }
-
-    @Builder
-    public RecipeDetailDto(Long id, String description) {
-        this.id = id;
-        this.description = description;
-    }
 }

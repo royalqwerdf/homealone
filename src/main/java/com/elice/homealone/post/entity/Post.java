@@ -37,7 +37,6 @@ public class Post extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();
 
-    // TODO : 게시물 삭제 시 댓글, 좋아요, 스크랩 전부 삭제?
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
@@ -63,6 +62,11 @@ public class Post extends BaseTimeEntity {
     public void addTag(PostTag tag) {
         this.tags.add(tag);
         tag.setPost(this);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setPost(this);
     }
 }
 

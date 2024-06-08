@@ -167,31 +167,4 @@ public class RecipeService {
 
         return updatedRecipe.toResponseDto();
     }
-
-    public void updateRecipeIngredients(Recipe recipe, List<RecipeIngredientDto> updateIngredientDtos) {
-        List<Long> updateIngredientIds = updateIngredientDtos.stream()
-            .map(RecipeIngredientDto::getId)
-            .toList();
-
-        // 기존 재료
-        List<RecipeIngredient> ingredientDtos = recipe.getIngredients();
-
-        // 기존 재료 중 업데이트 재료 리스트에 없는 재료를 삭제
-        Iterator<RecipeIngredient> iterator = ingredientDtos.iterator();
-        while(iterator.hasNext()) {
-            RecipeIngredient ingredient = iterator.next();
-            if(!updateIngredientIds.contains(ingredient.getId())){
-                iterator.remove();
-                recipeIngredientService.deleteRecipeIngredient(ingredient);
-            }
-        }
-
-        // 변경할 재료 중에서 기존 재료 리스트에 없는 재료를 찾아 추가해준다.
-        for(RecipeIngredientDto updateIngredientDto : updateIngredientDtos) {
-            if(updateIngredientDto.getId() == null){
-                RecipeIngredient newIngredient = recipeIngredientService.createRecipeIngredient(updateIngredientDto);
-                recipe.addIngredients(newIngredient);
-            }
-        }
-    }
 }
