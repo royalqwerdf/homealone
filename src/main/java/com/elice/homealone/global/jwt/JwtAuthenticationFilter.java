@@ -4,7 +4,6 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,9 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String email = jwtTokenProvider.getEmail(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            if (userDetails != null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            Member member = (Member)userDetailsService.loadUserByUsername(email);
+            if (member != null) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

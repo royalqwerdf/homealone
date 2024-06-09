@@ -34,26 +34,24 @@ public class ChatRoomService {
 
     //중고거래 채팅방 생성 메소드
     @Transactional
-    public ChatDto makeChat(String accessToken, ChatDto chatDto) {
+    public ChatDto makeChat(Member member, ChatDto chatDto) {
         Long receiver_id = chatDto.getReceiverId();
         Member receiver = memberRepository.findMemberById(receiver_id);
 
-        //Member 도메인 회원 조회 메소드 참고
-        MemberDto member = authService.findLoginMemberByToken(accessToken);
-        Member sender = memberService.findById(member.getId());
+        //현재 로그인된 사용자 정보
+        if(member == null) {
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        Long curMemberId = member.getId();
 
-        if(receiver_id == sender.getId()) {
+        if(receiver_id == curMemberId) {
             throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
         }
 
         //chatting 테이블 생성해 저장
-        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(sender, receiver));
-        chatDto.setId(chatroom.getId());
-        chatDto.setSenderName(chatroom.getSender().getName());
-        chatDto.setReceiverName(chatroom.getReceiver().getName());
-        chatDto.setSenderId(chatroom.getSender().getId());
+        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(member, receiver));
 
-        return chatDto;
+        return chatroom.toDto();
     }
 
     //채팅방에서 전송된 메시지를 저장하는 메소드. 채팅방과 1:n
@@ -74,10 +72,7 @@ public class ChatRoomService {
     public ChatDto findChatList(Member member, Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member currentMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-        Long curMemberId = currentMember.getId();
-
+        Long curMemberId = member.getId();
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
         Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
@@ -111,16 +106,13 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public List<ChatDto> findChatrooms(String accessToken) {
-        if(accessToken == null || accessToken.isEmpty()) {
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
+    public List<ChatDto> findChatrooms(Member member) {
+        if(member == null) {
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND;
         }
 
-        //Member 도메인 회원 조회 메소드 참고
-        MemberDto member = authService.findLoginMemberByToken(accessToken);
-        Member sender = memberService.findById(member.getId());
-
-        List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(sender.getId());
+        //member는 현재 로그인한 사용자 즉 sender
+        List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(member.getId());
         List<ChatDto> chatDtoList = new ArrayList<>();
         for(Chatting chatting : chattings) {
             chatDtoList.add(chatting.toDto());
