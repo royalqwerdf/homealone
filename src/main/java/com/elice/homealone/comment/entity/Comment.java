@@ -4,17 +4,16 @@ import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comment")
+@Getter
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -24,6 +23,7 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
+    @Setter
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,5 +31,19 @@ public class Comment extends BaseTimeEntity {
     private Member member;
 
     @Column(name = "content", nullable = false)
+    @Setter
     private String content;
+
+    @Builder
+    public Comment(Post post, Member member, String content) {
+        this.post = post;
+        this.member = member;
+        this.content = content;
+    }
+
+    @PreRemove
+    public void preRemove() {
+        this.post.getComments().remove(this);
+        this.member.getComments().remove(this);
+    }
 }

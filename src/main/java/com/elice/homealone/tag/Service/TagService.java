@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class TagService {
     private final TagRepository tagRepository;
 
     // 입력된 게시물의 태그와 db의 태그를 비교하여 비슷한 태그가 없다면 태그 엔티티를 생성하고 연결한다.
+    @Transactional
     public Tag addTag(PostTag postTag) {
         String tagName = postTag.getName();
         Tag tag = similarTagExists(tagName);
@@ -25,6 +27,7 @@ public class TagService {
 
     // 게시물의 태그와 DB의 태그를 비교하는 함수
     // Tag에서 영어와 한글, 숫자만 남긴 뒤, 영어 소문자는 대문자로 치환해서 비교
+    @Transactional
     public Tag similarTagExists(String tagName) {
         StringBuilder sb = new StringBuilder();
 

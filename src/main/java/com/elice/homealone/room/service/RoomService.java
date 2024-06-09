@@ -3,9 +3,9 @@ package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
@@ -13,6 +13,8 @@ import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
 import com.elice.homealone.tag.Service.PostTagService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -20,9 +22,16 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.HtmlUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,67 +40,55 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
     @Transactional
-    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String token){ ///회원 정의 추가해야함.
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(//회원이 없을때 예외 던져주기
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-                 );
+    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room room = new Room(roomDto,member);
-        roomRepository.save(room);
-        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
-        room.setPlainContent(plainContent);
-        roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
-                .forEach(postTag-> room.addTag(postTag));
+        Room save = roomRepository.save(room);
         //HTML태그 제거
-        return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-    }
+        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
+        save.setContent(StringEscapeUtils.unescapeHtml4(roomDto.getContent()));
+        save.setPlainContent(plainContent);
+        roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
+                .forEach(postTag-> save.addTag(postTag));
 
+        return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(save);
+    }
     @Transactional
-    public RoomResponseDTO.RoomInfoDto EditRoomPost(String token,Long roomId, RoomRequestDTO roomDto){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+    public RoomResponseDTO.RoomInfoDto EditRoomPost(Long roomId, RoomRequestDTO roomDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember() != member){
+        if(roomOriginal.getMember().getId() != member.getId()){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomOriginal.setTitle(roomDto.getTitle());
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
-        //새로운 룸이미지 리스트 생성
-        List<RoomImage> newImages = roomDto.getImages().stream()
+
+        String plainContent = Jsoup.clean(roomDto.getContent(),Safelist.none());
+        roomOriginal.setPlainContent(plainContent);
+        //이미지새로 생성후 이전 이미지 테이블 전체 삭제 후 새로운 이미지로 대체
+        List<RoomImage> newImages = roomDto.getRoomImages().stream()
                 .map(url -> new RoomImage(url,roomOriginal))
                 .collect(Collectors.toList());
-        //새로운 룸 이미지 테이블 넣기
+        roomOriginal.getRoomImages().clear();
         roomOriginal.getRoomImages().addAll(newImages);
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
 
     @Transactional
-    public void deleteRoomPost(String token,Long roomId){
-        if(token == null || token.isEmpty()){
-            throw new HomealoneException(ErrorCode.NO_JWT_TOKEN);
-        }
-        String email = jwtTokenProvider.getEmail(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+    public void deleteRoomPost(Long roomId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember() != member){
+        if(roomOriginal.getMember().getId() != member.getId()){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
@@ -101,7 +98,7 @@ public class RoomService {
 
 
     @Transactional
-    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,Long memberId,Pageable pageable){
+    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,String memberName,Pageable pageable){
         Specification<Room> spec = Specification.where(null);
 
             if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
@@ -118,40 +115,59 @@ public class RoomService {
             else if(tag != null && !tag.isEmpty()){
                 spec =spec.and(RoomSpecification.containsTag(tag));
             }
-
-            if(memberId != null){
-                spec = spec.and(RoomSpecification.hasMemberId(memberId));
+            else if (memberName != null){
+                spec = spec.and(RoomSpecification.hasMemberId(memberName));
             }
 
-            return roomRepository.findAll(spec, pageable).map(RoomResponseDTO ::toRoomResponseDTO);
+        Page<Room> findRoom = roomRepository.findAll(spec, pageable);
+            if(findRoom.isEmpty()){
+                throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
+            }
 
+        return findRoom.map(RoomResponseDTO:: toRoomResponseDTO);
 
+    }
+    @Transactional
+    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+                member = (Member) authentication.getPrincipal();
+
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
+        room.setView(room.getView() + 1);
+        RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
+
+        if (member != null) {
+            // TODO: 회원이 스크랩했는지 체크 로직 추가
+
+            roomInfoDto.setLike(true);
+            roomInfoDto.setScrap(true);
+        }
+
+        return roomInfoDto;
+    }
+    @Transactional
+    public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findTopRoomByView(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+
+        return roomResponseDTOS;
     }
 
     @Transactional
-    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId){
-         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        room.setView(room.getView()+1);
-        return  RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-
-    }
-
-
-    @Transactional
-    public RoomResponseDTO.RoomInfoDtoForMember findByRoomIdForMember(Long roomId,String token){
-            String email = jwtTokenProvider.getEmail(token);
-            Member member = memberRepository.findByEmail(email).orElseThrow(
-                    ()-> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND)
-            );
-            Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-            room.setView(room.getView()+1);
-        RoomResponseDTO.RoomInfoDtoForMember roomInfoDtoForMember = RoomResponseDTO.RoomInfoDtoForMember.toRoomInfoDtoForMember(room);
-            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
-            roomInfoDtoForMember.setScrap(true);
-            roomInfoDtoForMember.setLike(true);
-            return roomInfoDtoForMember;
+    public Page<RoomResponseDTO> findRoomByMember(Pageable pageable){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
+        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findRoomByMember(member, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        if(roomResponseDTOS.isEmpty()){
+            throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
+        }
+        return roomResponseDTOS;
 
     }
 

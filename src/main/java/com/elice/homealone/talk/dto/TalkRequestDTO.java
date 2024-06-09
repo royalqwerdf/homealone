@@ -4,6 +4,7 @@ import com.elice.homealone.global.exception.ErrorMessage;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.dto.PostTagDto;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,10 +23,9 @@ public class TalkRequestDTO {
     @NotBlank(message = ErrorMessage.TITLE_REQUIRED)
     private String title;
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
+    @JsonRawValue
     private String content;
-    private Post.Type type;
-    @NotEmpty(message = ErrorMessage.TAGS_REQUIRED)
     private List<PostTagDto> tags;
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
 }

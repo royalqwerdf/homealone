@@ -1,6 +1,6 @@
 package com.elice.homealone.usedtrade.dto;
 
-import com.elice.homealone.member.dto.MemberDTO;
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.tag.dto.PostTagDto;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class UsedTradeResponseDto {
     private String mainImage;
     private List<UsedTradeImageDto> images = new ArrayList<>();
     private List<PostTagDto> tags = new ArrayList<>();
-    private MemberDTO member;
+    private MemberDto member;
 
 
 }

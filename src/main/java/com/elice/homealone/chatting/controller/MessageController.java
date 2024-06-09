@@ -44,13 +44,12 @@ public class MessageController {
         return messageModel;
     }
 
-    /*@MessageMapping("/chat-addUser")
+    /*
+    @MessageMapping("/chat-addUser")
     @SendTo("/topic/public")
     public MessageModel addUser(@Payload MessageModel messageModel, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", messageModel.getSender());
+        headerAccessor.getSessionAttributes().put("usernme", messageModel.getSender());
         return messageModel;
     }
-     */
-
-
+    */
 }

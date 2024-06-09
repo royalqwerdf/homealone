@@ -25,8 +25,25 @@ public class RecipeResponseDto {
     private List<RecipeDetailDto> details;
     private List<PostTagDto> postTags;
 
+    private Long userId;
+    private String userName;
+
     @Builder
-    public RecipeResponseDto(Long id, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<RecipeImageDto> images, List<RecipeIngredientDto> ingredients, List<RecipeDetailDto> details, List<PostTagDto> postTags) {
+    public RecipeResponseDto(
+        Long id,
+        String title,
+        String description,
+        int portions,
+        RecipeType recipeType,
+        RecipeTime recipeTime,
+        Cuisine cuisine,
+        List<RecipeImageDto> images,
+        List<RecipeIngredientDto> ingredients,
+        List<RecipeDetailDto> details,
+        List<PostTagDto> postTags,
+        Long userId,
+        String userName
+    ) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,5 +55,7 @@ public class RecipeResponseDto {
         this.ingredients = ingredients;
         this.details = details;
         this.postTags = postTags;
+        this.userId = userId;
+        this.userName = userName;
     }
 }

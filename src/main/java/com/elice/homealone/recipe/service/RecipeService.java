@@ -40,17 +40,17 @@ public class RecipeService {
     private final RecipeImageService recipeImageService;
     private final RecipeDetailService recipeDetailService;
     private final RecipeIngredientService recipeIngredientService;
-    private final MemberService memberService;
     private final PostTagService postTagService;
 
     // 레시피 등록
     @Transactional
     public RecipeResponseDto createRecipe(Member member, RecipeRequestDto requestDto) {
-
+        if (member == null) {
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
         // 레시피 dto를 통해 기본 레시피 엔티티를 생성
         try {
-            Member loginMember = memberService.findById(member.getId());
-            Recipe recipe = requestDto.toBaseEntity(loginMember);
+            Recipe recipe = requestDto.toBaseEntity(member);
             recipeRepository.save(recipe);
 
             // 레시피 dto 이미지 리스트로 레시피 이미지 생성 후 레시피 엔티티에 추가
@@ -125,7 +125,10 @@ public class RecipeService {
 
     // 레시피 삭제
     @Transactional
-    public void deleteRecipe(Long id) {
+    public void deleteRecipe(Member member, Long id) {
+        if (member == null) {
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
         recipeRepository.delete(recipe);
@@ -133,7 +136,11 @@ public class RecipeService {
 
     // 레시피 업데이트
     @Transactional
-    public RecipeResponseDto patchRecipe(Long id, RecipeRequestDto requestDto) {
+    public RecipeResponseDto patchRecipe(Member member, Long id, RecipeRequestDto requestDto) {
+        if (member == null) {
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
+
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
 
@@ -166,32 +173,5 @@ public class RecipeService {
         updatedRecipe = recipeRepository.saveAndFlush(recipe);
 
         return updatedRecipe.toResponseDto();
-    }
-
-    public void updateRecipeIngredients(Recipe recipe, List<RecipeIngredientDto> updateIngredientDtos) {
-        List<Long> updateIngredientIds = updateIngredientDtos.stream()
-            .map(RecipeIngredientDto::getId)
-            .toList();
-
-        // 기존 재료
-        List<RecipeIngredient> ingredientDtos = recipe.getIngredients();
-
-        // 기존 재료 중 업데이트 재료 리스트에 없는 재료를 삭제
-        Iterator<RecipeIngredient> iterator = ingredientDtos.iterator();
-        while(iterator.hasNext()) {
-            RecipeIngredient ingredient = iterator.next();
-            if(!updateIngredientIds.contains(ingredient.getId())){
-                iterator.remove();
-                recipeIngredientService.deleteRecipeIngredient(ingredient);
-            }
-        }
-
-        // 변경할 재료 중에서 기존 재료 리스트에 없는 재료를 찾아 추가해준다.
-        for(RecipeIngredientDto updateIngredientDto : updateIngredientDtos) {
-            if(updateIngredientDto.getId() == null){
-                RecipeIngredient newIngredient = recipeIngredientService.createRecipeIngredient(updateIngredientDto);
-                recipe.addIngredients(newIngredient);
-            }
-        }
     }
 }
