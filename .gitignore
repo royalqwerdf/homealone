@@ -55,3 +55,7 @@ HELP.md
 
 Dockerfile
 docker-compose.yml
+
+application.properties
+application-dev.properties
+application-test.properties
