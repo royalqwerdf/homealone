@@ -52,7 +52,8 @@ public class DataInit implements CommandLineRunner {
                     .name("관리자")
                     .birth(LocalDate.of(1945, 4, 28)) // 관리자 생년월일 예시
                     .email(email)
-                    .address("Seoul")
+                    .firstAddress("Seoul")
+                    .secondAddress("광진구")
                     .password(passwordEncoder.encode("1234")) // 관리자 비밀번호
                     .role(Role.ROLE_ADMIN) // 관리자 역할 설정
                     .build();
@@ -67,7 +68,8 @@ public class DataInit implements CommandLineRunner {
                     .name("유저")
                     .birth(LocalDate.of(1945, 4, 28))
                     .email(email)
-                    .address("Seoul")
+                    .firstAddress("Deageon")
+                    .secondAddress("유성구")
                     .password(passwordEncoder.encode("1234"))
                     .role(Role.ROLE_USER) // 유저 역할 설정
                     .build();

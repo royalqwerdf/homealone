@@ -72,7 +72,8 @@ public class CrawlerService {
                 .name("관리자")
                 .birth(signupRequestDTO.getBirth()) // 관리자 생년월일 예시
                 .email(email)
-                .address(signupRequestDTO.getAddress())
+                .firstAddress(signupRequestDTO.getFirstAddress())
+                .secondAddress(signupRequestDTO.getSecondAddress())
                 .password(passwordEncoder.encode(signupRequestDTO.getPassword())) // 관리자 비밀번호
                 .role(Role.ROLE_ADMIN) // 관리자 역할 설정
                 .build();
