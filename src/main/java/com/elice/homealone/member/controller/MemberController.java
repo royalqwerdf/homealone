@@ -34,7 +34,7 @@ public class MemberController {
     @Operation(summary = "마이페이지 정보 수정")
     @PatchMapping("/mypage/me")
     public ResponseEntity<MemberDto> editMemberInfo(@RequestBody MemberDto memberDTO){
-        MemberDto changedMember = authService.editMember(authService.getMember(), memberDTO).toDto();
+        MemberDto changedMember = authService.editMember(memberDTO).toDto();
         return ResponseEntity.ok(changedMember);
     }
 

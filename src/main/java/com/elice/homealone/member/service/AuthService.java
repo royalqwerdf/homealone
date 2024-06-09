@@ -140,16 +140,17 @@ public class AuthService{
      * 회원 수정
      * Auth: User
      */
-    public Member editMember(Member member, MemberDto memberDTO) {
-        Member changeMember = memberService.findById(member.getId());
-        changeMember.setName(memberDTO.getName());
-        changeMember.setBirth(memberDTO.getBirth());
-        changeMember.setEmail(memberDTO.getEmail());
-        changeMember.setAddress(memberDTO.getAddress());
-        changeMember.setImageUrl(memberDTO.getImageUrl());
-        changeMember.setCreatedAt(memberDTO.getCreatedAt());
-        changeMember.setModifiedAt(memberDTO.getModifiedAt());
-        return changeMember;
+    public Member editMember(MemberDto memberDTO) {
+        Member member = getMember();
+        member.setName(memberDTO.getName());
+        member.setBirth(memberDTO.getBirth());
+        member.setEmail(memberDTO.getEmail());
+        member.setAddress(memberDTO.getAddress());
+        member.setImageUrl(memberDTO.getImageUrl());
+        member.setCreatedAt(memberDTO.getCreatedAt());
+        member.setModifiedAt(memberDTO.getModifiedAt());
+        memberRepository.save(member);
+        return member;
     }
 
     /**
