@@ -22,40 +22,36 @@ public class OAuthService {
     private final AuthService authService;
 
         public KakaoUserDto getKakaoUserInfo(String kakaoAcessToken) {
-            RestTemplate rt2 = new RestTemplate();
+            RestTemplate rt = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", kakaoAcessToken);
+            headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
-            HttpHeaders headers2 = new HttpHeaders();
-            headers2.add("Authorization", kakaoAcessToken);
-            headers2.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
-            HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest2 = new HttpEntity<>(headers2);
-
-            ResponseEntity<String> response2 = rt2.exchange(
+            HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(headers);
+            ResponseEntity<String> response = rt.exchange(
                     "https://kapi.kakao.com/v2/user/me",
                     HttpMethod.POST,
-                    kakaoTokenRequest2,
+                    kakaoTokenRequest,
                     String.class
             );
-            //카카오 정보 받아옴
-            ObjectMapper objectMapper2 = new ObjectMapper();
+            ObjectMapper objectMapper = new ObjectMapper();
             KakaoUserDto kakaoUserDto = null;
             try {
-                kakaoUserDto = objectMapper2.readValue(response2.getBody(), KakaoUserDto.class);
+                kakaoUserDto = objectMapper.readValue(response.getBody(), KakaoUserDto.class);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-            authService.signUp(kakaoUserDto.toSignupRequestDto());
+            kakaoUserSignup(kakaoUserDto);
+            return kakaoUserDto;
+        }
 
+        public void kakaoUserSignup(KakaoUserDto kakaoUserDto) {
             try {
-                //카카오 계정이 없을 시에 회원가입
                 if (!authService.isEmailDuplicate(kakaoUserDto.getKakao_account().getEmail())) {
                     authService.signUp(kakaoUserDto.toSignupRequestDto());
                 }
             } catch (HomealoneException e) {}
-
-            return kakaoUserDto;
         }
-
 
 //        public OAuthTokenDto getAccessToken(String code) {
 //            RestTemplate rt = new RestTemplate();
