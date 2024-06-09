@@ -4,8 +4,8 @@ import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.postlike.entity.PostLike;
-import com.elice.homealone.scrap.entity.Scrap;
+import com.elice.homealone.like.PostLike;
+import com.elice.homealone.scrap.Scrap;
 import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
 import java.util.ArrayList;
