@@ -46,7 +46,7 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public CommentResDto updateComment(Member member, CommentReqDto requestDto) {
-        Comment comment = commentRepository.findById(requestDto.getPostId())
+        Comment comment = commentRepository.findById(requestDto.getId())
             .orElseThrow(() -> new IllegalArgumentException("Comment not found with id"));
         comment.setContent(requestDto.getContent());
         commentRepository.save(comment);

@@ -43,7 +43,7 @@ public class CommentController {
     }
 
     // 댓글 수정
-    @PatchMapping("/")
+    @PatchMapping
     public ResponseEntity<CommentResDto> updateComment(@AuthenticationPrincipal Member member, @RequestBody CommentReqDto requestDto) {
         CommentResDto resDto = commentService.updateComment(member, requestDto);
         return new ResponseEntity<>(resDto, HttpStatus.OK);

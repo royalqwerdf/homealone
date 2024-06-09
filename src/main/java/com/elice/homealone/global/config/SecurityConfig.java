@@ -6,6 +6,7 @@ import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.global.redis.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -45,8 +49,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*")); // 모든 origin 허용
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 특정 HTTP 메소드 허용
+        configuration.setAllowedHeaders(Arrays.asList("DNT","User-Agent","X-Requested-With","If-Modified-Since","Cache-Control","Content-Type","Range")); // 특정 헤더 허용
+        configuration.setExposedHeaders(Arrays.asList("Content-Length","Content-Range")); // 특정 헤더 노출 허용
+        configuration.setMaxAge(1728000L); // preflight 캐시 시간
+        configuration.setAllowCredentials(true); // credential 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration); // /api/** 경로에 대해 위의 CORS 설정 적용
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
@@ -92,11 +112,4 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // h2 콘솔에 대한 요청이 스프링 시큐리티 필터를 통과 하지 않도록 하는 설정
-//    @Bean
-//    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
-//    public WebSecurityCustomizer configureH2ConsoleEnable() {
-//        return web -> web.ignoring()
-//            .requestMatchers(PathRequest.toH2Console());
-//    }
 }
