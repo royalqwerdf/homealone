@@ -6,8 +6,8 @@ import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.postlike.entity.PostLike;
-import com.elice.homealone.scrap.entity.Scrap;
+import com.elice.homealone.like.PostLike;
+import com.elice.homealone.scrap.Scrap;
 import jakarta.persistence.*;
 
 import java.util.List;
