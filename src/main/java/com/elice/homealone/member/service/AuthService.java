@@ -169,9 +169,12 @@ public class AuthService{
         return memberRepository.save(findedMember).toDto();
     }
 
-    public MemberDto getMember() {
+    /**
+     * 회원 정보 받아오는 메소드
+     */
+    public Member getMember() {
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return member.toDto();
+        return member;
     }
 
 }

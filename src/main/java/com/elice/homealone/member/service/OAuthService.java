@@ -2,7 +2,6 @@ package com.elice.homealone.member.service;
 
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.dto.KakaoUserDto;
-import com.elice.homealone.member.dto.OAuthTokenDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,39 +23,8 @@ public class OAuthService {
 
     @Value("${kakao.client.id}")
     private String clientId;
-
     @Value("${kakdo.redirect.uri}")
     private String redirectUri;
-
-        public OAuthTokenDto getAccessToken(String code) {
-            RestTemplate rt = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("grant_type", "authorization_code");
-            params.add("client_id", clientId);
-            params.add("redirect_uri", redirectUri);
-            params.add("code", code);
-
-            HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
-
-            ResponseEntity<String> response = rt.exchange(
-                    "https://kauth.kakao.com/oauth/token", // https://{요청할 서버 주소}
-                    HttpMethod.POST, // 요청할 방식
-                    kakaoTokenRequest, // 요청할 때 보낼 데이터
-                    String.class // 요청 시 반환되는 데이터 타입
-            );
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            OAuthTokenDto oAuthTokenDTO = null;
-            try {
-                oAuthTokenDTO = objectMapper.readValue(response.getBody(), OAuthTokenDto.class);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            return oAuthTokenDTO;
-        }
 
         public KakaoUserDto getKakaoUserInfo(String kakaoAcessToken) {
             RestTemplate rt2 = new RestTemplate();
@@ -93,4 +61,34 @@ public class OAuthService {
             return kakaoUserDto;
         }
 
+
+//        public OAuthTokenDto getAccessToken(String code) {
+//            RestTemplate rt = new RestTemplate();
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+//
+//            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//            params.add("grant_type", "authorization_code");
+//            params.add("client_id", clientId);
+//            params.add("redirect_uri", redirectUri);
+//            params.add("code", code);
+//
+//            HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
+//
+//            ResponseEntity<String> response = rt.exchange(
+//                    "https://kauth.kakao.com/oauth/token", // https://{요청할 서버 주소}
+//                    HttpMethod.POST, // 요청할 방식
+//                    kakaoTokenRequest, // 요청할 때 보낼 데이터
+//                    String.class // 요청 시 반환되는 데이터 타입
+//            );
+//
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            OAuthTokenDto oAuthTokenDTO = null;
+//            try {
+//                oAuthTokenDTO = objectMapper.readValue(response.getBody(), OAuthTokenDto.class);
+//            } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//            }
+//            return oAuthTokenDTO;
+//        }
 }

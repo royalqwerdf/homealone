@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @EnableTransactionManagement
 public class HomealoneApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(HomealoneApplication.class, args);
 	}
