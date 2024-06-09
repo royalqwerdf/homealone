@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,8 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final OAuthService oAuthService;
+    @Value("${kakao.url}")
+    private String KAKAO_URL;
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
@@ -39,12 +42,16 @@ public class AuthController {
         TokenDto tokenDto = authService.login(loginRequestDTO, response);
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
+    @Operation(summary = "카카오 폼 이동")
+    @GetMapping("/kakao")
+    public String kakaoResponseUrl() {
+        return KAKAO_URL;
+    }
 
-    @Operation(summary = "카카오 로그인")
-    @GetMapping("/kakao/callback")
-    public ResponseEntity<TokenDto> login(String code, HttpServletResponse httpServletResponse) {
-        OAuthTokenDto oAuthTokenDto = oAuthService.getAccessToken(code);
-        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(oAuthTokenDto);
+    @Operation(summary = "카카오 자동 로그인")
+    @PostMapping("/kakao/login")
+    public ResponseEntity<TokenDto> kakaoLogin (String kakaoAccessToken, HttpServletResponse httpServletResponse) {
+        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(kakaoAccessToken);
         //자동 로그인
         TokenDto tokenDto = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
         HttpHeaders httpHeaders = new HttpHeaders();

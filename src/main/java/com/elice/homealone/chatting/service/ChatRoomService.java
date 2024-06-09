@@ -108,7 +108,7 @@ public class ChatRoomService {
     @Transactional
     public List<ChatDto> findChatrooms(Member member) {
         if(member == null) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND;
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         //member는 현재 로그인한 사용자 즉 sender

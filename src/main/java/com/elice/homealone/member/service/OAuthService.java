@@ -58,11 +58,11 @@ public class OAuthService {
             return oAuthTokenDTO;
         }
 
-        public KakaoUserDto getKakaoUserInfo(OAuthTokenDto oAuthTokenDTO) {
+        public KakaoUserDto getKakaoUserInfo(String kakaoAcessToken) {
             RestTemplate rt2 = new RestTemplate();
 
             HttpHeaders headers2 = new HttpHeaders();
-            headers2.add("Authorization", "Bearer " + oAuthTokenDTO.getAccess_token());
+            headers2.add("Authorization", "Bearer " + kakaoAcessToken);
             headers2.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
             HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest2 = new HttpEntity<>(headers2);
