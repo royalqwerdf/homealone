@@ -30,10 +30,6 @@ public class RecipeIngredientService {
         return recipeIngredient;
     }
 
-    public void deleteRecipeIngredient(RecipeIngredient ingredient) {
-        recipeIngredientRepository.delete(ingredient);
-    }
-
     public void deleteRecipeIngredientByRecipe(Recipe recipe) {
         recipeIngredientRepository.deleteByRecipe(recipe);
     }

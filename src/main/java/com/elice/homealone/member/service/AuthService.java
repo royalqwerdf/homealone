@@ -7,13 +7,14 @@ import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.LoginResponseDto;
+import com.elice.homealone.member.dto.response.TokenDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,8 @@ public class AuthService{
     private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
     private final String GRANT_TYPE = "Bearer ";
+    @Value("${spring.jwt.token.refresh-expiration-time}")
+    private int refreshExpirationTime;
 
     /**
      * 회원 가입
@@ -45,14 +48,14 @@ public class AuthService{
     /**
      * 로그인
      */
-    public LoginResponseDto login(LoginRequestDto loginRequestDTO, HttpServletResponse httpServletResponse) {
+    public TokenDto login(LoginRequestDto loginRequestDTO, HttpServletResponse httpServletResponse) {
         // 이메일 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
         // 비밀번호 검증
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
             String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
-            LoginResponseDto response = new LoginResponseDto();
+            TokenDto response = new TokenDto();
             response.setAccessToken(acessToken);
             //refreshToken 쿠키 저장
             httpServletResponse.addCookie(storeRefreshToken(refreshToken));
@@ -83,6 +86,8 @@ public class AuthService{
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(refreshExpirationTime);
         return cookie;
     }
 
@@ -94,6 +99,27 @@ public class AuthService{
         jwtTokenProvider.validateToken(acccessToken);
         member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
         return member;
+    }
+
+    /**
+     *
+     * @param refreshToken
+     * @return
+     */
+    public TokenDto refreshAccessToken(String refreshToken) {
+        // 1. Refresh Token 검증
+        jwtTokenProvider.validateToken(refreshToken);
+
+        // 2. Refresh Token에서 사용자 정보 추출
+        String email = jwtTokenProvider.getEmail(refreshToken);
+
+        // 3. 새로운 Access Token 생성
+        String newAccessToken = jwtTokenProvider.createAccessToken(email);
+
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(newAccessToken);
+
+        return tokenDto;
     }
 
 
