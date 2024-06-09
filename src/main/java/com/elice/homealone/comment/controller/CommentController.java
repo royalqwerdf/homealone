@@ -43,9 +43,9 @@ public class CommentController {
     }
 
     // 댓글 수정
-    @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentResDto> updateComment(@PathVariable Long commentId, @RequestBody String newContent) {
-        CommentResDto resDto = commentService.updateComment(commentId, newContent);
+    @PatchMapping("/")
+    public ResponseEntity<CommentResDto> updateComment(@AuthenticationPrincipal Member member, @RequestBody CommentReqDto requestDto) {
+        CommentResDto resDto = commentService.updateComment(member, requestDto);
         return new ResponseEntity<>(resDto, HttpStatus.OK);
     }
 

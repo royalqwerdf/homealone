@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -44,10 +45,10 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResDto updateComment(Long commentId, String newContent) {
-        Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + commentId));
-        comment.setContent(newContent);
+    public CommentResDto updateComment(Member member, CommentReqDto requestDto) {
+        Comment comment = commentRepository.findById(requestDto.getPostId())
+            .orElseThrow(() -> new IllegalArgumentException("Comment not found with id"));
+        comment.setContent(requestDto.getContent());
         commentRepository.save(comment);
         return CommentResDto.fromEntity(comment);
     }
