@@ -56,4 +56,9 @@ public class RecipeIngredient extends BaseTimeEntity {
             .note(this.note)
             .build();
     }
+
+    @PreRemove
+    public void preRemove() {
+        this.ingredient.getIngredients().remove(this);
+    }
 }

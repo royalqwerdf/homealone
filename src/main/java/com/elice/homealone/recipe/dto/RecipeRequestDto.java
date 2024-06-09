@@ -31,7 +31,18 @@ public class RecipeRequestDto {
     private List<PostTagDto> postTags;
 
     @Builder
-    public RecipeRequestDto(String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<RecipeImageDto> images, List<RecipeIngredientDto> ingredients, List<RecipeDetailDto> details, List<PostTagDto> postTags) {
+    public RecipeRequestDto(
+        String title,
+        String description,
+        int portions,
+        RecipeType recipeType,
+        RecipeTime recipeTime,
+        Cuisine cuisine,
+        List<RecipeImageDto> images,
+        List<RecipeIngredientDto> ingredients,
+        List<RecipeDetailDto> details,
+        List<PostTagDto> postTags) {
+
         this.title = title;
         this.description = description;
         this.portions = portions;
