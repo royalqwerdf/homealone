@@ -28,15 +28,13 @@ public class MemberController {
     @Operation(summary = "마이페이지 정보 조회")
     @GetMapping("/mypage/me")
     public ResponseEntity<MemberDto> getMemberInfo() {
-        MemberDto memberDTO = authService.getMember();
-        return ResponseEntity.ok(memberDTO);
+        return ResponseEntity.ok(authService.getMember().toDto());
     }
 
     @Operation(summary = "마이페이지 정보 수정")
     @PatchMapping("/mypage/me")
-    public ResponseEntity<MemberDto> editMemberInfo(@AuthenticationPrincipal Member member,
-                                                    @RequestBody MemberDto memberDTO){
-        MemberDto changedMember = authService.editMember(member, memberDTO).toDto();
+    public ResponseEntity<MemberDto> editMemberInfo(@RequestBody MemberDto memberDTO){
+        MemberDto changedMember = authService.editMember(authService.getMember(), memberDTO).toDto();
         return ResponseEntity.ok(changedMember);
     }
 
@@ -49,8 +47,8 @@ public class MemberController {
 
     @Operation(summary = "계정 탈퇴")
     @PatchMapping("/mypage/me/withdrawal")
-    public ResponseEntity<MemberDto> withdrawal(@AuthenticationPrincipal Member member) {
-        MemberDto withdrawaledMember = authService.withdrawal(member);
+    public ResponseEntity<MemberDto> withdrawal() {
+        MemberDto withdrawaledMember = authService.withdrawal(authService.getMember());
         return ResponseEntity.ok(withdrawaledMember);
     }
 

@@ -1,7 +1,6 @@
 package com.elice.homealone.member.controller;
 
 import com.elice.homealone.member.dto.KakaoUserDto;
-import com.elice.homealone.member.dto.OAuthTokenDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.member.dto.response.TokenDto;
@@ -59,7 +58,7 @@ public class AuthController {
         return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
     }
 
-    @Operation(summary = "AccessToken 재발급 API")
+    @Operation(summary = "AccessToken 재발급")
     @PostMapping("/token/refresh")
     public ResponseEntity<TokenDto> refreshAceessToken(@RequestBody Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
