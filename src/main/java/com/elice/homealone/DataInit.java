@@ -143,7 +143,7 @@ public class DataInit implements CommandLineRunner {
             .tags(postTags)
             .images(imageStrs)
             .build();
-        talkService.CreateTalkPost(talkRequestDTO, email);
+        talkService.CreateTalkPost(talkRequestDTO);
 
         // 테스트 방자랑 생성
         RoomRequestDTO roomRequestDTO = RoomRequestDTO.builder()
@@ -153,7 +153,7 @@ public class DataInit implements CommandLineRunner {
             .thumbnailUrl("image.jpg")
             .roomImages(imageStrs)
             .build();
-        roomService.CreateRoomPost(roomRequestDTO, email);
+        roomService.CreateRoomPost(roomRequestDTO);
 
         // 테스트 중고거래 생성
         // 테스트 이미지 생성
