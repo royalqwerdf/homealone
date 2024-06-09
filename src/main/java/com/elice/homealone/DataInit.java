@@ -137,41 +137,41 @@ public class DataInit implements CommandLineRunner {
         imageStrs.add("image1.jpg");
         imageStrs.add("image2.jpg");
 
-        TalkRequestDTO talkRequestDTO = TalkRequestDTO.builder()
-            .title("테스트 혼잣말")
-            .content("테스트 혼잣말입니다")
-            .tags(postTags)
-            .images(imageStrs)
-            .build();
-        talkService.CreateTalkPost(talkRequestDTO);
+//        TalkRequestDTO talkRequestDTO = TalkRequestDTO.builder()
+//            .title("테스트 혼잣말")
+//            .content("테스트 혼잣말입니다")
+//            .tags(postTags)
+//            .images(imageStrs)
+//            .build();
+//        talkService.CreateTalkPost(talkRequestDTO);
 
-        // 테스트 방자랑 생성
-        RoomRequestDTO roomRequestDTO = RoomRequestDTO.builder()
-            .title("테스트 방자랑")
-            .content("테스트 방자랑입니다.")
-            .tags(postTags)
-            .thumbnailUrl("image.jpg")
-            .roomImages(imageStrs)
-            .build();
-        roomService.CreateRoomPost(roomRequestDTO);
+//        // 테스트 방자랑 생성
+//        RoomRequestDTO roomRequestDTO = RoomRequestDTO.builder()
+//            .title("테스트 방자랑")
+//            .content("테스트 방자랑입니다.")
+//            .tags(postTags)
+//            .thumbnailUrl("image.jpg")
+//            .roomImages(imageStrs)
+//            .build();
+//        roomService.CreateRoomPost(roomRequestDTO);
 
-        // 테스트 중고거래 생성
-        // 테스트 이미지 생성
-        List<UsedTradeImage> usedImages = new ArrayList<>();
-        usedImages.add(UsedTradeImage.builder()
-            .main(true)
-            .url("image1.jpg")
-            .build());
-
-        UsedTradeRequestDto usedReqDto = UsedTradeRequestDto.builder()
-            .title("테스트 중고거래")
-            .price(25000)
-            .location("서울")
-            .content("테스트 중고거래입니다.")
-            .memberId(1L)
-            .images(usedImages)
-            .build();
-        usedTradeService.createUsedTrade(usedReqDto);
+//        // 테스트 중고거래 생성
+//        // 테스트 이미지 생성
+//        List<UsedTradeImage> usedImages = new ArrayList<>();
+//        usedImages.add(UsedTradeImage.builder()
+//            .main(true)
+//            .url("image1.jpg")
+//            .build());
+//
+//        UsedTradeRequestDto usedReqDto = UsedTradeRequestDto.builder()
+//            .title("테스트 중고거래")
+//            .price(25000)
+//            .location("서울")
+//            .content("테스트 중고거래입니다.")
+//            .memberId(1L)
+//            .images(usedImages)
+//            .build();
+//        usedTradeService.createUsedTrade(usedReqDto);
     }
 
 }
