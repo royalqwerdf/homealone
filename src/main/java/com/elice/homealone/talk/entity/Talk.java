@@ -25,12 +25,12 @@ public class Talk extends Post {
     @Column(nullable = false,name = "title")
     private String title;
 
-    @Column(nullable = false)
-    @Lob
+
+    @Column(columnDefinition = "LONGTEXT")
     @JsonSerialize(using = RawContentSerializer.class)
     private String content;
 
-    @Column(name = "plain_content")
+    @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
 
     @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)

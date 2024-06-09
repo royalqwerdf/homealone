@@ -52,7 +52,7 @@ public class MemberService implements UserDetailsService {
      * email을 통해서 SecurityContextHolder에 사용자를 저장해둔다.
      */
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public Member loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = findByEmail(email);
         return member;
     }

@@ -3,6 +3,8 @@ package com.elice.homealone.global.jwt;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.redis.RedisUtil;
+import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
