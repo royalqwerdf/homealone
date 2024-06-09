@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) //H2
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers(admin).hasRole("ROLE_ADMIN")
+                        auth -> auth.requestMatchers(admin).hasRole("ADMIN")
                                     .requestMatchers(member).permitAll()
                                     .requestMatchers(resource).permitAll()
                                     .requestMatchers("/static/index.html").permitAll()
