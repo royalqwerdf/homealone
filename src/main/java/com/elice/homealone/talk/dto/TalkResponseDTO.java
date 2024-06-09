@@ -33,6 +33,7 @@ public class TalkResponseDTO {
                 .createdAt(talk.getCreatedAt())
                 .build();
     }
+
     @Data
     @SuperBuilder
     @NoArgsConstructor

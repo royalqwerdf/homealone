@@ -7,6 +7,7 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomResponseDTO;
+import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.Service.PostTagService;
 import com.elice.homealone.tag.entity.PostTag;
@@ -25,6 +26,8 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +43,9 @@ public class TalkService {
     private final MemberService memberService;
     private final PostTagService postTagService;
     @Transactional
-    public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto, String email){ ///회원 정의 추가해야함.
-        Member member = memberService.findByEmail(email);
+    public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Talk talk = new Talk(talkDto,member);
         //HTML태그 제거
         String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none());
@@ -53,10 +57,11 @@ public class TalkService {
     }
 
     @Transactional
-    public TalkResponseDTO.TalkInfoDto EditTalkPost(String email,Long talkId, TalkRequestDTO talkDto){
-        Member member = memberService.findByEmail(email);
+    public TalkResponseDTO.TalkInfoDto EditTalkPost(Long talkId, TalkRequestDTO talkDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Talk talkOriginal = talkRepository.findById(talkId).orElseThrow(() -> new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-        if(talkOriginal.getMember() != member){
+        if(talkOriginal.getMember().getId() != member.getId()){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkOriginal.setTitle(talkDto.getTitle());
@@ -69,11 +74,12 @@ public class TalkService {
     }
 
     @Transactional
-    public void deleteRoomPost(String email,Long talkId){
-        Member member = memberService.findByEmail(email);
+    public void deleteRoomPost(Long talkId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Talk talkOriginal = talkRepository.findById(talkId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-        if(talkOriginal.getMember() != member){
+        if(talkOriginal.getMember().getId() != member.getId()){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkRepository.delete(talkOriginal);
@@ -112,22 +118,27 @@ public class TalkService {
     }
 
     @Transactional
-    public TalkResponseDTO.TalkInfoDto findByTalkId(Long talkId, String email){
-        if(email != null && !email.isEmpty()){
-            Member member = memberService.findByEmail(email);
-            Talk talk = talkRepository.findById(talkId)
-                    .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-            talk.setView(talk.getView()+1);
-            TalkResponseDTO.TalkInfoDto talkInfoDtoForMember = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
-            //TODO:회원 자신이 scrap,like 했는지 확인 로직 필요 일단은 true로
-            talkInfoDtoForMember.setScrap(true);
-            talkInfoDtoForMember.setLike(true);
-        }
-        Talk talk = talkRepository.findById(talkId)
-                .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-        talk.setView(talk.getView()+1);
-        return  TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
+    public TalkResponseDTO.TalkInfoDto findByTalkId(Long talkId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
 
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            member = (Member) authentication.getPrincipal();
+
+        }
+
+        Talk talk = talkRepository.findById(talkId)
+                .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
+        talk.setView(talk.getView() + 1);
+        TalkResponseDTO.TalkInfoDto talkInfoDto = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
+
+        if (member != null) {
+            // TODO: 회원이 스크랩했는지 체크 로직 추가
+
+            talkInfoDto.setLike(true);
+            talkInfoDto.setScrap(true);
+        }
+        return talkInfoDto;
     }
 
 
@@ -138,8 +149,9 @@ public class TalkService {
         return talkResponseDTO;
     }
     @Transactional
-    public Page<TalkResponseDTO> findTalkByMember(String email, Pageable pageable){
-        Member member = memberService.findByEmail(email);
+    public Page<TalkResponseDTO> findTalkByMember(Pageable pageable){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Page<TalkResponseDTO> TalkResponse = talkRepository.findTalkByMember(member, pageable).map(TalkResponseDTO::toTalkResponseDTO);
         if(TalkResponse.isEmpty()){
             throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);

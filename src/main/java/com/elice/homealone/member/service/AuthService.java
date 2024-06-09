@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -139,16 +140,17 @@ public class AuthService{
      * 회원 수정
      * Auth: User
      */
-    public Member editMember(Member member, MemberDto memberDTO) {
-        Member changeMember = memberService.findById(member.getId());
-        changeMember.setName(memberDTO.getName());
-        changeMember.setBirth(memberDTO.getBirth());
-        changeMember.setEmail(memberDTO.getEmail());
-        changeMember.setAddress(memberDTO.getAddress());
-        changeMember.setImageUrl(memberDTO.getImageUrl());
-        changeMember.setCreatedAt(memberDTO.getCreatedAt());
-        changeMember.setModifiedAt(memberDTO.getModifiedAt());
-        return changeMember;
+    public Member editMember(MemberDto memberDTO) {
+        Member member = getMember();
+        member.setName(memberDTO.getName());
+        member.setBirth(memberDTO.getBirth());
+        member.setEmail(memberDTO.getEmail());
+        member.setAddress(memberDTO.getAddress());
+        member.setImageUrl(memberDTO.getImageUrl());
+        member.setCreatedAt(memberDTO.getCreatedAt());
+        member.setModifiedAt(memberDTO.getModifiedAt());
+        memberRepository.save(member);
+        return member;
     }
 
     /**
@@ -167,5 +169,14 @@ public class AuthService{
         findedMember.setDeletedAt(true);
         return memberRepository.save(findedMember).toDto();
     }
+
+    /**
+     * 회원 정보 받아오는 메소드
+     */
+    public Member getMember() {
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return member;
+    }
+
 }
 
