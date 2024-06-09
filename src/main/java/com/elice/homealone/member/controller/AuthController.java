@@ -49,8 +49,8 @@ public class AuthController {
 
     @Operation(summary = "카카오 자동 로그인")
     @PostMapping("/kakao/login")
-    public ResponseEntity<TokenDto> kakaoLogin (String kakaoAccessToken, HttpServletResponse httpServletResponse) {
-        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(kakaoAccessToken);
+    public ResponseEntity<TokenDto> kakaoLogin (@RequestBody Map<String, String> body, HttpServletResponse httpServletResponse) {
+        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(body.get("accessToken"));
         //자동 로그인
         TokenDto tokenDto = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
         HttpHeaders httpHeaders = new HttpHeaders();

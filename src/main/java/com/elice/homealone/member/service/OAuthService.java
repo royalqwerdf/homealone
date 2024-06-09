@@ -25,7 +25,7 @@ public class OAuthService {
             RestTemplate rt2 = new RestTemplate();
 
             HttpHeaders headers2 = new HttpHeaders();
-            headers2.add("Authorization", "Bearer " + kakaoAcessToken);
+            headers2.add("Authorization", kakaoAcessToken);
             headers2.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
             HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest2 = new HttpEntity<>(headers2);
