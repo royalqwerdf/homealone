@@ -53,17 +53,17 @@ public class ChatRoomController {
     //채팅방 생성
     @Operation(summary = "중고거래 게시판에서 채팅방 개설")
     @PostMapping("/chatting")
-    public ResponseEntity<ChatDto> makeChat(@AuthenticationPrincipal Member member, @RequestBody ChatDto chatDto) {
+    public ResponseEntity<ChatDto> makeChat(@RequestBody ChatDto chatDto) {
 
-        return ResponseEntity.ok().body(chatRoomService.makeChat(member, chatDto));
+        return ResponseEntity.ok().body(chatRoomService.makeChat(chatDto));
     }
 
     //채팅방 삭제
     @Operation(summary = "채팅방 삭제")
     @DeleteMapping("/chatting/{chatroomId}")
-    public void deleteChatroom(@AuthenticationPrincipal Member member, @PathVariable Long chatroomId) {
+    public void deleteChatroom(@PathVariable Long chatroomId) {
 
-        chatRoomService.deleteChatroom(member, chatroomId);
+        chatRoomService.deleteChatroom(chatroomId);
     }
 
 }
