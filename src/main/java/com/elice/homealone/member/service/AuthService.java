@@ -19,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService{
@@ -100,13 +102,10 @@ public class AuthService{
     public TokenDto refreshAccessToken(String refreshToken) {
         // 1. Refresh Token 검증
         jwtTokenProvider.validateToken(refreshToken);
-
         // 2. Refresh Token에서 사용자 정보 추출
         String email = jwtTokenProvider.getEmail(refreshToken);
-
         // 3. 새로운 Access Token 생성
         String newAccessToken = jwtTokenProvider.createAccessToken(email);
-
         TokenDto tokenDto = new TokenDto();
         tokenDto.setAccessToken(newAccessToken);
 
@@ -130,13 +129,11 @@ public class AuthService{
      */
     public Member editMember(MemberDto memberDTO) {
         Member member = getMember();
-        member.setName(memberDTO.getName());
-        member.setBirth(memberDTO.getBirth());
-        member.setEmail(memberDTO.getEmail());
-        member.setAddress(memberDTO.getAddress());
-        member.setImageUrl(memberDTO.getImageUrl());
-        member.setCreatedAt(memberDTO.getCreatedAt());
-        member.setModifiedAt(memberDTO.getModifiedAt());
+        Optional.ofNullable(memberDTO.getName()).ifPresent(name->member.setName(name));
+        Optional.ofNullable(memberDTO.getBirth()).ifPresent(birth->member.setBirth(birth));
+        Optional.ofNullable(memberDTO.getFirstAddress()).ifPresent(first->member.setFirstAddress(first));
+        Optional.ofNullable(memberDTO.getSecondAddress()).ifPresent(second->member.setSecondAddress(second));
+        Optional.ofNullable(memberDTO.getImageUrl()).ifPresent(address->member.setImageUrl(address));
         memberRepository.save(member);
         return member;
     }

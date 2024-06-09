@@ -40,8 +40,11 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "first_address")
+    private String firstAddress;
+
+    @Column(name = "second_address")
+    private String secondAddress;
 
     @Column(name = "phone")
     private String phone;
@@ -70,7 +73,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
         memberDTO.setName(this.name);
         memberDTO.setBirth(this.birth);
         memberDTO.setEmail(this.email);
-        memberDTO.setAddress(this.address);
+        memberDTO.setFirstAddress(this.firstAddress);
+        memberDTO.setSecondAddress(this.secondAddress);
         memberDTO.setImageUrl(this.imageUrl);
         memberDTO.setCreatedAt(this.getCreatedAt());
         memberDTO.setModifiedAt(this.getModifiedAt());

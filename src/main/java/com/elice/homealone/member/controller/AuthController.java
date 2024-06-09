@@ -49,7 +49,7 @@ public class AuthController {
 
     @Operation(summary = "카카오 자동 로그인")
     @PostMapping("/kakao/login")
-    public ResponseEntity<TokenDto> kakaoLogin (Map<String, String> body, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<TokenDto> kakaoLogin (@RequestBody Map<String, String> body, HttpServletResponse httpServletResponse) {
         KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(body.get("accessToken"));
         //자동 로그인
         TokenDto tokenDto = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
@@ -68,10 +68,10 @@ public class AuthController {
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest,
+    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse) {
         authService.logout(httpServletRequest, httpServletResponse);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("로그아웃 되었습니다.", HttpStatus.OK);
     }
 
 }
