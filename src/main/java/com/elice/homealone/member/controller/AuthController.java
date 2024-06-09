@@ -1,0 +1,77 @@
+package com.elice.homealone.member.controller;
+
+import com.elice.homealone.member.dto.KakaoUserDto;
+import com.elice.homealone.member.dto.request.LoginRequestDto;
+import com.elice.homealone.member.dto.request.SignupRequestDto;
+import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.service.AuthService;
+import com.elice.homealone.member.service.OAuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+@Tag(name = "AuthController", description = "인증 관리 API")
+public class AuthController {
+    private final AuthService authService;
+    private final OAuthService oAuthService;
+    @Value("${kakao.url}")
+    private String KAKAO_URL;
+
+    @Operation(summary = "회원가입")
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody SignupRequestDto signupRequestDTO) {
+        authService.signUp(signupRequestDTO);
+        return new ResponseEntity<>("회원가입에 성공했습니다.", HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto loginRequestDTO,
+                                          HttpServletResponse response) {
+        TokenDto tokenDto = authService.login(loginRequestDTO, response);
+        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+    }
+    @Operation(summary = "카카오 폼 이동")
+    @GetMapping("/kakao")
+    public String kakaoResponseUrl() {
+        return KAKAO_URL;
+    }
+
+    @Operation(summary = "카카오 자동 로그인")
+    @PostMapping("/kakao/login")
+    public ResponseEntity<TokenDto> kakaoLogin (Map<String, String> body, HttpServletResponse httpServletResponse) {
+        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(body.get("accessToken"));
+        //자동 로그인
+        TokenDto tokenDto = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization", tokenDto.getAccessToken());
+        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+    }
+
+    @Operation(summary = "AccessToken 재발급")
+    @PostMapping("/token/refresh")
+    public ResponseEntity<TokenDto> refreshAceessToken(@RequestBody Map<String, String> body) {
+        String refreshToken = body.get("refreshToken");
+        TokenDto tokenDto = authService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok(tokenDto);
+    }
+
+    @Operation(summary = "로그아웃")
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest,
+                                       HttpServletResponse httpServletResponse) {
+        authService.logout(httpServletRequest, httpServletResponse);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+}
