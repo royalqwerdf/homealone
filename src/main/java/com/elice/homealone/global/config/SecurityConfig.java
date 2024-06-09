@@ -76,7 +76,6 @@ public class SecurityConfig {
                                     .anyRequest().permitAll() //임시설정
                 )
                 .logout(logout -> logout.logoutUrl("/api/logout")
-                                        .logoutSuccessUrl("/api/login")
                                         .invalidateHttpSession(true)
                                         .deleteCookies("JSESSIONID"))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
