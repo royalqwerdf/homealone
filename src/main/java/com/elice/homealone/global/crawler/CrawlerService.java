@@ -28,22 +28,22 @@ public class CrawlerService {
     private final PasswordEncoder passwordEncoder;
     private final JobStatusService jobStatusService;
 
-/*
-    public void loadJsonAndSaveRecipe() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // JSON 파일을 읽어와서 RecipeRequestDto 형태로 변환
-            List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
+    /*
+        public void loadJsonAndSaveRecipe() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                // JSON 파일을 읽어와서 RecipeRequestDto 형태로 변환
+                List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
 
-            for(RecipeRequestDto requestDto : recipeRequestDtos) {
-                recipeService.createRecipe(requestDto);
+                for(RecipeRequestDto requestDto : recipeRequestDtos) {
+                    recipeService.createRecipe(requestDto);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
 
- */
+     */
     @Async
     public void loadFromMongoAndSaveRecipe(Member member,Date date, String jobId) {
         JobStatus jobStatus = jobStatusService.createJobStatus(jobId);
@@ -69,13 +69,14 @@ public class CrawlerService {
         String email = signupRequestDTO.getEmail();
         if (!memberRepository.existsByEmail(email)) {
             Member admin = Member.builder()
-                .name("관리자")
-                .birth(signupRequestDTO.getBirth()) // 관리자 생년월일 예시
-                .email(email)
-                .address(signupRequestDTO.getAddress())
-                .password(passwordEncoder.encode(signupRequestDTO.getPassword())) // 관리자 비밀번호
-                .role(Role.ROLE_ADMIN) // 관리자 역할 설정
-                .build();
+                    .name("관리자")
+                    .birth(signupRequestDTO.getBirth()) // 관리자 생년월일 예시
+                    .email(email)
+                    .firstAddress(signupRequestDTO.getFirstAddress())
+                    .secondAddress(signupRequestDTO.getSecondAddress())
+                    .password(passwordEncoder.encode(signupRequestDTO.getPassword())) // 관리자 비밀번호
+                    .role(Role.ROLE_ADMIN) // 관리자 역할 설정
+                    .build();
             memberRepository.save(admin);
         }
     }

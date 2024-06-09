@@ -7,7 +7,7 @@ import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.dto.TokenDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -159,8 +160,14 @@ public class AuthService{
      * 회원 정보 받아오는 메소드
      */
     public Member getMember() {
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return member;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            Member member = (Member) authentication.getPrincipal();
+            return member;
+        } else {
+            // 인증 객체가 null인 경우의 처리
+            return null;
+        }
     }
 
 }
