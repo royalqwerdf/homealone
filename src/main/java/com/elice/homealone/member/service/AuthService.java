@@ -93,16 +93,6 @@ public class AuthService{
     }
 
     /**
-     * Token으로 로그인한 회원 정보 조회
-     */
-    public MemberDto findLoginMemberByToken(String acccessToken) {
-        MemberDto member = new MemberDto();
-        jwtTokenProvider.validateToken(acccessToken);
-        member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
-        return member;
-    }
-
-    /**
      *
      * @param refreshToken
      * @return
@@ -133,8 +123,6 @@ public class AuthService{
         }
         return false;
     }
-
-
 
     /**
      * 회원 수정
