@@ -74,10 +74,7 @@ public class ChatRoomService {
     public ChatDto findChatList(Member member, Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member currentMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-        Long curMemberId = currentMember.getId();
-
+        Long curMemberId = member.getId();
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
         Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
