@@ -27,7 +27,6 @@ public class CommentService {
     // 댓글 등록
     @Transactional
     public CommentResDto createComment(CommentReqDto reqDto, Member member) {
-        Member loginMem = memberService.findById(member.getId());
         Post post = postService.findById(reqDto.getPostId());
         Comment comment = reqDto.toEntity(member,post);
         commentRepository.save(comment);

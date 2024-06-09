@@ -56,15 +56,15 @@ public class RecipeController {
 
     // 레시피 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteRecipe(id);
+    public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+        recipeService.deleteRecipe(member, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 레시피 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<RecipeResponseDto> patchRecipe(@PathVariable Long id, @RequestBody RecipeRequestDto requestDto) {
-        RecipeResponseDto patchedRecipe = recipeService.patchRecipe(id, requestDto);
+    public ResponseEntity<RecipeResponseDto> patchRecipe(@AuthenticationPrincipal Member member, @PathVariable Long id, @RequestBody RecipeRequestDto requestDto) {
+        RecipeResponseDto patchedRecipe = recipeService.patchRecipe(member, id, requestDto);
         return new ResponseEntity<>(patchedRecipe, HttpStatus.OK);
     }
 
