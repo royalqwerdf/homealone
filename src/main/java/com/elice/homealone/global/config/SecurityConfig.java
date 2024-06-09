@@ -47,7 +47,7 @@ public class SecurityConfig {
     };
     //임시로 모든 회원정보 모두 허용
     private final String[] member = {
-            "/"
+            "/**"
     };
     private final String[] resource = {
             "/swagger-ui/**", "/swagger-ui.html"
@@ -72,12 +72,18 @@ public class SecurityConfig {
                         auth -> auth.requestMatchers(admin).hasRole("ADMIN")
                                     .requestMatchers(member).permitAll()
                                     .requestMatchers(resource).permitAll()
-                                    .requestMatchers("/static/index.html").permitAll()
+                                    .requestMatchers("/static/index.html", "/api/**", "/**").permitAll()
+                                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                     .anyRequest().permitAll() //임시설정
                 )
-                .logout(logout -> logout.logoutUrl("/api/logout")
+                .logout(logout -> logout.logoutUrl("/logout")
                                         .invalidateHttpSession(true)
-                                        .deleteCookies("JSESSIONID"))
+                                        .deleteCookies("JSESSIONID")
+                                        .logoutSuccessHandler((request, response, authentication) -> {
+                                            response.setStatus(HttpServletResponse.SC_OK);
+                                            response.getWriter().flush();
+                                        })
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

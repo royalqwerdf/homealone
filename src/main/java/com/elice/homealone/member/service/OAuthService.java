@@ -21,11 +21,6 @@ public class OAuthService {
 
     private final AuthService authService;
 
-    @Value("${kakao.client.id}")
-    private String clientId;
-    @Value("${kakdo.redirect.uri}")
-    private String redirectUri;
-
         public KakaoUserDto getKakaoUserInfo(String kakaoAcessToken) {
             RestTemplate rt2 = new RestTemplate();
 
