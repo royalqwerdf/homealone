@@ -41,8 +41,7 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //현재 로그인된 사용자 정보
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member currentMember = (Member) authentication.getPrincipal();
+        Member currentMember = authService.getMember();
         if(currentMember == null) {
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
@@ -74,9 +73,10 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatDto findChatList(Member member, Long chatroomId) {
+    public ChatDto findChatList(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
+        Member member = authService.getMember();
         Long curMemberId = member.getId();
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
@@ -109,7 +109,10 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public List<ChatDto> findChatrooms(Member member) {
+    public List<ChatDto> findChatrooms() {
+
+        //현재 로그인된 사용자 정보
+        Member member = authService.getMember();
         if(member == null) {
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
@@ -126,9 +129,9 @@ public class ChatRoomService {
 
     @Transactional
     public void deleteChatroom(Long chatroomId) {
+
         //현재 로그인된 사용자 정보
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member currentMember = (Member) authentication.getPrincipal();
+        Member currentMember = authService.getMember();
         if(currentMember == null) {
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }

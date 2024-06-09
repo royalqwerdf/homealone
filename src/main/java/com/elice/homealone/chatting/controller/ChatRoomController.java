@@ -36,18 +36,18 @@ public class ChatRoomController {
     //회원의 모든 채팅방 목록 반환
     @Operation(summary = "회원 채팅방 목록 조회")
     @GetMapping("/chattings")
-    public ResponseEntity<List<ChatDto>> chattingRooms(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<List<ChatDto>> chattingRooms() {
 
-        return ResponseEntity.ok().body(chatRoomService.findChatrooms(member));
+        return ResponseEntity.ok().body(chatRoomService.findChatrooms());
 
     }
 
     //선택 채팅방 조회
     @Operation(summary = "채팅방 데이터 조회")
     @GetMapping("/chatting/{chatroomId}")
-    public ResponseEntity<ChatDto> chatroomInfo(@AuthenticationPrincipal Member member, @PathVariable Long chatroomId) {
+    public ResponseEntity<ChatDto> chatroomInfo(@PathVariable Long chatroomId) {
 
-        return ResponseEntity.ok().body(chatRoomService.findChatList(member, chatroomId));
+        return ResponseEntity.ok().body(chatRoomService.findChatList(chatroomId));
     }
 
     //채팅방 생성
