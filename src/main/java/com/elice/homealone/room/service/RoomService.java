@@ -22,7 +22,10 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
@@ -41,8 +44,9 @@ public class RoomService {
     private final PostTagService postTagService;
 //    private final ImageService imageService;
     @Transactional
-    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto, String email){ ///회원 정의 추가해야함.
-        Member member = memberService.findByEmail(email);
+    public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room room = new Room(roomDto,member);
         Room save = roomRepository.save(room);
         //HTML태그 제거
@@ -55,11 +59,12 @@ public class RoomService {
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(save);
     }
     @Transactional
-    public RoomResponseDTO.RoomInfoDto EditRoomPost(String email,Long roomId, RoomRequestDTO roomDto){
-        Member member = memberService.findByEmail(email);
+    public RoomResponseDTO.RoomInfoDto EditRoomPost(Long roomId, RoomRequestDTO roomDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember() != member){
+        if(roomOriginal.getMember().getId() != member.getId()){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         roomOriginal.setTitle(roomDto.getTitle());
@@ -78,11 +83,12 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoomPost(String email,Long roomId){
-        Member member = memberService.findByEmail(email);
+    public void deleteRoomPost(Long roomId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember() != member){
+        if(roomOriginal.getMember().getId() != member.getId()){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
@@ -121,27 +127,30 @@ public class RoomService {
         return findRoom.map(RoomResponseDTO:: toRoomResponseDTO);
 
     }
-
     @Transactional
-    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId,String email){
-        if(email != null && !email.isEmpty()){
-            Member member = memberService.findByEmail(email);
-            Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-            room.setView(room.getView()+1);
-            RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-            //TODO:회원이 스크랩했는지 안했는지 check로직 필요
+    public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+                member = (Member) authentication.getPrincipal();
+
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
+        room.setView(room.getView() + 1);
+        RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
+
+        if (member != null) {
+            // TODO: 회원이 스크랩했는지 체크 로직 추가
+
             roomInfoDto.setLike(true);
             roomInfoDto.setScrap(true);
-            return roomInfoDto;
         }
-         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        room.setView(room.getView()+1);
-        return  RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
 
+        return roomInfoDto;
     }
-
     @Transactional
     public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
@@ -151,8 +160,9 @@ public class RoomService {
     }
 
     @Transactional
-    public Page<RoomResponseDTO> findRoomByMember(String email, Pageable pageable){
-        Member member = memberService.findByEmail(email);
+    public Page<RoomResponseDTO> findRoomByMember(Pageable pageable){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authentication.getPrincipal();
         Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findRoomByMember(member, pageable).map(RoomResponseDTO::toRoomResponseDTO);
         if(roomResponseDTOS.isEmpty()){
             throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
