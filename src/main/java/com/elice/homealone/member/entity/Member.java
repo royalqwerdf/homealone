@@ -6,7 +6,7 @@ import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.postlike.entity.PostLike;
+import com.elice.homealone.like.entity.Like;
 import com.elice.homealone.scrap.entity.Scrap;
 import jakarta.persistence.*;
 
@@ -112,7 +112,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<Post> posts;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<PostLike> postLikes;
+    private List<Like> likes;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
@@ -122,5 +122,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    public List<Like> getLikes() {
+        return likes;
+    }
 
 }

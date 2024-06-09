@@ -28,9 +28,6 @@ out/
 !**/src/test/**/out/
 
 **/src/main/team7-front
-application.properties
-application-dev.properties
-application-test.properties
 src/main/resources/serviceAccountKey.json
 
 ### NetBeans ###
@@ -58,3 +55,7 @@ HELP.md
 
 Dockerfile
 docker-compose.yml
+
+application.properties
+application-dev.properties
+application-test.properties

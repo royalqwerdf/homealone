@@ -4,7 +4,7 @@ import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.postlike.entity.PostLike;
+import com.elice.homealone.like.entity.Like;
 import com.elice.homealone.scrap.entity.Scrap;
 import com.elice.homealone.tag.entity.PostTag;
 import jakarta.persistence.*;
@@ -41,10 +41,15 @@ public class Post extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostLike> postLikes = new ArrayList<>();
+    private List<Like> postLikes = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<Scrap> scraps = new ArrayList<>();
+
+    // 추가한 부분
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<Like> likes = new ArrayList<>(); // 추가된 부분
+
 
     public enum Type{
         RECIPE,
@@ -67,6 +72,10 @@ public class Post extends BaseTimeEntity {
     public void addComment(Comment comment) {
         this.comments.add(comment);
         comment.setPost(this);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
     }
 }
 
