@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,6 +26,6 @@ public class TalkRequestDTO {
     @JsonRawValue
     private String content;
     private List<PostTagDto> tags;
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
 }

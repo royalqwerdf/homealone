@@ -36,12 +36,9 @@ public class ChatRoomController {
     //회원의 모든 채팅방 목록 반환
     @Operation(summary = "회원 채팅방 목록 조회")
     @GetMapping("/chattings")
-    public ResponseEntity<List<ChatDto>> chattingRooms(@RequestHeader("Authorization") String token) {
-        String accessToken = token.substring(7);
-        log.info("{} : exist token", accessToken);
-        List<ChatDto> chatrooms = chatRoomService.findChatrooms(accessToken);
+    public ResponseEntity<List<ChatDto>> chattingRooms(@AuthenticationPrincipal Member member) {
 
-        return ResponseEntity.ok().body(chatrooms);
+        return ResponseEntity.ok().body(chatRoomService.findChatrooms(member));
 
     }
 
@@ -56,18 +53,16 @@ public class ChatRoomController {
     //채팅방 생성
     @Operation(summary = "중고거래 게시판에서 채팅방 개설")
     @PostMapping("/chatting")
-    public ResponseEntity<ChatDto> makeChat(@RequestHeader("Authorization") String token, @RequestBody ChatDto chatDto) {
-        String accessToken = token.substring(7);
-        log.info("{} : exist token", accessToken);
-        ChatDto createdRoom = chatRoomService.makeChat(accessToken, chatDto);
+    public ResponseEntity<ChatDto> makeChat(@AuthenticationPrincipal Member member, @RequestBody ChatDto chatDto) {
 
-        return ResponseEntity.ok().body(createdRoom);
+        return ResponseEntity.ok().body(chatRoomService.makeChat(member, chatDto));
     }
 
     //채팅방 삭제
     @Operation(summary = "채팅방 삭제")
     @DeleteMapping("/chatting/{chatroomId}")
     public void deleteChatroom(@AuthenticationPrincipal Member member, @PathVariable Long chatroomId) {
+
         chatRoomService.deleteChatroom(member, chatroomId);
     }
 

@@ -27,13 +27,14 @@ public class Room extends Post {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @Column(nullable = false, name = "content")
-    @Lob
+
+
     @JsonSerialize(using = RawContentSerializer.class)
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column(name = "plain_content")
-    @Lob
+
+    @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
 
     @Column(name = "thumbnail_url")
