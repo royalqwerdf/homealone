@@ -174,8 +174,15 @@ public class AuthService{
 
     }
 
+    /**
+     * 관리자 권한인지 아닌지 확인하는 메소드
+     * @param member
+     * @return
+     */
     public Boolean isAdmin(Member member) {
-        return member.getAuthorities().contains("ROLE_ADMIN");
+        return member.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
 }
 

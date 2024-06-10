@@ -6,6 +6,7 @@ import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 @Service
 public class TalkService {
     private final TalkRepository talkRepository;
-    private final MemberService memberService;
+    private final AuthService authService;
     private final PostTagService postTagService;
     private final LikeService likeService;
     private final ScrapService scrapService;
@@ -83,7 +84,9 @@ public class TalkService {
         Member member = (Member) authentication.getPrincipal();
         Talk talkOriginal = talkRepository.findById(talkId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-        if(talkOriginal.getMember().getId() != member.getId()){
+
+        boolean isAdmin = authService.isAdmin(member);
+        if(!isAdmin && (talkOriginal.getMember().getId() != member.getId())){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkRepository.delete(talkOriginal);
