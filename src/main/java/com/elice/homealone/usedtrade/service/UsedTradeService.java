@@ -5,6 +5,7 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.post.repository.PostRepository;
 import com.elice.homealone.usedtrade.dto.UsedTradeRequestDto;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
 import com.elice.homealone.usedtrade.entity.UsedTrade;
@@ -29,22 +30,30 @@ public class UsedTradeService {
 
     private final UsedTradeRepository usedTradeRepository;
     private final UsedTradeImageRepository usedTradeImageRepository;
-    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
 
     //모든 중고거래 조회
     public Page<UsedTradeResponseDto> getAllUsedTrades(Pageable pageable) {
 
         Page<UsedTrade> usedTrades = usedTradeRepository.findAll(pageable);
         Page<UsedTradeResponseDto> usedTradesDto = usedTrades.map(UsedTrade::toAllListDto);
+        usedTradesDto.stream().forEach(dto -> dto.setLikeCount(getLikeCount(dto.getId())));
 
         return usedTradesDto;
 
     }
+
+    public int getLikeCount(Long id) {
+        return postRepository.countById(id);
+    }
+
     //1개의 중고거래 게시글 조회
     public UsedTradeResponseDto getUsedTrade(Long id) {
 
         UsedTradeResponseDto responseDto = usedTradeRepository.findById(id).map(UsedTrade::toDto)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
+
+        responseDto.setLikeCount(getLikeCount(id));
 
         return responseDto;
     }
