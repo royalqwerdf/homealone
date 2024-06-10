@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,6 +17,9 @@ public class CommentResDto {
     private String memberName;
     private String content;
     private LocalDateTime modifiedAt;
+
+    @Setter
+    private boolean isLikeByCurrentUser = false;
 
     @Builder
     public CommentResDto(

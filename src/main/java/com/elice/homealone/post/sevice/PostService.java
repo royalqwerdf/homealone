@@ -23,12 +23,10 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    private final RecipeService recipeService;
-    private final RoomService roomService;
-    private final TalkService talkService;
-
     public Post findById(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new HomealoneException(ErrorCode.POST_NOT_FOUND));
         return post;
     }
+
+
 }

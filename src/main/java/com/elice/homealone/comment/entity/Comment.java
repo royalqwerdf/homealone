@@ -1,9 +1,12 @@
 package com.elice.homealone.comment.entity;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
+import com.elice.homealone.commentlike.entity.CommentLike;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +24,10 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "content", nullable = false)
+    @Setter
+    private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     @Setter
@@ -30,9 +37,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(name = "content", nullable = false)
-    @Setter
-    private String content;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    private List<CommentLike> likes = new ArrayList<>(); // 추가된 부분
 
     @Builder
     public Comment(Post post, Member member, String content) {

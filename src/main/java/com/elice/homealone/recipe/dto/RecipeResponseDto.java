@@ -7,6 +7,7 @@ import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class RecipeResponseDto {
@@ -27,6 +28,9 @@ public class RecipeResponseDto {
 
     private Long userId;
     private String userName;
+
+    @Setter
+    private boolean isLikeByCurrentUser = false;
 
     @Builder
     public RecipeResponseDto(

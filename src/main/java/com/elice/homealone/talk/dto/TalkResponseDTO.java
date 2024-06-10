@@ -61,7 +61,7 @@ public class TalkResponseDTO {
                     .createdAt(talk.getCreatedAt())
                     .updatedAt(talk.getModifiedAt())
                     .view(talk.getView())
-                    .likeCount( talk.getPostLikes() != null ? talk.getPostLikes().size() : 0)
+                    .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                     .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
                     .memberName(talk.getMember().getName())
                     .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)

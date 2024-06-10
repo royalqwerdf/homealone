@@ -33,11 +33,11 @@ public class LikeResDto {
 
     public static LikeResDto fromEntity(Like like) {
         return LikeResDto.builder()
-                .id(like.getId())
-                .postId(like.getPost().getId())
-                .memberId(like.getMember().getId())
-                .memberName(like.getMember().getName())
-                .createdAt(like.getCreatedAt())
-                .build();
+            .id(like.getId())
+            .postId(like.getPost().getId())
+            .memberId(like.getMember().getId())
+            .memberName(like.getMember().getName())
+            .createdAt(like.getCreatedAt())
+            .build();
     }
 }
