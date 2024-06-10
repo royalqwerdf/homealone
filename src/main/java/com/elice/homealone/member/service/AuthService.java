@@ -7,7 +7,7 @@ import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.dto.TokenDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -171,6 +171,7 @@ public class AuthService{
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
         return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+
     }
 }
 

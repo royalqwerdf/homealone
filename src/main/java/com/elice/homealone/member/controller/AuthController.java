@@ -1,9 +1,9 @@
 package com.elice.homealone.member.controller;
 
-import com.elice.homealone.member.dto.KakaoUserDto;
+import com.elice.homealone.member.dto.response.KakaoUserResponse;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.dto.TokenDto;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.OAuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,8 +24,6 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final OAuthService oAuthService;
-    @Value("${kakao.url}")
-    private String KAKAO_URL;
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
@@ -41,22 +39,7 @@ public class AuthController {
         TokenDto tokenDto = authService.login(loginRequestDTO, response);
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
-    @Operation(summary = "카카오 폼 이동")
-    @GetMapping("/kakao")
-    public String kakaoResponseUrl() {
-        return KAKAO_URL;
-    }
 
-    @Operation(summary = "카카오 자동 로그인")
-    @PostMapping("/kakao/login")
-    public ResponseEntity<TokenDto> kakaoLogin (@RequestBody Map<String, String> body, HttpServletResponse httpServletResponse) {
-        KakaoUserDto kakaoUserDto = oAuthService.getKakaoUserInfo(body.get("accessToken"));
-        //자동 로그인
-        TokenDto tokenDto = authService.login(kakaoUserDto.toLoginRequestDto(), httpServletResponse);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", tokenDto.getAccessToken());
-        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-    }
 
     @Operation(summary = "AccessToken 재발급")
     @PostMapping("/token/refresh")
