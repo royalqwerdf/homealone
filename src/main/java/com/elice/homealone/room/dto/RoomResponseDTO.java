@@ -1,15 +1,13 @@
 package com.elice.homealone.room.dto;
 
 import com.elice.homealone.comment.entity.Comment;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -22,6 +20,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomResponseDTO {
+
     private Long id;
     private String title;
     private String thumbnailUrl;
@@ -29,6 +28,7 @@ public class RoomResponseDTO {
     private Integer commentCount;
     private LocalDateTime createdAt;
     private String contentSummary;
+    private Integer likeCount = 0;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -39,6 +39,7 @@ public class RoomResponseDTO {
                 .commentCount(room.getComments().size())
                 .createdAt(room.getCreatedAt())
                 .contentSummary(room.getPlainContent().length() <=50 ? room.getPlainContent() : room.getPlainContent().substring(0,50))
+                .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                 .build();
     }
     @Data
@@ -51,7 +52,6 @@ public class RoomResponseDTO {
         private LocalDateTime updatedAt;
         private Integer view;
         private Integer likeCount;
-        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
         private List<Comment> comments;
@@ -71,7 +71,6 @@ public class RoomResponseDTO {
                     .updatedAt(room.getModifiedAt())
                     .view(room.getView())
                     .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
-                    .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))

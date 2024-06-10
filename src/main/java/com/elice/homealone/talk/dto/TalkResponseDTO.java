@@ -24,6 +24,7 @@ public class TalkResponseDTO {
     private Integer commentCount;
     private LocalDateTime createdAt;
     private String contentSummary;
+    private Integer likeCount;
     public static TalkResponseDTO toTalkResponseDTO(Talk talk){
         return TalkResponseDTO.builder()
                 .id(talk.getId())
@@ -32,6 +33,7 @@ public class TalkResponseDTO {
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
                 .contentSummary(talk.getPlainContent().length() <= 50 ? talk.getPlainContent() : talk.getPlainContent().substring(0,50))
+                .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                 .build();
     }
 
@@ -45,7 +47,6 @@ public class TalkResponseDTO {
         private LocalDateTime updatedAt;
         private Integer view;
         private Integer likeCount;
-        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
         private List<Comment> comments;
@@ -62,7 +63,6 @@ public class TalkResponseDTO {
                     .updatedAt(talk.getModifiedAt())
                     .view(talk.getView())
                     .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
-                    .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
                     .memberName(talk.getMember().getName())
                     .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
                     .scrap(false)

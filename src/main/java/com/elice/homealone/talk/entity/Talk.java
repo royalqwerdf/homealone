@@ -25,7 +25,6 @@ public class Talk extends Post {
 
 
     @Column(columnDefinition = "LONGTEXT")
-    @JsonSerialize(using = RawContentSerializer.class)
     private String content;
 
     @Column(columnDefinition = "LONGTEXT")

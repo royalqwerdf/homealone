@@ -48,4 +48,8 @@ public class ScrapService {
                 .orElseThrow(() -> new IllegalArgumentException("Scrap not found with id: " + scrapId));
         scrapRepository.delete(scrap);
     }
+    @Transactional
+    public boolean isScrapdeByMember(Long postId, Long memberId) {
+        return scrapRepository.existsByPostIdAndMemberId(postId, memberId);
+    }
 }
