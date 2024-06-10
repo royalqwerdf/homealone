@@ -2,8 +2,12 @@ package com.elice.homealone.recipe.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.like.entity.Like;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
+import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.dto.RecipePageDto;
@@ -22,6 +26,7 @@ import jakarta.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +46,9 @@ public class RecipeService {
     private final RecipeDetailService recipeDetailService;
     private final RecipeIngredientService recipeIngredientService;
     private final PostTagService postTagService;
+    private final AuthService authService;
+
+    private final LikeService likeService;
 
     // 레시피 등록
     @Transactional
@@ -99,17 +107,25 @@ public class RecipeService {
             () -> recipeRepository.countRecipes(userId, title, description, tags)
         );
 
-       return recipePage.map(Recipe::toPageDto);
-    }
-
-    // 레시피 리스트 전체 조회
-    public Page<RecipePageDto> findAll(Pageable pageable) {
-        try {
-            Page<Recipe> recipePage = recipeRepository.findAll(pageable);
+        Member member = authService.getMember();
+        if(member == null) {
             return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+        // List<Recipe> -> List<Post>
+        List<Post> posts = recipes.stream()
+            .map(post -> (Post) post)
+            .toList();
+
+        List<Like> likes = likeService.findLikesByMemberAndPostIn(member, posts);
+        Set<Long> likedRecipeIds = likes.stream()
+            .map(like -> like.getPost().getId())
+            .collect(Collectors.toSet());
+
+        return recipePage.map(recipe -> {
+            RecipePageDto pageDto = recipe.toPageDto();
+            pageDto.setLikeByCurrentUser(likedRecipeIds.contains(recipe.getId()));
+            return pageDto;
+        });
     }
 
     // 레시피 상세 조회

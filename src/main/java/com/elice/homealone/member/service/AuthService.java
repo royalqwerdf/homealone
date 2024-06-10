@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -159,9 +160,12 @@ public class AuthService{
      * 회원 정보 받아오는 메소드
      */
     public Member getMember() {
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return member;
-    }
+        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(object.equals("anonymousUser")){
+            return null;
+        }
 
+        return (Member)object;
+    }
 }
 
