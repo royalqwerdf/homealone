@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 public class RecipeController {
