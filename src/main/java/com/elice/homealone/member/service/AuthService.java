@@ -171,7 +171,6 @@ public class AuthService{
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
         return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-
     }
 }
 
