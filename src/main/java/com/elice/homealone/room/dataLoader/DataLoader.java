@@ -49,7 +49,8 @@
 //                      .name("nana00")
 //                      .birth(LocalDate.of(1945, 4, 28)) //회원 생년월일
 //                      .email(email)
-//                      .address("Seoul")
+//                      .firstAddress("Deageon")
+//                      .secondAddress("유성구")
 //                      .password(passwordEncoder.encode("1234")) // 회원 비밀번호
 //                      .role(Role.ROLE_USER)
 //                      .build();

@@ -3,12 +3,14 @@ package com.elice.homealone.talk.Service;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
+import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
@@ -42,6 +44,8 @@ public class TalkService {
     private final TalkRepository talkRepository;
     private final MemberService memberService;
     private final PostTagService postTagService;
+    private final LikeService likeService;
+    private final ScrapService scrapService;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -131,12 +135,13 @@ public class TalkService {
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         talk.setView(talk.getView() + 1);
         TalkResponseDTO.TalkInfoDto talkInfoDto = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
-
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
 
-            talkInfoDto.setLike(true);
-            talkInfoDto.setScrap(true);
+            boolean likedByMember = likeService.isLikedByMember(talk, member);
+            boolean scrapdeByMember = scrapService.isScrapdeByMember(talk.getId(), member.getId());
+            talkInfoDto.setLike(likedByMember);
+            talkInfoDto.setScrap(scrapdeByMember);
         }
         return talkInfoDto;
     }
