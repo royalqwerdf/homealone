@@ -20,6 +20,8 @@ public class CommentResDto {
 
     @Setter
     private boolean isLikeByCurrentUser = false;
+    @Setter
+    private int likeCount = 0;
 
     @Builder
     public CommentResDto(
@@ -28,7 +30,8 @@ public class CommentResDto {
         Long memberId,
         String memberName,
         String content,
-        LocalDateTime modifiedAt
+        LocalDateTime modifiedAt,
+        int likeCount
     ) {
         this.id = id;
         this.postId = postId;
@@ -36,6 +39,7 @@ public class CommentResDto {
         this.memberName = memberName;
         this.content = content;
         this.modifiedAt = modifiedAt;
+        this.likeCount = likeCount;
     }
 
     public static CommentResDto fromEntity(Comment comment) {
@@ -46,6 +50,7 @@ public class CommentResDto {
             .memberName(comment.getMember().getName())
             .content(comment.getContent())
             .modifiedAt(comment.getModifiedAt())
+            .likeCount(comment.getLikes().size())
             .build();
     }
 }
