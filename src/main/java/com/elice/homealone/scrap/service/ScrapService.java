@@ -64,7 +64,7 @@ public class ScrapService {
     public ScrapResDto createAndDeleteScrap(ScrapReqDto reqDto) {
         try {
             Member member = authService.getMember();
-
+            member = memberService.findById(member.getId());
             Post post = postService.findById(reqDto.getPostId());
             Optional<Scrap> scrap = scrapRepository.findByMemberIdAndPostId(member.getId(), post.getId());
             if(scrap.isEmpty()){
