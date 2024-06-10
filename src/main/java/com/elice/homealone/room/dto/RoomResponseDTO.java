@@ -28,6 +28,7 @@ public class RoomResponseDTO {
     private String memberName;
     private Integer commentCount;
     private LocalDateTime createdAt;
+    private String contentSummary;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -37,6 +38,7 @@ public class RoomResponseDTO {
                 .memberName(room.getMember().getName())
                 .commentCount(room.getComments().size())
                 .createdAt(room.getCreatedAt())
+                .contentSummary(room.getPlainContent().length() <=50 ? room.getPlainContent() : room.getPlainContent().substring(0,50))
                 .build();
     }
     @Data
@@ -44,7 +46,6 @@ public class RoomResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RoomInfoDto extends RoomResponseDTO {
-        @JsonRawValue
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

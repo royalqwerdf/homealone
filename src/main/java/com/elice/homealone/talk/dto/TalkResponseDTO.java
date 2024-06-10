@@ -23,7 +23,7 @@ public class TalkResponseDTO {
     private String memberName;
     private Integer commentCount;
     private LocalDateTime createdAt;
-
+    private String contentSummary;
     public static TalkResponseDTO toTalkResponseDTO(Talk talk){
         return TalkResponseDTO.builder()
                 .id(talk.getId())
@@ -31,6 +31,7 @@ public class TalkResponseDTO {
                 .memberName(talk.getMember().getName())
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
+                .contentSummary(talk.getPlainContent().length() <= 50 ? talk.getPlainContent() : talk.getPlainContent().substring(0,50))
                 .build();
     }
     @Data
@@ -38,7 +39,6 @@ public class TalkResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TalkInfoDto extends TalkResponseDTO {
-        @JsonRawValue
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
