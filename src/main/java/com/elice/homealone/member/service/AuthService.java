@@ -7,7 +7,7 @@ import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.dto.TokenDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -53,9 +53,8 @@ public class AuthService{
      * 로그인
      */
     public TokenDto login(LoginRequestDto loginRequestDTO, HttpServletResponse httpServletResponse) {
-        // 이메일 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
-        // 비밀번호 검증
+        isAccountDeleted(findMember);
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
             String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
@@ -67,6 +66,13 @@ public class AuthService{
         } else{
             throw new HomealoneException(ErrorCode.MISMATCHED_PASSWORD);
         }
+    }
+
+    /**
+     * 회원 deltedAt 유무 검증
+     */
+    public void isAccountDeleted(Member member) {
+        if(!member.isEnabled()) throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     /**
@@ -162,10 +168,10 @@ public class AuthService{
     public Member getMember() {
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(object.equals("anonymousUser")){
-            return null;
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
+        return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return (Member)object;
     }
 }
 

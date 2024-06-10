@@ -1,4 +1,4 @@
-package com.elice.homealone.member.dto;
+package com.elice.homealone.member.dto.response;
 
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KakaoUserDto {
+public class KakaoUserResponse {
     private String id;
     private KakaoAccount kakao_account;
 
