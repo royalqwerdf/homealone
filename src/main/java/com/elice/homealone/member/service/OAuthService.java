@@ -26,7 +26,7 @@ public class OAuthService {
     private final NaverProperties naverProperties;
     private final AuthService authService;
 
-    public KakaoUserResponse getKakaoUserInfo(String kakaoAcessToken) {
+    public Member getKakaoUserInfo(String kakaoAcessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", kakaoAcessToken);
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -45,16 +45,8 @@ public class OAuthService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        kakaoUserSignup(kakaoUserDto);
-        return kakaoUserDto;
-    }
 
-    public void kakaoUserSignup(KakaoUserResponse kakaoUserDto) {
-        try {
-            if (!authService.isEmailDuplicate(kakaoUserDto.getKakao_account().getEmail())) {
-                authService.signUp(kakaoUserDto.toSignupRequestDto());
-            }
-        } catch (HomealoneException e) {}
+        return kakaoUserDto.toMember();
     }
 
     public TokenDto signupOrLogin(Member member, HttpServletResponse httpServletResponse) {
@@ -69,8 +61,8 @@ public class OAuthService {
         return tokenDto;
     }
 
-    public Member toEntityUser(String code) {
-        String accessToken = toRequestAccessToken(code);
+
+    public Member getNaverUserInfo(String accessToken) {
         NaverUserResponse.NaverUserDetail profile = toRequestProfile(accessToken);
 
         return Member.builder()
@@ -80,14 +72,34 @@ public class OAuthService {
                 .password(profile.getId())
                 .build();
     }
-
-    //Code를 통해 accessToken 획득
     private String toRequestAccessToken(String code) {
         ResponseEntity<NaverTokenResponse> response =
                 restTemplate.exchange(naverProperties.getRequestURL(code), HttpMethod.GET, null, NaverTokenResponse.class);
         // Validate를 만드는 것을 추천
         return response.getBody().getAccessToken();
     }
+
+
+
+    //front에서 처리 해주시면서 kakao login과 동일하게 처리하도록 해당 코드는 deprecate함
+    //GetMapping의 query parameter로 code를 받아올 때 사용함
+//    public Member getNaverUserInfo(String code) {
+//        String accessToken = toRequestAccessToken(code);
+//        NaverUserResponse.NaverUserDetail profile = toRequestProfile(accessToken);
+//
+//        return Member.builder()
+//                .name(profile.getNickname())
+//                .email(profile.getEmail())
+//                .imageUrl(profile.getProfileImage())
+//                .password(profile.getId())
+//                .build();
+//    }
+//    private String toRequestAccessToken(String code) {
+//        ResponseEntity<NaverTokenResponse> response =
+//                restTemplate.exchange(naverProperties.getRequestURL(code), HttpMethod.GET, null, NaverTokenResponse.class);
+//        // Validate를 만드는 것을 추천
+//        return response.getBody().getAccessToken();
+//    }
 
     //accessToken을 통해 유저정보 획득
     private NaverUserResponse.NaverUserDetail toRequestProfile(String accessToken) {

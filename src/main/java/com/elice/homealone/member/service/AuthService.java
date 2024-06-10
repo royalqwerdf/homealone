@@ -173,5 +173,9 @@ public class AuthService{
         return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
 
     }
+
+    public Boolean isAdmin(Member member) {
+        return member.getAuthorities().contains("ROLE_ADMIN");
+    }
 }
 
