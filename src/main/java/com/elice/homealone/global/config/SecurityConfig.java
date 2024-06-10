@@ -1,16 +1,22 @@
 package com.elice.homealone.global.config;
 
 import com.elice.homealone.global.exception.CustomAccessDeniedHandler;
+import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.JwtAuthenticationEntryPoint;
+import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.global.redis.RedisUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,6 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,7 +41,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -84,7 +91,29 @@ public class SecurityConfig {
                                             response.getWriter().flush();
                                         })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (ErrorCode.EXPIRED_TOKEN.equals(request.getAttribute("exception"))) {
+                                response.setStatus(ErrorCode.EXPIRED_TOKEN.getHttpStatus().value());
+                                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                objectMapper.writeValue(
+                                        response.getOutputStream(),
+                                        new Response.ErrorResponse(ErrorCode.EXPIRED_TOKEN.getHttpStatus().value(), ErrorCode.EXPIRED_TOKEN.name() ,authException.getMessage())
+                                );
+                            } else {
+                                // 토큰 불일치의 경우
+                                response.setStatus(ErrorCode.INVALID_TOKEN.getHttpStatus().value());
+                                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                objectMapper.writeValue(
+                                        response.getOutputStream(),
+                                        new Response.ErrorResponse(ErrorCode.INVALID_TOKEN.getHttpStatus().value(), ErrorCode.INVALID_TOKEN.name() ,authException.getMessage())
+                                );
+                            }
+                        })
+                );
+
+
         return http.build();
     }
 
