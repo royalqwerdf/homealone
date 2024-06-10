@@ -2,10 +2,8 @@ package com.elice.homealone.talk.entity;
 
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.room.entity.RawContentSerializer;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +25,6 @@ public class Talk extends Post {
 
 
     @Column(columnDefinition = "LONGTEXT")
-    @JsonSerialize(using = RawContentSerializer.class)
     private String content;
 
     @Column(columnDefinition = "LONGTEXT")

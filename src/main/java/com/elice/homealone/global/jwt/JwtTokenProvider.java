@@ -2,10 +2,7 @@ package com.elice.homealone.global.jwt;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,14 +64,16 @@ public class JwtTokenProvider {
         try {
             String email = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
             return true;
+        } catch (SecurityException e) {
+            throw new JwtException("잘못된 JWT 시그니처");
+        } catch (MalformedJwtException e) {
+            throw new JwtException("유효하지 않은 JWT 토큰");
         } catch (ExpiredJwtException e) {
-            // Access Token 만료
-            //throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
-            return false;
-        } catch (IllegalArgumentException e) { // 그 외의 예외상황(유효하지 않은 토큰 등)
-            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
-        } catch (Exception e) {
-            return false;
+            throw new JwtException("토큰 기한 만료");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtException("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("JWT token compact of handler are invalid.");
         }
     }
 

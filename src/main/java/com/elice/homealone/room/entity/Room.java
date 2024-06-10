@@ -29,10 +29,8 @@ public class Room extends Post {
 
 
 
-    @JsonSerialize(using = RawContentSerializer.class)
     @Column(columnDefinition = "LONGTEXT")
     private String content;
-
 
     @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
@@ -40,11 +38,9 @@ public class Room extends Post {
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-
     @Column(name = "view")
     @Builder.Default
     private Integer view = 0;
-
 
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
