@@ -24,7 +24,7 @@ public class AdminController {
     private final MemberService memberService;
     @Operation(summary = "전체 회원 조회")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/adimin/member")
+    @GetMapping("/member")
     public ResponseEntity<Page<Member>> getAllMember(@PageableDefault(size = 3) Pageable pageable) {
         Page<Member> members = memberService.findAll(pageable);
         return ResponseEntity.ok(members);
@@ -32,7 +32,7 @@ public class AdminController {
 
     @Operation(summary = "회원 조회")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/adimin/member/{memberId}")
+    @GetMapping("/member/{memberId}")
     public ResponseEntity<MemberDto> getMemberById(@PathVariable Long memberId) {
         MemberDto memberDTO = memberService.findById(memberId).toDto();
         return ResponseEntity.ok(memberDTO);
@@ -40,7 +40,7 @@ public class AdminController {
 
     @Operation(summary = "회원 삭제")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/adimin/member/{memberId}")
+    @DeleteMapping("/member/{memberId}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
         authService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

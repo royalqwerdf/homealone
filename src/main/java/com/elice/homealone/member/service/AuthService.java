@@ -94,8 +94,8 @@ public class AuthService{
      */
     public Cookie storeRefreshToken(String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setHttpOnly(false);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(refreshExpirationTime);
         return cookie;
@@ -106,7 +106,16 @@ public class AuthService{
      * @param refreshToken
      * @return
      */
-    public TokenDto refreshAccessToken(String refreshToken) {
+    public TokenDto refreshAccessToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
         // 1. Refresh Token 검증
         jwtTokenProvider.validateToken(refreshToken);
         // 2. Refresh Token에서 사용자 정보 추출
@@ -118,7 +127,17 @@ public class AuthService{
 
         return tokenDto;
     }
-
+    public static String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * 이메일 중복여부 검사
