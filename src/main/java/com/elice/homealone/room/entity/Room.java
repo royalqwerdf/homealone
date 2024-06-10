@@ -27,7 +27,8 @@ public class Room extends Post {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @JsonSerialize(using = RawContentSerializer.class)
+
+
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 

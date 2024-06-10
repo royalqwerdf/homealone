@@ -47,9 +47,9 @@ public class MemberController {
 
     @Operation(summary = "계정 탈퇴")
     @PatchMapping("/mypage/me/withdrawal")
-    public ResponseEntity<MemberDto> withdrawal() {
-        MemberDto withdrawaledMember = authService.withdrawal(authService.getMember());
-        return ResponseEntity.ok(withdrawaledMember);
+    public ResponseEntity<String> withdrawal() {
+        authService.withdrawal(authService.getMember());
+        return ResponseEntity.ok("회원 탈퇴가 완료됐습니다.");
     }
 
     @Operation(summary = "전체 회원 조회")

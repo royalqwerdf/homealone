@@ -15,6 +15,8 @@ public class Response {
         this.message = message;
     }
     }
+
+
     @Getter
     @Setter
     public static class URLResponse{

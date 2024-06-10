@@ -95,4 +95,9 @@ public class ScrapService {
     public boolean isScrapedByMember(Post post, Member member) {
         return scrapRepository.existsByPostAndMember(post, member);
     }
+
+    @Transactional
+    public boolean isScrapdeByMember(Long postId, Long memberId) {
+        return scrapRepository.existsByPostIdAndMemberId(postId, memberId);
+    }
 }
