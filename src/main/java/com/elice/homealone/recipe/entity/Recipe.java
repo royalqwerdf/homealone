@@ -122,6 +122,9 @@ public class Recipe extends Post {
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
+        // 라이크를 찾는 메소드
+
+
         return RecipePageDto.builder()
             .id(this.getId())
             .title(title)

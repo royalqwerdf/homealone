@@ -69,7 +69,7 @@ public class RoomResponseDTO {
                     .createdAt(room.getCreatedAt())
                     .updatedAt(room.getModifiedAt())
                     .view(room.getView())
-                    .likeCount( room.getPostLikes() != null ? room.getPostLikes().size() : 0)
+                    .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                     .scrapCount(room.getScraps() != null ? room.getScraps().size() : 0)
                     .memberName(room.getMember().getName())
                     .commentCount(room.getComments() != null ? room.getComments().size() : 0)

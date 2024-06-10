@@ -4,6 +4,7 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
+import com.elice.homealone.commentlike.entity.CommentLike;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.like.entity.Like;
@@ -117,6 +118,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<CommentLike> commentLikes;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
