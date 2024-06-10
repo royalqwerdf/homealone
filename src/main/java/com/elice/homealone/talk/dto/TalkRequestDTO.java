@@ -23,7 +23,6 @@ public class TalkRequestDTO {
     @NotBlank(message = ErrorMessage.TITLE_REQUIRED)
     private String title;
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
-    @JsonRawValue
     private String content;
     private List<PostTagDto> tags;
     private List<String> images = new ArrayList<>();
