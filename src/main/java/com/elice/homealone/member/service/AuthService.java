@@ -15,8 +15,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,16 +96,6 @@ public class AuthService{
     }
 
     /**
-     * Token으로 로그인한 회원 정보 조회
-     */
-    public MemberDto findLoginMemberByToken(String acccessToken) {
-        MemberDto member = new MemberDto();
-        jwtTokenProvider.validateToken(acccessToken);
-        member = memberService.findByEmail(jwtTokenProvider.getEmail(acccessToken)).toDto();
-        return member;
-    }
-
-    /**
      *
      * @param refreshToken
      * @return
@@ -109,13 +103,10 @@ public class AuthService{
     public TokenDto refreshAccessToken(String refreshToken) {
         // 1. Refresh Token 검증
         jwtTokenProvider.validateToken(refreshToken);
-
         // 2. Refresh Token에서 사용자 정보 추출
         String email = jwtTokenProvider.getEmail(refreshToken);
-
         // 3. 새로운 Access Token 생성
         String newAccessToken = jwtTokenProvider.createAccessToken(email);
-
         TokenDto tokenDto = new TokenDto();
         tokenDto.setAccessToken(newAccessToken);
 
@@ -133,22 +124,19 @@ public class AuthService{
         return false;
     }
 
-
-
     /**
      * 회원 수정
      * Auth: User
      */
-    public Member editMember(Member member, MemberDto memberDTO) {
-        Member changeMember = memberService.findById(member.getId());
-        changeMember.setName(memberDTO.getName());
-        changeMember.setBirth(memberDTO.getBirth());
-        changeMember.setEmail(memberDTO.getEmail());
-        changeMember.setAddress(memberDTO.getAddress());
-        changeMember.setImageUrl(memberDTO.getImageUrl());
-        changeMember.setCreatedAt(memberDTO.getCreatedAt());
-        changeMember.setModifiedAt(memberDTO.getModifiedAt());
-        return changeMember;
+    public Member editMember(MemberDto memberDTO) {
+        Member member = getMember();
+        Optional.ofNullable(memberDTO.getName()).ifPresent(name->member.setName(name));
+        Optional.ofNullable(memberDTO.getBirth()).ifPresent(birth->member.setBirth(birth));
+        Optional.ofNullable(memberDTO.getFirstAddress()).ifPresent(first->member.setFirstAddress(first));
+        Optional.ofNullable(memberDTO.getSecondAddress()).ifPresent(second->member.setSecondAddress(second));
+        Optional.ofNullable(memberDTO.getImageUrl()).ifPresent(address->member.setImageUrl(address));
+        memberRepository.save(member);
+        return member;
     }
 
     /**
@@ -166,6 +154,18 @@ public class AuthService{
         Member findedMember = memberService.findByEmail(member.getEmail());
         findedMember.setDeletedAt(true);
         return memberRepository.save(findedMember).toDto();
+    }
+
+    /**
+     * 회원 정보 받아오는 메소드
+     */
+    public Member getMember() {
+        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(object.equals("anonymousUser")){
+            return null;
+        }
+
+        return (Member)object;
     }
 }
 

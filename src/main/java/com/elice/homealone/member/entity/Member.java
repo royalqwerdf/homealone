@@ -4,9 +4,10 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
+import com.elice.homealone.commentlike.entity.CommentLike;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.post.entity.Post;
-import com.elice.homealone.postlike.entity.PostLike;
+import com.elice.homealone.like.entity.Like;
 import com.elice.homealone.scrap.entity.Scrap;
 import jakarta.persistence.*;
 
@@ -40,8 +41,11 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "first_address")
+    private String firstAddress;
+
+    @Column(name = "second_address")
+    private String secondAddress;
 
     @Column(name = "phone")
     private String phone;
@@ -70,7 +74,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
         memberDTO.setName(this.name);
         memberDTO.setBirth(this.birth);
         memberDTO.setEmail(this.email);
-        memberDTO.setAddress(this.address);
+        memberDTO.setFirstAddress(this.firstAddress);
+        memberDTO.setSecondAddress(this.secondAddress);
         memberDTO.setImageUrl(this.imageUrl);
         memberDTO.setCreatedAt(this.getCreatedAt());
         memberDTO.setModifiedAt(this.getModifiedAt());
@@ -112,7 +117,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<Post> posts;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<PostLike> postLikes;
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<CommentLike> commentLikes;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
@@ -122,5 +130,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    public List<Like> getLikes() {
+        return likes;
+    }
 
 }

@@ -38,6 +38,7 @@ public enum ErrorCode {
     USEDTRADE_NOT_FOUND(NOT_FOUND,"존재하지 않는 게시물입니다"),
     SEARCH_NOT_FOUND(NOT_FOUND,"검색결과가 존재하지 않습니다"),
     WRITE_NOT_FOUND(NOT_FOUND,"작성하신 게시물이 존재하지 않습니다"),
+    COMMENT_NOT_FOUND(NOT_FOUND, "조회되지 않는 댓글입니다."),
 
     //500
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다. 다시 요청해주세요."),

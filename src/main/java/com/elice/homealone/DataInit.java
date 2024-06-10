@@ -49,13 +49,14 @@ public class DataInit implements CommandLineRunner {
         String email = "geobukseon@homealone.co.kr";
         if (!memberRepository.existsByEmail(email)) {
             Member admin = Member.builder()
-                    .name("관리자")
-                    .birth(LocalDate.of(1945, 4, 28)) // 관리자 생년월일 예시
-                    .email(email)
-                    .address("Seoul")
-                    .password(passwordEncoder.encode("1234")) // 관리자 비밀번호
-                    .role(Role.ROLE_ADMIN) // 관리자 역할 설정
-                    .build();
+                .name("관리자")
+                .birth(LocalDate.of(1945, 4, 28)) // 관리자 생년월일 예시
+                .email(email)
+                .firstAddress("Seoul")
+                .secondAddress("광진구")
+                .password(passwordEncoder.encode("1234")) // 관리자 비밀번호
+                .role(Role.ROLE_ADMIN) // 관리자 역할 설정
+                .build();
             memberRepository.save(admin);
         }
 
@@ -67,7 +68,8 @@ public class DataInit implements CommandLineRunner {
                 .name("유저")
                 .birth(LocalDate.of(1945, 4, 28))
                 .email(email)
-                .address("Seoul")
+                .firstAddress("Deageon")
+                .secondAddress("유성구")
                 .password(passwordEncoder.encode("1234"))
                 .role(Role.ROLE_USER) // 유저 역할 설정
                 .build();
@@ -132,46 +134,45 @@ public class DataInit implements CommandLineRunner {
 
         // 테스트 혼잣말 생성
 
-        // 테스트 이미지 생성
-        List<String> imageStrs = new ArrayList<>();
-        imageStrs.add("image1.jpg");
-        imageStrs.add("image2.jpg");
-
-        TalkRequestDTO talkRequestDTO = TalkRequestDTO.builder()
-            .title("테스트 혼잣말")
-            .content("테스트 혼잣말입니다")
-            .tags(postTags)
-            .images(imageStrs)
-            .build();
-        talkService.CreateTalkPost(talkRequestDTO);
-
-        // 테스트 방자랑 생성
-        RoomRequestDTO roomRequestDTO = RoomRequestDTO.builder()
-            .title("테스트 방자랑")
-            .content("테스트 방자랑입니다.")
-            .tags(postTags)
-            .thumbnailUrl("image.jpg")
-            .roomImages(imageStrs)
-            .build();
-        roomService.CreateRoomPost(roomRequestDTO);
-
-        // 테스트 중고거래 생성
-        // 테스트 이미지 생성
-        List<UsedTradeImage> usedImages = new ArrayList<>();
-        usedImages.add(UsedTradeImage.builder()
-            .main(true)
-            .url("image1.jpg")
-            .build());
-
-        UsedTradeRequestDto usedReqDto = UsedTradeRequestDto.builder()
-            .title("테스트 중고거래")
-            .price(25000)
-            .location("서울")
-            .content("테스트 중고거래입니다.")
-            .memberId(1L)
-            .images(usedImages)
-            .build();
-        usedTradeService.createUsedTrade(usedReqDto);
+//        // 테스트 이미지 생성
+//        List<String> imageStrs = new ArrayList<>();
+//        imageStrs.add("image1.jpg");
+//        imageStrs.add("image2.jpg");
+//
+//        TalkRequestDTO talkRequestDTO = TalkRequestDTO.builder()
+//                .title("테스트 혼잣말")
+//                .content("테스트 혼잣말입니다")
+//                .tags(postTags)
+//                .images(imageStrs)
+//                .build();
+//        talkService.CreateTalkPost(talkRequestDTO);
+//
+//        // 테스트 방자랑 생성
+//        RoomRequestDTO roomRequestDTO = RoomRequestDTO.builder()
+//                .title("테스트 방자랑")
+//                .content("테스트 방자랑입니다.")
+//                .tags(postTags)
+//                .thumbnailUrl("image.jpg")
+//                .roomImages(imageStrs)
+//                .build();
+//        roomService.CreateRoomPost(roomRequestDTO);
+//
+//        // 테스트 중고거래 생성
+//        // 테스트 이미지 생성
+//        List<UsedTradeImage> usedImages = new ArrayList<>();
+//        usedImages.add(UsedTradeImage.builder()
+//                .main(true)
+//                .url("image1.jpg")
+//                .build());
+//
+//        UsedTradeRequestDto usedReqDto = UsedTradeRequestDto.builder()
+//                .title("테스트 중고거래")
+//                .price(25000)
+//                .location("서울")
+//                .content("테스트 중고거래입니다.")
+//                .memberId(1L)
+//                .images(usedImages)
+//                .build();
+//        usedTradeService.createUsedTrade(usedReqDto);
     }
-
 }

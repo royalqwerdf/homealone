@@ -16,6 +16,8 @@ import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -34,22 +36,24 @@ public class ChatRoomService {
 
     //중고거래 채팅방 생성 메소드
     @Transactional
-    public ChatDto makeChat(Member member, ChatDto chatDto) {
+    public ChatDto makeChat(ChatDto chatDto) {
         Long receiver_id = chatDto.getReceiverId();
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //현재 로그인된 사용자 정보
-        if(member == null) {
+        Member currentMember = authService.getMember();
+        if(currentMember == null) {
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
-        Long curMemberId = member.getId();
+        Long curMemberId = currentMember.getId();
 
+        //현재 사용자와 중고거래 게시물 작성자가 같을 때
         if(receiver_id == curMemberId) {
             throw new HomealoneException(ErrorCode.CHATROOM_CREATION_FAILED);
         }
 
         //chatting 테이블 생성해 저장
-        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(member, receiver));
+        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(currentMember, receiver));
 
         return chatroom.toDto();
     }
@@ -69,9 +73,13 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatDto findChatList(Member member, Long chatroomId) {
+    public ChatDto findChatList(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
+        Member member = authService.getMember();
+        if(member == null) {
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
+        }
         Long curMemberId = member.getId();
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
@@ -89,8 +97,6 @@ public class ChatRoomService {
             Messages.add(message.toDto());
         }
 
-
-
         ChatDto responseDtos = ChatDto.builder()
                 .id(chatroomId)
                 .chatroomName(chatting.getChatroomName())
@@ -106,9 +112,12 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public List<ChatDto> findChatrooms(Member member) {
+    public List<ChatDto> findChatrooms() {
+
+        //현재 로그인된 사용자 정보
+        Member member = authService.getMember();
         if(member == null) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND;
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         //member는 현재 로그인한 사용자 즉 sender
@@ -122,10 +131,13 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public void deleteChatroom(Member member, Long chatroomId) {
+    public void deleteChatroom(Long chatroomId) {
+
         //현재 로그인된 사용자 정보
-        Member currentMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+        Member currentMember = authService.getMember();
+        if(currentMember == null) {
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
+        }
         Long curMemberId = currentMember.getId();
 
         //삭제하려는 채팅방 정보

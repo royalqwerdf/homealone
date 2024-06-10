@@ -14,7 +14,8 @@ public class MemberDto {
     private String name;
     private LocalDate birth;
     private String email;
-    private String address;
+    private String firstAddress;
+    private String secondAddress;
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

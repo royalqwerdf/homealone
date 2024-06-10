@@ -27,16 +27,14 @@ public class MemberController {
 
     @Operation(summary = "마이페이지 정보 조회")
     @GetMapping("/mypage/me")
-    public ResponseEntity<MemberDto> getMemberInfo(@AuthenticationPrincipal Member member) {
-        MemberDto memberDTO = memberService.findById(member.getId()).toDto();
-        return ResponseEntity.ok(memberDTO);
+    public ResponseEntity<MemberDto> getMemberInfo() {
+        return ResponseEntity.ok(authService.getMember().toDto());
     }
 
     @Operation(summary = "마이페이지 정보 수정")
     @PatchMapping("/mypage/me")
-    public ResponseEntity<MemberDto> editMemberInfo(@AuthenticationPrincipal Member member,
-                                                    @RequestBody MemberDto memberDTO){
-        MemberDto changedMember = authService.editMember(member, memberDTO).toDto();
+    public ResponseEntity<MemberDto> editMemberInfo(@RequestBody MemberDto memberDTO){
+        MemberDto changedMember = authService.editMember(memberDTO).toDto();
         return ResponseEntity.ok(changedMember);
     }
 
@@ -49,14 +47,14 @@ public class MemberController {
 
     @Operation(summary = "계정 탈퇴")
     @PatchMapping("/mypage/me/withdrawal")
-    public ResponseEntity<MemberDto> withdrawal(@AuthenticationPrincipal Member member) {
-        MemberDto withdrawaledMember = authService.withdrawal(member);
+    public ResponseEntity<MemberDto> withdrawal() {
+        MemberDto withdrawaledMember = authService.withdrawal(authService.getMember());
         return ResponseEntity.ok(withdrawaledMember);
     }
 
     @Operation(summary = "전체 회원 조회")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/member")
+    @GetMapping("/adimin/member")
     public ResponseEntity<Page<Member>> getAllMember(@PageableDefault(size = 3) Pageable pageable) {
         Page<Member> members = memberService.findAll(pageable);
         return ResponseEntity.ok(members);
@@ -64,7 +62,7 @@ public class MemberController {
 
     @Operation(summary = "회원 조회")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/member/{memberId}")
+    @GetMapping("/adimin/member/{memberId}")
     public ResponseEntity<MemberDto> getMemberById(@PathVariable Long memberId) {
         MemberDto memberDTO = memberService.findById(memberId).toDto();
         return ResponseEntity.ok(memberDTO);
@@ -72,7 +70,7 @@ public class MemberController {
 
     @Operation(summary = "회원 삭제")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/member/{memberId}")
+    @DeleteMapping("/adimin/member/{memberId}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
         authService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

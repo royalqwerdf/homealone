@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -51,22 +52,29 @@ public class UsedTradeService {
 
     //중고거래 게시글 수정
     public boolean modifyUsedTrade(Long id, UsedTradeRequestDto requestDto) {
-        UsedTrade usedTrade = usedTradeRepository.findById(id).orElse(null);
 
-        //게시글이 없거나 로그인한 회원의 id값과 게시글을 작성한 회원의 id값이 다르면 false 리턴
-        if(usedTrade == null || !(Objects.equals(requestDto.getMemberId(), usedTrade.getMember().getId()))) {
-            return false;
+
+        //로그인한 계정의 데이터를 가져옴
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //게시글의 데이터를 가져옴
+        UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
+
+        //로그인한 유저와 게시글의 작성자가 일치하는지 검증
+        if(!Objects.equals(usedTrade.getMember().getId(),member.getId())){
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
-        if(!(requestDto.getTitle()==null)){
+
+        if(requestDto.getTitle()!=null){
             usedTrade.setTitle(requestDto.getTitle());
         }
-        if(!(requestDto.getPrice()==0)){
+        if(requestDto.getPrice()!=0){
             usedTrade.setPrice(requestDto.getPrice());
         }
-        if(!(requestDto.getLocation()==null)){
+        if(requestDto.getLocation()!=null){
             usedTrade.setLocation(requestDto.getLocation());
         }
-        if(!(requestDto.getContent()==null)){
+        if(requestDto.getContent()!=null){
             usedTrade.setContent(requestDto.getContent());
         }
         usedTradeRepository.save(usedTrade);
@@ -76,7 +84,8 @@ public class UsedTradeService {
     @Transactional
     public Long createUsedTrade(UsedTradeRequestDto requestDto) {
 
-        Member member = memberRepository.findMemberById(requestDto.getMemberId());
+        //로그인한 계정의 데이터를 가져옴
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         UsedTrade usedTrade = requestDto.toEntity();
         usedTrade.setMember(member);
@@ -96,7 +105,17 @@ public class UsedTradeService {
     //중고거래 게시글 삭제
     @Transactional
     public boolean deleteUsedTrade(Long id) {
+
+        //로그인한 계정의 데이터를 가져옴
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
+
+        //로그인한 유저와 게시글의 작성자가 일치하는지 검증
+        if(!Objects.equals(usedTrade.getMember().getId(),member.getId())){
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
 
         usedTradeRepository.delete(usedTrade);
         return true;

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+
+
+
     /**
      * 회원 전체 조회
      */
@@ -43,9 +45,6 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findById(memberId).orElseThrow(()->new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
-    /**
-     * jpa 멤버 엔티티 반환
-     */
 
     /**
      * 스프링 시큐리티 인증 로직
