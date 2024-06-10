@@ -3,6 +3,7 @@ package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.MemberService;
@@ -12,6 +13,7 @@ import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
+import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,6 +45,8 @@ public class RoomService {
     private final MemberService memberService;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
+    private final LikeService likeService;
+    private final ScrapService scrapService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,8 +127,11 @@ public class RoomService {
             if(findRoom.isEmpty()){
                 throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
             }
-
-        return findRoom.map(RoomResponseDTO:: toRoomResponseDTO);
+        Page<RoomResponseDTO> roomResponseDTOS =findRoom.map(room -> {
+            RoomResponseDTO roomResponseDTO = RoomResponseDTO.toRoomResponseDTO(room);
+            return roomResponseDTO;
+        });
+        return roomResponseDTOS;
 
     }
     @Transactional
@@ -141,12 +148,12 @@ public class RoomService {
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView() + 1);
         RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
-
-            roomInfoDto.setLike(true);
-            roomInfoDto.setScrap(true);
+            boolean likedByMember = likeService.isLikedByMember(room, member);
+            boolean scrapdeByMember = scrapService.isScrapdeByMember(room.getId(), member.getId());
+            roomInfoDto.setLike(likedByMember);
+            roomInfoDto.setScrap(scrapdeByMember);
         }
 
         return roomInfoDto;
