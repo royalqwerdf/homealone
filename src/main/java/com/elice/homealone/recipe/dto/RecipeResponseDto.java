@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.dto;
 
+import com.elice.homealone.post.dto.PostRelatedDto;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
@@ -30,7 +31,7 @@ public class RecipeResponseDto {
     private String userName;
 
     @Setter
-    private boolean isLikeByCurrentUser = false;
+    private PostRelatedDto relatedDto;
 
     @Builder
     public RecipeResponseDto(
@@ -46,7 +47,8 @@ public class RecipeResponseDto {
         List<RecipeDetailDto> details,
         List<PostTagDto> postTags,
         Long userId,
-        String userName
+        String userName,
+        PostRelatedDto relatedDto
     ) {
         this.id = id;
         this.title = title;
@@ -61,5 +63,6 @@ public class RecipeResponseDto {
         this.postTags = postTags;
         this.userId = userId;
         this.userName = userName;
+        this.relatedDto = relatedDto;
     }
 }

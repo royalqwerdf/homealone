@@ -162,10 +162,10 @@ public class AuthService{
     public Member getMember() {
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(object.equals("anonymousUser")){
-            return null;
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
+        return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return (Member)object;
     }
 }
 

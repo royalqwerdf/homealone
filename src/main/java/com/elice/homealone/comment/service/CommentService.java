@@ -47,24 +47,29 @@ public class CommentService {
     // 게시물 댓글 리스트 조회
     public List<CommentResDto> findCommentListByPostId(Long postId) {
         List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtDesc(postId);
-        Member member = authService.getMember();
-        if(member == null) {
-            return comments.stream()
-                .map(CommentResDto::fromEntity)
-                .collect(Collectors.toList());
-        }
-        List<CommentLike> likes = commentLikeService.findLikesByMemberAndCommentIn(member, comments);
-        Set<Long> likedCommentIds = likes.stream()
-            .map(commentLike -> commentLike.getComment().getId())
-            .collect(Collectors.toSet());
+        try {
+            Member member = authService.getMember();
+            List<CommentLike> likes = commentLikeService.findLikesByMemberAndCommentIn(member, comments);
+            Set<Long> likedCommentIds = likes.stream()
+                .map(commentLike -> commentLike.getComment().getId())
+                .collect(Collectors.toSet());
 
-        return comments.stream()
-            .map(comment -> {
-                CommentResDto resDto = CommentResDto.fromEntity(comment);
-                resDto.setLikeByCurrentUser(likedCommentIds.contains(comment.getId()));
-                return resDto;
-            })
-            .collect(Collectors.toList());
+            return comments.stream()
+                .map(comment -> {
+                    CommentResDto resDto = CommentResDto.fromEntity(comment);
+                    resDto.setLikeByCurrentUser(likedCommentIds.contains(comment.getId()));
+                    return resDto;
+                })
+                .collect(Collectors.toList());
+        } catch (HomealoneException e) {
+            if (e.getErrorCode()==ErrorCode.MEMBER_NOT_FOUND) {
+                return comments.stream()
+                    .map(CommentResDto::fromEntity)
+                    .collect(Collectors.toList());
+            } else {
+                throw new HomealoneException(ErrorCode.COMMENT_NOT_FOUND);
+            }
+        }
     }
 
     // 댓글 수정

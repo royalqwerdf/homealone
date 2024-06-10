@@ -130,9 +130,4 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    public List<Like> getLikes() {
-        return likes;
-    }
-
 }

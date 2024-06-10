@@ -1,14 +1,19 @@
 package com.elice.homealone.like.service;
 
+import com.elice.homealone.global.exception.ErrorCode;
+import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.like.dto.LikeReqDto;
 import com.elice.homealone.like.dto.LikeResDto;
 import com.elice.homealone.like.entity.Like;
 import com.elice.homealone.like.repository.LikeRepository;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.post.sevice.PostService;
+import com.elice.homealone.scrap.dto.ScrapResDto;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +27,45 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
     private final MemberService memberService;
-
     private final PostService postService;
+
+    private final AuthService authService;
+
+    @Transactional
+    public LikeResDto createAndDeleteLike(LikeReqDto reqDto){
+        try {
+            Member member = authService.getMember();
+            member = memberService.findById(member.getId());
+            Post post = postService.findById(reqDto.getPostId());
+            Optional<Like> like = likeRepository.findByMemberIdAndPostId(member.getId(), post.getId());
+            if(like.isEmpty()){
+                Like newLike = reqDto.toEntity(member, post);
+                member.getLikes().add(newLike);
+                post.getLikes().add(newLike);
+                likeRepository.save(newLike);
+                LikeResDto resDto = LikeResDto.fromEntity(newLike);
+                resDto.setTotalCount(post.getScraps().size());
+                return resDto;
+            }
+
+            likeRepository.delete(like.get());
+            return null;
+        } catch (HomealoneException e) {
+            if (e.getErrorCode()== ErrorCode.MEMBER_NOT_FOUND) {
+                return null;
+            } else {
+                throw new HomealoneException(ErrorCode.BAD_REQUEST);
+            }
+        }
+    }
 
     // 좋아요 등록.
     @Transactional
     public LikeResDto createLike(LikeReqDto reqDto, Member member) {
         Post post = postService.findById(reqDto.getPostId());
         Like like = reqDto.toEntity(member, post);
+        member.getLikes().add(like);
+        post.getLikes().add(like);
         likeRepository.save(like);
 
         return LikeResDto.fromEntity(like);
@@ -60,4 +96,6 @@ public class LikeService {
     public List<Like> findLikesByMemberAndPostIn(Member member, List<Post> posts) {
         return likeRepository.findByMemberAndPostIn(member, posts);
     }
+
+
 }

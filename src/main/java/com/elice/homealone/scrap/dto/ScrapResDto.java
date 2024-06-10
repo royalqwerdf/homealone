@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,6 +14,9 @@ public class ScrapResDto {
     private Long postId;
     private Long memberId;
     private String memberName;
+
+    @Setter
+    private int totalCount;
 
     @Builder
     public ScrapResDto(Long id, Long postId, Long memberId, String memberName) {
