@@ -37,8 +37,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
-    private List<CommentLike> likes = new ArrayList<>(); // 추가된 부분
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL)
+    private List<CommentLike> likes = new ArrayList<>();
 
     @Builder
     public Comment(Post post, Member member, String content) {

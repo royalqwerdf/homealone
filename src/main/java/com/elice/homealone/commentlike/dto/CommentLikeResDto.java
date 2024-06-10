@@ -34,7 +34,7 @@ public class CommentLikeResDto {
     public static CommentLikeResDto fromEntity(CommentLike commentLike) {
         return CommentLikeResDto.builder()
             .id(commentLike.getId())
-            .commentId(commentLike.getMember().getId())
+            .commentId(commentLike.getComment().getId())
             .memberId(commentLike.getMember().getId())
             .memberName(commentLike.getMember().getName())
             .createdAt(commentLike.getCreatedAt())
