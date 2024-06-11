@@ -25,7 +25,7 @@ pipeline {
             // vm에 배포하는 단계
             script {
               sshagent(credentials: ['homealonekey']) {
-                sh 'scp -r build/libs/* elice@34.64.55.198:/home/elice/Back'
+                sh 'scp -o StrictHostKeyChecking=no -r build/libs/* elice@34.64.55.198:/home/elice/Back'
               }
             }
           }
