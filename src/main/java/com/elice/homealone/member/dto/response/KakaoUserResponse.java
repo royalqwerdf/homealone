@@ -1,7 +1,9 @@
 package com.elice.homealone.member.dto.response;
 
+import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
+import com.elice.homealone.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -38,6 +40,14 @@ public class KakaoUserResponse {
         loginRequestDTO.setEmail(this.kakao_account.getEmail());
         loginRequestDTO.setPassword(this.getId());
         return loginRequestDTO;
+    }
+
+    public Member toMember(){
+        return Member.builder()
+                .name(this.kakao_account.profile.getNickname())
+                .email(this.kakao_account.getEmail())
+                .password(this.getId())
+                .build();
     }
 
 }

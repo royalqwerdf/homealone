@@ -4,6 +4,7 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.usedtrade.dto.UsedTradeRequestDto;
 import com.elice.homealone.usedtrade.dto.UsedTradeResponseDto;
@@ -29,7 +30,7 @@ public class UsedTradeService {
 
     private final UsedTradeRepository usedTradeRepository;
     private final UsedTradeImageRepository usedTradeImageRepository;
-    private final MemberRepository memberRepository;
+    private final AuthService authService;
 
     //모든 중고거래 조회
     public Page<UsedTradeResponseDto> getAllUsedTrades(Pageable pageable) {
@@ -112,8 +113,10 @@ public class UsedTradeService {
         //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
 
+        boolean isAdmin = authService.isAdmin(member);
+
         //로그인한 유저와 게시글의 작성자가 일치하는지 검증
-        if(!Objects.equals(usedTrade.getMember().getId(),member.getId())){
+        if(!isAdmin && !Objects.equals(usedTrade.getMember().getId(),member.getId())){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
 

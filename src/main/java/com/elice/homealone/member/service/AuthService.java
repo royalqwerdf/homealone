@@ -173,5 +173,16 @@ public class AuthService{
         return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
 
     }
+
+    /**
+     * 관리자 권한인지 아닌지 확인하는 메소드
+     * @param member
+     * @return
+     */
+    public Boolean isAdmin(Member member) {
+        return member.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
 }
 
