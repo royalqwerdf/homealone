@@ -14,12 +14,6 @@ pipeline {
                 sh './gradlew clean build'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-                sh './gradlew test'
-            }
-        }
         stage('Archive') {
             steps {
                 echo 'Archiving...'
