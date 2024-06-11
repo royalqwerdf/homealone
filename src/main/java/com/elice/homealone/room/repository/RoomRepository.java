@@ -18,9 +18,6 @@ public interface RoomRepository extends JpaRepository<Room,Long> , JpaSpecificat
 
     Page<Room> findAll(Pageable pageable);
 
-    @Query("SELECT r FROM Room as r WHERE r.createdAt >=  :oneWeekAgo ORDER BY  r.view DESC ")
-    Page<Room> findTopRoomByView(@Param("oneWeekAgo")LocalDateTime oneWeekAgo, Pageable pageable);
-
     Page<Room> findRoomByMember(Member member, Pageable pageable);
 
 }

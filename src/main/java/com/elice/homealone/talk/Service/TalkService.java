@@ -20,6 +20,7 @@ import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.talk.entity.TalkImage;
 import com.elice.homealone.talk.repository.TalkRepository;
 import com.elice.homealone.talk.repository.TalkSpecification;
+import com.elice.homealone.talk.repository.TalkViewLogRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class TalkService {
     private final PostTagService postTagService;
     private final LikeService likeService;
     private final ScrapService scrapService;
+    private final TalkViewLogService talkViewLogService;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -137,6 +139,7 @@ public class TalkService {
         Talk talk = talkRepository.findById(talkId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         talk.setView(talk.getView() + 1);
+        talkViewLogService.logView(talk);
         TalkResponseDTO.TalkInfoDto talkInfoDto = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
@@ -153,7 +156,7 @@ public class TalkService {
     @Transactional
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<TalkResponseDTO> talkResponseDTO = talkRepository.findTopTalkByView(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        Page<TalkResponseDTO> talkResponseDTO = talkViewLogService.findTopTalksByViewCountInLastWeek(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
         return talkResponseDTO;
     }
     @Transactional
