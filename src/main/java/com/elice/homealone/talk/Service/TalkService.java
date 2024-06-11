@@ -2,27 +2,18 @@ package com.elice.homealone.talk.Service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
-import com.elice.homealone.member.service.MemberService;
-import com.elice.homealone.room.dto.RoomResponseDTO;
-import com.elice.homealone.room.entity.Room;
-import com.elice.homealone.room.entity.RoomImage;
+import com.elice.homealone.post.repository.PostRepository;
 import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
-import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
 import com.elice.homealone.talk.dto.TalkResponseDTO;
 import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.talk.entity.TalkImage;
 import com.elice.homealone.talk.repository.TalkRepository;
 import com.elice.homealone.talk.repository.TalkSpecification;
-import com.elice.homealone.talk.repository.TalkViewLogRepository;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -49,13 +40,14 @@ public class TalkService {
     private final LikeService likeService;
     private final ScrapService scrapService;
     private final TalkViewLogService talkViewLogService;
+    private final PostRepository postRepository;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal();
         Talk talk = new Talk(talkDto,member);
         //HTML태그 제거
-        String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none());
+        String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         talk.setPlainContent(plainContent);
         talkRepository.save(talk);
         talkDto.getTags().stream().map(tags -> postTagService.createPostTag(tags))
