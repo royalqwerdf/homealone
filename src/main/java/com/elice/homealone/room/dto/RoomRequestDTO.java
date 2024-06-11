@@ -23,7 +23,6 @@ public class RoomRequestDTO {
     @NotBlank(message = ErrorMessage.TITLE_REQUIRED)
     private String title;
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
-    @JsonRawValue
     private String content;
     private List<PostTagDto> tags;
     @NotBlank(message = ErrorMessage.THUMBNAIL_URL_REQUIRED)

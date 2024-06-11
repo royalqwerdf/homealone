@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,6 +17,8 @@ public class LikeResDto {
     private String memberName;
     private LocalDateTime createdAt;
 
+    @Setter
+    private int totalCount = 0;
     @Builder
     public LikeResDto(
             Long id,
@@ -33,11 +36,11 @@ public class LikeResDto {
 
     public static LikeResDto fromEntity(Like like) {
         return LikeResDto.builder()
-                .id(like.getId())
-                .postId(like.getPost().getId())
-                .memberId(like.getMember().getId())
-                .memberName(like.getMember().getName())
-                .createdAt(like.getCreatedAt())
-                .build();
+            .id(like.getId())
+            .postId(like.getPost().getId())
+            .memberId(like.getMember().getId())
+            .memberName(like.getMember().getName())
+            .createdAt(like.getCreatedAt())
+            .build();
     }
 }

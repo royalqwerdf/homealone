@@ -4,7 +4,10 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.comment.entity.Comment;
 
 import com.elice.homealone.global.common.BaseTimeEntity;
+import com.elice.homealone.commentlike.entity.CommentLike;
 import com.elice.homealone.member.dto.MemberDto;
+import com.elice.homealone.member.dto.request.LoginRequestDto;
+import com.elice.homealone.member.dto.request.SignupRequestDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.like.entity.Like;
 import com.elice.homealone.scrap.entity.Scrap;
@@ -79,8 +82,26 @@ public class Member extends BaseTimeEntity implements UserDetails {
         memberDTO.setCreatedAt(this.getCreatedAt());
         memberDTO.setModifiedAt(this.getModifiedAt());
         return memberDTO;
-
     }
+
+    public SignupRequestDto toSignupRequestDto() {
+        return SignupRequestDto.builder()
+                .name(this.name)
+                .birth(this.birth)
+                .email(this.email)
+                .firstAddress(this.firstAddress)
+                .secondAddress(this.secondAddress)
+                .password(this.password)
+                .build();
+    }
+
+    public LoginRequestDto toLoginRequestDto() {
+        return LoginRequestDto.builder()
+                .email(this.email)
+                .password(this.password)
+                .build();
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -119,6 +140,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<Like> likes;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<CommentLike> commentLikes;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
@@ -126,9 +150,4 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    public List<Like> getLikes() {
-        return likes;
-    }
-
 }

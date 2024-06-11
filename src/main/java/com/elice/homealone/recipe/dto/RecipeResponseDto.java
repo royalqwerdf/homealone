@@ -1,5 +1,6 @@
 package com.elice.homealone.recipe.dto;
 
+import com.elice.homealone.post.dto.PostRelatedDto;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
@@ -7,6 +8,7 @@ import com.elice.homealone.tag.dto.PostTagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class RecipeResponseDto {
@@ -28,6 +30,9 @@ public class RecipeResponseDto {
     private Long userId;
     private String userName;
 
+    @Setter
+    private PostRelatedDto relatedDto;
+
     @Builder
     public RecipeResponseDto(
         Long id,
@@ -42,7 +47,8 @@ public class RecipeResponseDto {
         List<RecipeDetailDto> details,
         List<PostTagDto> postTags,
         Long userId,
-        String userName
+        String userName,
+        PostRelatedDto relatedDto
     ) {
         this.id = id;
         this.title = title;
@@ -57,5 +63,6 @@ public class RecipeResponseDto {
         this.postTags = postTags;
         this.userId = userId;
         this.userName = userName;
+        this.relatedDto = relatedDto;
     }
 }

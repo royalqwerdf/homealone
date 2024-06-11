@@ -37,19 +37,14 @@ public class Post extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Like> postLikes = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post" , cascade = CascadeType.ALL)
     private List<Scrap> scraps = new ArrayList<>();
 
-    // 추가한 부분
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Like> likes = new ArrayList<>(); // 추가된 부분
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Like> likes = new ArrayList<>();
 
     public enum Type{
         RECIPE,
@@ -74,8 +69,5 @@ public class Post extends BaseTimeEntity {
         comment.setPost(this);
     }
 
-    public List<Like> getLikes() {
-        return likes;
-    }
 }
 

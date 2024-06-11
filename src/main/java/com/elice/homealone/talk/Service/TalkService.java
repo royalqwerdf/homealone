@@ -3,12 +3,15 @@ package com.elice.homealone.talk.Service;
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
+import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
@@ -17,6 +20,7 @@ import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.talk.entity.TalkImage;
 import com.elice.homealone.talk.repository.TalkRepository;
 import com.elice.homealone.talk.repository.TalkSpecification;
+import com.elice.homealone.talk.repository.TalkViewLogRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +44,11 @@ import java.util.stream.Collectors;
 @Service
 public class TalkService {
     private final TalkRepository talkRepository;
-    private final MemberService memberService;
+    private final AuthService authService;
     private final PostTagService postTagService;
+    private final LikeService likeService;
+    private final ScrapService scrapService;
+    private final TalkViewLogService talkViewLogService;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,7 +86,9 @@ public class TalkService {
         Member member = (Member) authentication.getPrincipal();
         Talk talkOriginal = talkRepository.findById(talkId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
-        if(talkOriginal.getMember().getId() != member.getId()){
+
+        boolean isAdmin = authService.isAdmin(member);
+        if(!isAdmin && (talkOriginal.getMember().getId() != member.getId())){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkRepository.delete(talkOriginal);
@@ -130,13 +139,15 @@ public class TalkService {
         Talk talk = talkRepository.findById(talkId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         talk.setView(talk.getView() + 1);
+        talkViewLogService.logView(talk);
         TalkResponseDTO.TalkInfoDto talkInfoDto = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
-
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
 
-            talkInfoDto.setLike(true);
-            talkInfoDto.setScrap(true);
+            boolean likedByMember = likeService.isLikedByMember(talk, member);
+            boolean scrapdeByMember = scrapService.isScrapdeByMember(talk.getId(), member.getId());
+            talkInfoDto.setLike(likedByMember);
+            talkInfoDto.setScrap(scrapdeByMember);
         }
         return talkInfoDto;
     }
@@ -145,7 +156,7 @@ public class TalkService {
     @Transactional
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<TalkResponseDTO> talkResponseDTO = talkRepository.findTopTalkByView(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        Page<TalkResponseDTO> talkResponseDTO = talkViewLogService.findTopTalksByViewCountInLastWeek(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
         return talkResponseDTO;
     }
     @Transactional

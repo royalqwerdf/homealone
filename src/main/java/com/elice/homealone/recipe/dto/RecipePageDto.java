@@ -1,10 +1,13 @@
 package com.elice.homealone.recipe.dto;
 
+import com.elice.homealone.post.dto.PostRelatedDto;
+import com.elice.homealone.post.dto.PostResPageDto;
 import com.elice.homealone.recipe.enums.Cuisine;
 import com.elice.homealone.recipe.enums.RecipeTime;
 import com.elice.homealone.recipe.enums.RecipeType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class RecipePageDto {
@@ -20,6 +23,9 @@ public class RecipePageDto {
     private String imageUrl;
     private Long userId;
     private String userName;
+
+    @Setter
+    private PostRelatedDto relatedDto;
 
     @Builder
     public RecipePageDto(Long id, String title, String description, int portions, String recipeType, int recipeTime, String cuisine, String imageUrl, Long userId, String userName) {

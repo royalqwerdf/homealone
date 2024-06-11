@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.parser.Authorization;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -61,9 +62,10 @@ public class ChatRoomController {
     //채팅방 삭제
     @Operation(summary = "채팅방 삭제")
     @DeleteMapping("/chatting/{chatroomId}")
-    public void deleteChatroom(@PathVariable Long chatroomId) {
+    public ResponseEntity<Void> deleteChatroom(@PathVariable Long chatroomId) {
 
         chatRoomService.deleteChatroom(chatroomId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

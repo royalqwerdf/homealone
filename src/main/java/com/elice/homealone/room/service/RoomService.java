@@ -3,8 +3,10 @@ package com.elice.homealone.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
@@ -12,6 +14,8 @@ import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
+import com.elice.homealone.room.repository.RoomViewLogRepository;
+import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +37,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -40,9 +45,13 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final MemberService memberService;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
+    private final LikeService likeService;
+    private final ScrapService scrapService;
+    private final RoomViewLogService roomViewLogService;
+    private final AuthService authService;
+
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -88,9 +97,12 @@ public class RoomService {
         Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember().getId() != member.getId()){
+
+        boolean isAdmin = authService.isAdmin(member);
+        if(!isAdmin && roomOriginal.getMember().getId() != member.getId()){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
+
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
 //        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomRepository.delete(roomOriginal);
@@ -123,8 +135,11 @@ public class RoomService {
             if(findRoom.isEmpty()){
                 throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
             }
-
-        return findRoom.map(RoomResponseDTO:: toRoomResponseDTO);
+        Page<RoomResponseDTO> roomResponseDTOS =findRoom.map(room -> {
+            RoomResponseDTO roomResponseDTO = RoomResponseDTO.toRoomResponseDTO(room);
+            return roomResponseDTO;
+        });
+        return roomResponseDTOS;
 
     }
     @Transactional
@@ -140,13 +155,14 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView() + 1);
+        roomViewLogService.logView(room);
         RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
-
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
-
-            roomInfoDto.setLike(true);
-            roomInfoDto.setScrap(true);
+            boolean likedByMember = likeService.isLikedByMember(room, member);
+            boolean scrapdeByMember = scrapService.isScrapdeByMember(room.getId(), member.getId());
+            roomInfoDto.setLike(likedByMember);
+            roomInfoDto.setScrap(scrapdeByMember);
         }
 
         return roomInfoDto;
@@ -154,7 +170,7 @@ public class RoomService {
     @Transactional
     public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findTopRoomByView(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
 
         return roomResponseDTOS;
     }

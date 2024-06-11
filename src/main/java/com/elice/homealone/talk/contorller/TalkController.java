@@ -2,6 +2,7 @@ package com.elice.homealone.talk.contorller;
 
 import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.talk.Service.TalkService;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
 import com.elice.homealone.talk.dto.TalkResponseDTO;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class TalkController {
     @Autowired
     private TalkService talkService;
+
     @Operation(summary = "혼잣말 검색, 조회")
     @GetMapping("")
     public ResponseEntity<Page<TalkResponseDTO>> findAll(@RequestParam(required = false) String title,
@@ -67,7 +69,7 @@ public class TalkController {
     }
     @Operation(summary = "혼잣말 인기 게시글 조회")
     @GetMapping("/topView")
-    public ResponseEntity<Page<TalkResponseDTO>> findTopTalkByView(@PageableDefault(size = 5) Pageable pageable){
+    public ResponseEntity<Page<TalkResponseDTO>> findTopTalkByView(@PageableDefault(size = 6) Pageable pageable){
         Page<TalkResponseDTO> topTalkByView = talkService.findTopTalkByView(pageable);
         return ResponseEntity.ok(topTalkByView);
     }

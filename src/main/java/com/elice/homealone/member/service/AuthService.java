@@ -7,7 +7,7 @@ import com.elice.homealone.global.redis.RedisUtil;
 import com.elice.homealone.member.dto.MemberDto;
 import com.elice.homealone.member.dto.request.LoginRequestDto;
 import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.dto.response.TokenDto;
+import com.elice.homealone.member.dto.TokenDto;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,9 +53,8 @@ public class AuthService{
      * 로그인
      */
     public TokenDto login(LoginRequestDto loginRequestDTO, HttpServletResponse httpServletResponse) {
-        // 이메일 검증
         Member findMember = memberService.findByEmail(loginRequestDTO.getEmail());
-        // 비밀번호 검증
+        isAccountDeleted(findMember);
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), findMember.getPassword())) {
             String acessToken = GRANT_TYPE + jwtTokenProvider.createAccessToken(findMember.getEmail());
             String refreshToken = jwtTokenProvider.createRefreshToken(findMember.getEmail()); //쿠키는 공백이 저장되지 않음
@@ -66,6 +66,13 @@ public class AuthService{
         } else{
             throw new HomealoneException(ErrorCode.MISMATCHED_PASSWORD);
         }
+    }
+
+    /**
+     * 회원 deltedAt 유무 검증
+     */
+    public void isAccountDeleted(Member member) {
+        if(!member.isEnabled()) throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     /**
@@ -87,8 +94,8 @@ public class AuthService{
      */
     public Cookie storeRefreshToken(String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setHttpOnly(false);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(refreshExpirationTime);
         return cookie;
@@ -99,7 +106,16 @@ public class AuthService{
      * @param refreshToken
      * @return
      */
-    public TokenDto refreshAccessToken(String refreshToken) {
+    public TokenDto refreshAccessToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
         // 1. Refresh Token 검증
         jwtTokenProvider.validateToken(refreshToken);
         // 2. Refresh Token에서 사용자 정보 추출
@@ -111,7 +127,17 @@ public class AuthService{
 
         return tokenDto;
     }
-
+    public static String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * 이메일 중복여부 검사
@@ -159,9 +185,22 @@ public class AuthService{
      * 회원 정보 받아오는 메소드
      */
     public Member getMember() {
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return member;
+        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(object.equals("anonymousUser")){
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
+    /**
+     * 관리자 권한인지 아닌지 확인하는 메소드
+     * @param member
+     * @return
+     */
+    public Boolean isAdmin(Member member) {
+        return member.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
 }
 

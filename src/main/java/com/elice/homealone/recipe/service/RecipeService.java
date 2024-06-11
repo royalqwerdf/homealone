@@ -2,8 +2,14 @@ package com.elice.homealone.recipe.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.like.entity.Like;
+import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
+import com.elice.homealone.post.dto.PostRelatedDto;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.post.sevice.PostService;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
 import com.elice.homealone.recipe.dto.RecipePageDto;
@@ -16,12 +22,15 @@ import com.elice.homealone.recipe.repository.RecipeRepository.RecipeRepository;
 import com.elice.homealone.recipe.dto.RecipeIngredientDto;
 import com.elice.homealone.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.recipe.entity.Recipe;
+import com.elice.homealone.scrap.entity.Scrap;
+import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +45,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RecipeService {
 
-    private final RecipeRepository recipeRepository;
+    private final AuthService authService;
+    private final PostService postService;
+    private final MemberService memberService;
     private final RecipeImageService recipeImageService;
     private final RecipeDetailService recipeDetailService;
     private final RecipeIngredientService recipeIngredientService;
     private final PostTagService postTagService;
+
+    private final LikeService likeService;
+
+    private final RecipeRepository recipeRepository;
+    private final ScrapService scrapService;
+
 
     // 레시피 등록
     @Transactional
@@ -99,27 +116,46 @@ public class RecipeService {
             () -> recipeRepository.countRecipes(userId, title, description, tags)
         );
 
-       return recipePage.map(Recipe::toPageDto);
-    }
-
-    // 레시피 리스트 전체 조회
-    public Page<RecipePageDto> findAll(Pageable pageable) {
         try {
-            Page<Recipe> recipePage = recipeRepository.findAll(pageable);
-            return recipePage.map(Recipe::toPageDto);
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.INTERNAL_SERVER_ERROR);
+            Member member = authService.getMember();
+            // List<Recipe> -> List<Post>
+            List<Post> posts = recipes.stream()
+                .map(post -> (Post) post)
+                .toList();
+
+            Set<Long> likedRecipeIds = getLikedPostIds(member, posts);
+            Set<Long> scrapedRecipeIds = getScrapedPostIds(member, posts);
+
+            return recipePage.map(recipe -> createRecipePageDto(recipe, likedRecipeIds, scrapedRecipeIds));
+        } catch (HomealoneException e) {
+            if (e.getErrorCode()==ErrorCode.MEMBER_NOT_FOUND) {
+                return recipePage.map(this::createRecipePageDto);
+            } else {
+                throw new HomealoneException(ErrorCode.RECIPE_NOT_FOUND);
+            }
         }
     }
 
     // 레시피 상세 조회
     public RecipeResponseDto findById(Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+            .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
+
+        RecipeResponseDto resDto = recipe.toResponseDto();
+        PostRelatedDto relatedDto = postService.getPostRelated(recipe);
+        resDto.setRelatedDto(relatedDto);
+
         try {
-            Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
-            return recipe.toResponseDto();
-        } catch (Exception e) {
-            throw new HomealoneException(ErrorCode.BAD_REQUEST);
+            Member member = authService.getMember();
+            relatedDto.setLikeByCurrentUser(likeService.isLikedByMember(recipe, member));
+            relatedDto.setBookmarked(scrapService.isScrapedByMember(recipe, member));
+            return resDto;
+        } catch (HomealoneException e) {
+            if (e.getErrorCode()==ErrorCode.MEMBER_NOT_FOUND) {
+                return resDto;
+            } else {
+                throw new HomealoneException(ErrorCode.RECIPE_NOT_FOUND);
+            }
         }
     }
 
@@ -129,6 +165,7 @@ public class RecipeService {
         if (member == null) {
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
+        
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
         recipeRepository.delete(recipe);
@@ -173,5 +210,27 @@ public class RecipeService {
         updatedRecipe = recipeRepository.saveAndFlush(recipe);
 
         return updatedRecipe.toResponseDto();
+    }
+
+    private Set<Long> getLikedPostIds(Member member, List<Post> posts) {
+        return postService.getLikedPostIds(member, posts);
+    }
+
+    private Set<Long> getScrapedPostIds(Member member, List<Post> posts) {
+        return postService.getScrapedPostIds(member, posts);
+    }
+
+    private RecipePageDto createRecipePageDto(Recipe recipe, Set<Long> likedRecipeIds, Set<Long> scrapedRecipeIds) {
+        RecipePageDto pageDto = recipe.toPageDto();
+        pageDto.setRelatedDto(postService.getPostRelated(recipe));
+        pageDto.getRelatedDto().setLikeByCurrentUser(likedRecipeIds.contains(recipe.getId()));
+        pageDto.getRelatedDto().setBookmarked(scrapedRecipeIds.contains(recipe.getId()));
+        return pageDto;
+    }
+
+    private RecipePageDto createRecipePageDto(Recipe recipe) {
+        RecipePageDto pageDto = recipe.toPageDto();
+        pageDto.setRelatedDto(postService.getPostRelated(recipe));
+        return pageDto;
     }
 }

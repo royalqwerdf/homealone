@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
-
-
     /**
      * 회원 전체 조회
      */
@@ -55,4 +53,5 @@ public class MemberService implements UserDetailsService {
         Member member = findByEmail(email);
         return member;
     }
+
 }

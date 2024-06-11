@@ -41,11 +41,15 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //현재 로그인된 사용자 정보
-        Member currentMember = authService.getMember();
-        if(currentMember == null) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        Long curMemberId = currentMember.getId();
+        Member member = memberRepository.findById(authService.getMember().getId())
+                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+        Long curMemberId = member.getId();
+
+
+        /* 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+         */
 
         //현재 사용자와 중고거래 게시물 작성자가 같을 때
         if(receiver_id == curMemberId) {
@@ -53,7 +57,7 @@ public class ChatRoomService {
         }
 
         //chatting 테이블 생성해 저장
-        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(currentMember, receiver));
+        Chatting chatroom = chatRoomRepository.save(chatDto.toEntity(member, receiver));
 
         return chatroom.toDto();
     }
@@ -76,14 +80,20 @@ public class ChatRoomService {
     public ChatDto findChatList(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member member = authService.getMember();
+        Member member = memberRepository.findById(authService.getMember().getId())
+                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
         Long curMemberId = member.getId();
+
+        /* 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+         */
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
         Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
                 new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
         //현재 로그인한 회원이 자신이 속해있지 않은 채팅방 id를 통해 접근하려할 때
-        if(chatting.getSender().getId() != curMemberId && chatting.getReceiver().getId() != curMemberId) {
+        if(chatting.getSender() != member && chatting.getReceiver() != member) {
             throw new HomealoneException(ErrorCode.NOT_MY_CHATROOM);
         }
 
@@ -97,10 +107,10 @@ public class ChatRoomService {
         ChatDto responseDtos = ChatDto.builder()
                 .id(chatroomId)
                 .chatroomName(chatting.getChatroomName())
-                .senderName(chatting.getSender().getName())
-                .receiverName(chatting.getReceiver().getName())
-                .senderId(chatting.getSender().getId())
-                .receiverId(chatting.getReceiver().getId())
+                .senderName(chatting.getSender() != null ? chatting.getSender().getName() : "(이름없음)")
+                .receiverName(chatting.getReceiver() != null ? chatting.getReceiver().getName() : "(이름없음)")
+                .senderId(chatting.getSender() != null ? chatting.getSender().getId() : null)
+                .receiverId(chatting.getReceiver() != null ? chatting.getReceiver().getId() : null)
                 .Messages(Messages)
                 .currentId(curMemberId)
                 .build();
@@ -112,10 +122,13 @@ public class ChatRoomService {
     public List<ChatDto> findChatrooms() {
 
         //현재 로그인된 사용자 정보
-        Member member = authService.getMember();
-        if(member == null) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findById(authService.getMember().getId())
+                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+
+        /* 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+         */
 
         //member는 현재 로그인한 사용자 즉 sender
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(member.getId());
@@ -131,11 +144,15 @@ public class ChatRoomService {
     public void deleteChatroom(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member currentMember = authService.getMember();
-        if(currentMember == null) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        Long curMemberId = currentMember.getId();
+        Member member = memberRepository.findById(authService.getMember().getId())
+                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+        Long curMemberId = member.getId();
+
+
+        /* 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+         */
 
         //삭제하려는 채팅방 정보
         Chatting chatting = chatRoomRepository.findById(chatroomId)
@@ -145,18 +162,18 @@ public class ChatRoomService {
 
         if(senderId != null && receiverId != null) {
             if(curMemberId == senderId) {
-                currentMember.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
-                chatting.getSender().setId(null);
+                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+                chatting.setSender(null);
             } else if(curMemberId == receiverId) {
-                currentMember.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
-                chatting.getReceiver().setId(null); //채팅방에서 해당 회원 id 삭제
+                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+                chatting.setReceiver(null); //채팅방에서 해당 회원 id 삭제
             }
         } else { // 채팅방의 구성원 둘 중 한 명이라도 채팅방 나간 상태일 때
             if(curMemberId == senderId) {
-                currentMember.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
                 chatRoomRepository.delete(chatting); //채팅방 삭제하기(매핑된 메시지들도 cascade로 같이 삭제됨)
             } else if(curMemberId == receiverId) {
-                currentMember.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
                 chatRoomRepository.delete(chatting); //채팅방 삭제하기(매핑된 메시지들도 cascade로 같이 삭제됨)
             }
         }
