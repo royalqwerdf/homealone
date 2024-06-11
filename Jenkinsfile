@@ -24,7 +24,7 @@ pipeline {
           steps {
             // vm에 배포하는 단계
             script {
-              sshagent(credentials: ['HomealoneKey']) {
+              sshagent(credentials: ['homealonekey']) {
                 sh 'scp -r build/libs/* elice@34.64.55.198:/home/elice/Back'
               }
             }
