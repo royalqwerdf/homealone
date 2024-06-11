@@ -162,10 +162,11 @@ public class RecipeService {
     // 레시피 삭제
     @Transactional
     public void deleteRecipe(Member member, Long id) {
-        if (member == null) {
+        boolean isAdmin = authService.isAdmin(member);
+        if (!isAdmin && member == null) {
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
-        
+
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
         recipeRepository.delete(recipe);
