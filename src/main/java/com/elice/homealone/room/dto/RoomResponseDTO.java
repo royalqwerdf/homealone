@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class RoomResponseDTO {
 
     private Long id;
@@ -28,6 +29,7 @@ public class RoomResponseDTO {
     private Integer commentCount;
     private LocalDateTime createdAt;
     private String contentSummary;
+    @Builder.Default
     private Integer likeCount = 0;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
@@ -56,6 +58,7 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
+        @Builder.Default
         private List<String> roomImages = new ArrayList<>();
         private Boolean scrap;
         private Boolean like;
