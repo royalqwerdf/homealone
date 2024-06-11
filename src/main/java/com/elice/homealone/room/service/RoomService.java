@@ -6,6 +6,7 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.repository.MemberRepository;
+import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
@@ -36,6 +37,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -43,12 +45,13 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final MemberService memberService;
     private final PostTagService postTagService;
 //    private final ImageService imageService;
     private final LikeService likeService;
     private final ScrapService scrapService;
     private final RoomViewLogService roomViewLogService;
+    private final AuthService authService;
+
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -94,9 +97,12 @@ public class RoomService {
         Member member = (Member) authentication.getPrincipal();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
-        if(roomOriginal.getMember().getId() != member.getId()){
+
+        boolean isAdmin = authService.isAdmin(member);
+        if(!isAdmin && roomOriginal.getMember().getId() != member.getId()){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
+
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
 //        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
         roomRepository.delete(roomOriginal);

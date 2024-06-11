@@ -1,18 +1,16 @@
 package com.elice.homealone.global.config;
 
-import com.elice.homealone.global.exception.CustomAccessDeniedHandler;
-import com.elice.homealone.global.exception.JwtAuthenticationEntryPoint;
 import com.elice.homealone.global.jwt.JwtAuthenticationFilter;
+import com.elice.homealone.global.jwt.JwtExceptionFilter;
 import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.global.redis.RedisUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,20 +23,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final JwtExceptionFilter jwtExceptionFilter;
     private final RedisUtil redisUtil;
     private final WebConfig webConfig;
     
@@ -64,8 +58,6 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(webConfig.corsConfigurationSource())) // CORS 설정 적용
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
-                    .accessDeniedHandler(accessDeniedHandler))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) //H2
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
@@ -84,7 +76,9 @@ public class SecurityConfig {
                                             response.getWriter().flush();
                                         })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService,redisUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter , JwtAuthenticationFilter.class);
+
         return http.build();
     }
 

@@ -28,22 +28,22 @@ public class CrawlerService {
     private final PasswordEncoder passwordEncoder;
     private final JobStatusService jobStatusService;
 
-/*
-    public void loadJsonAndSaveRecipe() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // JSON 파일을 읽어와서 RecipeRequestDto 형태로 변환
-            List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
+    /*
+        public void loadJsonAndSaveRecipe() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                // JSON 파일을 읽어와서 RecipeRequestDto 형태로 변환
+                List<RecipeRequestDto> recipeRequestDtos = objectMapper.readValue(new File("/data/recipe.json"), new TypeReference<List<RecipeRequestDto>>(){});
 
-            for(RecipeRequestDto requestDto : recipeRequestDtos) {
-                recipeService.createRecipe(requestDto);
+                for(RecipeRequestDto requestDto : recipeRequestDtos) {
+                    recipeService.createRecipe(requestDto);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
 
- */
+     */
     @Async
     public void loadFromMongoAndSaveRecipe(Member member,Date date, String jobId) {
         JobStatus jobStatus = jobStatusService.createJobStatus(jobId);
