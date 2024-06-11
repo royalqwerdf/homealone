@@ -56,5 +56,4 @@ src/main/resources/serviceAccountKey.json
 # sql
 /src/main/resources/data.sql
 
-/Dockerfile
 /docker-compose.yml
