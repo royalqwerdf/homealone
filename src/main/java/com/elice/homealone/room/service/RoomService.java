@@ -13,6 +13,7 @@ import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
+import com.elice.homealone.room.repository.RoomViewLogRepository;
 import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,6 +48,7 @@ public class RoomService {
 //    private final ImageService imageService;
     private final LikeService likeService;
     private final ScrapService scrapService;
+    private final RoomViewLogService roomViewLogService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -147,6 +149,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView() + 1);
+        roomViewLogService.logView(room);
         RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
@@ -161,7 +164,7 @@ public class RoomService {
     @Transactional
     public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findTopRoomByView(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
 
         return roomResponseDTOS;
     }
