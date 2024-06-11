@@ -19,7 +19,7 @@ public interface TalkRepository extends JpaRepository<Talk,Long> , JpaSpecificat
     Optional<Talk> findById(Long id);
 
     Page<Talk> findAll(Pageable pageable);
-    @Query("SELECT r from Room r WHERE r.createdAt >= :oneWeekAgo ORDER BY r.view DESC ")
+    @Query("SELECT t FROM Talk t WHERE t.modifiedAt >= :oneWeekAgo ORDER BY t.view DESC")
     Page<Talk> findTopTalkByView(@Param("oneWeekAgo")LocalDateTime oneWeekAgo, Pageable pageable);
 
 
