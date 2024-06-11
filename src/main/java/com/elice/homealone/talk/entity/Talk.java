@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,6 +37,8 @@ public class Talk extends Post {
     @Column(name = "view")
     private Integer view;
 
+    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
+    private List<TalkViewLog> talkViewLogs= new ArrayList<>();
     public static Talk toTalk(TalkRequestDTO talkDto){
         return Talk.builder()
                 .title(talkDto.getTitle())
