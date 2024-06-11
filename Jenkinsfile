@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'test', url: 'https://kdt-gitlab.elice.io/cloud_track/class_02/web_project3/team07/team7-back.git'
+                git credentialsId: 'homealone', branch: 'test', url: 'https://kdt-gitlab.elice.io/cloud_track/class_02/web_project3/team07/team7-back.git'
             }
         }
         stage('Build') {
