@@ -76,61 +76,61 @@ public class DataInit implements CommandLineRunner {
             memberRepository.save(user);
         }
 
-        // 테스트 레시피 생성
+//         테스트 레시피 생성
 
-//        // 테스트 이미지 생성
-//        List<RecipeImageDto> images = new ArrayList<>();
-//        images.add(RecipeImageDto.builder()
-//            .fileName("image")
-//            .url("image1.jpg")
-//            .build());
-//        images.add(RecipeImageDto.builder()
-//            .fileName("image2")
-//            .url("image2.jpg")
-//            .build());
-//
-//        // 테스트 재료 생성
-//        List<RecipeIngredientDto> ingredients = new ArrayList<>();
-//        ingredients.add(RecipeIngredientDto.builder()
-//            .name("ingredient1")
-//            .quantity("1 cup")
-//            .build());
-//        ingredients.add(RecipeIngredientDto.builder()
-//            .name("ingredient2").
-//            quantity("2 tablespoons")
-//            .build());
-//
-//        // 테스트 상세 설명 생성
-//        List<RecipeDetailDto> details = new ArrayList<>();
-//        details.add(RecipeDetailDto.builder()
-//            .fileName("Step 1")
-//            .description("Do this")
-//            .build());
-//        details.add(RecipeDetailDto.builder()
-//            .fileName("Step 2")
-//            .description("Do that")
-//            .build());
-//
-//        // 테스트 태그 생성
-//        List<PostTagDto> postTags = new ArrayList<>();
-//        postTags.add(PostTagDto.builder()
-//            .tagName("tag1").build());
-//        postTags.add(PostTagDto.builder()
-//            .tagName("tag2").build());
-//
-//        RecipeRequestDto recipeReqDto = RecipeRequestDto.builder()
-//            .title("테스트 레시피")
-//            .description("테스트 레시피 설명")
-//            .portions(4)
-//            .recipeType(RecipeType.CONDI)
-//            .recipeTime(RecipeTime.FIFTEEN)
-//            .cuisine(Cuisine.KOREAN)
-//            .images(images)
-//            .ingredients(ingredients)
-//            .details(details)
-//            .postTags(postTags)
-//            .build();
-//        recipeService.createRecipe(user, recipeReqDto);
+        // 테스트 이미지 생성
+        List<RecipeImageDto> images = new ArrayList<>();
+        images.add(RecipeImageDto.builder()
+            .fileName("image")
+            .url("image1.jpg")
+            .build());
+        images.add(RecipeImageDto.builder()
+            .fileName("image2")
+            .url("image2.jpg")
+            .build());
+
+        // 테스트 재료 생성
+        List<RecipeIngredientDto> ingredients = new ArrayList<>();
+        ingredients.add(RecipeIngredientDto.builder()
+            .name("ingredient1")
+            .quantity("1 cup")
+            .build());
+        ingredients.add(RecipeIngredientDto.builder()
+            .name("ingredient2").
+            quantity("2 tablespoons")
+            .build());
+
+        // 테스트 상세 설명 생성
+        List<RecipeDetailDto> details = new ArrayList<>();
+        details.add(RecipeDetailDto.builder()
+            .fileName("Step 1")
+            .description("Do this")
+            .build());
+        details.add(RecipeDetailDto.builder()
+            .fileName("Step 2")
+            .description("Do that")
+            .build());
+
+        // 테스트 태그 생성
+        List<PostTagDto> postTags = new ArrayList<>();
+        postTags.add(PostTagDto.builder()
+            .tagName("tag1").build());
+        postTags.add(PostTagDto.builder()
+            .tagName("tag2").build());
+
+        RecipeRequestDto recipeReqDto = RecipeRequestDto.builder()
+            .title("테스트 레시피")
+            .description("테스트 레시피 설명")
+            .portions(4)
+            .recipeType(RecipeType.CONDI)
+            .recipeTime(RecipeTime.FIFTEEN)
+            .cuisine(Cuisine.KOREAN)
+            .images(images)
+            .ingredients(ingredients)
+            .details(details)
+            .postTags(postTags)
+            .build();
+        recipeService.createRecipe(user, recipeReqDto);
 
         // 테스트 혼잣말 생성
 
