@@ -59,12 +59,11 @@
 //            }
 //            ObjectMapper mapper = new ObjectMapper();
 //            Member byEmail = memberService.findByEmail(email);
-//            List<RoomRequestDTO> roomRequestDTOS = mapper.readValue(new File("src/main/resources/Room.json"), new com.fasterxml.jackson.core.type.TypeReference<List<RoomRequestDTO>>() {});
+//            List<RoomRequestDTO> roomRequestDTOS = mapper.readValue(new File("src/main/resources/room.json"), new com.fasterxml.jackson.core.type.TypeReference<List<RoomRequestDTO>>() {});
 //
 //            List<Room> roomList = roomRequestDTOS.stream().map(roomRequestDTO -> {
 //                Room room = new Room(roomRequestDTO, byEmail);
-//                room.setPlainContent(Jsoup.clean(room.getContent(), Safelist.none()));
-//                room.setCreatedAt(LocalDateTime.now().minusWeeks(2)); // 생성 시간 설정
+//                room.setPlainContent(Jsoup.clean(room.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim());
 //                Room save = roomRepository.save(room);
 //
 //                // 태그 생성 및 추가

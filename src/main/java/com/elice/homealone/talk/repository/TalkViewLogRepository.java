@@ -16,7 +16,7 @@ import java.util.List;
 public interface TalkViewLogRepository extends JpaRepository<TalkViewLog, Long> {
     void deleteByTimeStamp(LocalDateTime timeStamp);
 
-    @Query("SELECT t FROM TalkViewLog tv JOIN Talk  t WHERE tv.timeStamp >:oneWeekAgo GROUP BY t ORDER BY COUNT(tv) DESC ")
+    @Query("SELECT t FROM TalkViewLog tv JOIN tv.talk t WHERE tv.timeStamp > :oneWeekAgo GROUP BY t.id ORDER BY COUNT(tv) DESC")
     Page<Talk> findTopTalksByViewCountInLastWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo, Pageable pageable);
 
 }
