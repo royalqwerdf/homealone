@@ -58,3 +58,5 @@ src/main/resources/serviceAccountKey.json
 
 /Dockerfile
 /docker-compose.yml
+
+/src/main/resources/room.json
