@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,14 +38,12 @@ public class UsedTradeService {
 
         Page<UsedTrade> usedTrades = usedTradeRepository.findAll(pageable);
         Page<UsedTradeResponseDto> usedTradesDto = usedTrades.map(UsedTrade::toAllListDto);
-        usedTradesDto.stream().forEach(dto -> dto.setLikeCount(getLikeCount(dto.getId())));
+
+        //게시글 좋아요 수
+        usedTradesDto.stream().forEach(dto -> dto.setLikeCount(postRepository.countById(dto.getId())));
 
         return usedTradesDto;
 
-    }
-
-    public int getLikeCount(Long id) {
-        return postRepository.countById(id);
     }
 
     //1개의 중고거래 게시글 조회
@@ -53,7 +52,8 @@ public class UsedTradeService {
         UsedTradeResponseDto responseDto = usedTradeRepository.findById(id).map(UsedTrade::toDto)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
 
-        responseDto.setLikeCount(getLikeCount(id));
+        //게시글 좋아요 수
+        responseDto.setLikeCount(postRepository.countById(id));
 
         return responseDto;
     }
@@ -62,9 +62,15 @@ public class UsedTradeService {
     //중고거래 게시글 수정
     public boolean modifyUsedTrade(Long id, UsedTradeRequestDto requestDto) {
 
-
         //로그인한 계정의 데이터를 가져옴
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //비회원일시 예외처리
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
+
+        Member member = (Member) authentication.getPrincipal();
 
         //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
@@ -89,12 +95,20 @@ public class UsedTradeService {
         usedTradeRepository.save(usedTrade);
         return true;
     }
+
     //중고거래 게시글 생성
     @Transactional
     public Long createUsedTrade(UsedTradeRequestDto requestDto) {
 
         //로그인한 계정의 데이터를 가져옴
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //비회원일시 예외처리
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
+
+        Member member = (Member) authentication.getPrincipal();
 
         UsedTrade usedTrade = requestDto.toEntity();
         usedTrade.setMember(member);
@@ -116,7 +130,14 @@ public class UsedTradeService {
     public boolean deleteUsedTrade(Long id) {
 
         //로그인한 계정의 데이터를 가져옴
-        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //비회원일시 예외처리
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
+
+        Member member = (Member) authentication.getPrincipal();
 
         //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
