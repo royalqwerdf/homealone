@@ -36,7 +36,7 @@ public class Chatting extends BaseTimeEntity {
     @JoinColumn(name = "member_receiver_id")
     private Member receiver;
 
-    @OneToMany(mappedBy = "chatting")
+    @OneToMany(mappedBy = "chatting", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
 
 

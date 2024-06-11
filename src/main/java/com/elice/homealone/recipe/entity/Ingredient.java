@@ -33,5 +33,4 @@ public class Ingredient extends BaseTimeEntity {
         this.ingredients.add(recipeIngredient);
         recipeIngredient.setIngredient(this);
     }
-
 }

@@ -3,12 +3,18 @@ package com.elice.homealone.chatting.controller;
 import com.elice.homealone.chatting.entity.ChatDto;
 import com.elice.homealone.chatting.entity.ChatMessage;
 import com.elice.homealone.chatting.entity.Chatting;
+import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.chatting.service.ChatRoomService;
+import com.elice.homealone.member.entity.Member;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.parser.Authorization;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,8 +24,10 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
 @RequestMapping("/api")
+@CrossOrigin
+@RestController
+@Tag(name = "ChatRoomController", description = "채팅방 관리 API")
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -27,17 +35,16 @@ public class ChatRoomController {
 
 
     //회원의 모든 채팅방 목록 반환
+    @Operation(summary = "회원 채팅방 목록 조회")
     @GetMapping("/chattings")
-    public ResponseEntity<List<ChatDto>> chattingRooms(@RequestHeader("Authorization") String token) {
-        String accessToken = token.substring(7);
-        log.info("{} : exist token", accessToken);
-        List<ChatDto> chatrooms = chatRoomService.findChatrooms(accessToken);
+    public ResponseEntity<List<ChatDto>> chattingRooms() {
 
-        return ResponseEntity.ok().body(chatrooms);
+        return ResponseEntity.ok().body(chatRoomService.findChatrooms());
 
     }
 
     //선택 채팅방 조회
+    @Operation(summary = "채팅방 데이터 조회")
     @GetMapping("/chatting/{chatroomId}")
     public ResponseEntity<ChatDto> chatroomInfo(@PathVariable Long chatroomId) {
 
@@ -45,13 +52,20 @@ public class ChatRoomController {
     }
 
     //채팅방 생성
+    @Operation(summary = "중고거래 게시판에서 채팅방 개설")
     @PostMapping("/chatting")
-    public ResponseEntity<ChatDto> makeChat(@RequestHeader("Authorization") String token, @RequestBody ChatDto chatDto) {
-        String accessToken = token.substring(7);
-        log.info("{} : exist token", accessToken);
-        ChatDto createdRoom = chatRoomService.makeChat(accessToken, chatDto);
+    public ResponseEntity<ChatDto> makeChat(@RequestBody ChatDto chatDto) {
 
-        return ResponseEntity.ok().body(createdRoom);
+        return ResponseEntity.ok().body(chatRoomService.makeChat(chatDto));
+    }
+
+    //채팅방 삭제
+    @Operation(summary = "채팅방 삭제")
+    @DeleteMapping("/chatting/{chatroomId}")
+    public ResponseEntity<Void> deleteChatroom(@PathVariable Long chatroomId) {
+
+        chatRoomService.deleteChatroom(chatroomId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

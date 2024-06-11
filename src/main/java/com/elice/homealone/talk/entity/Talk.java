@@ -4,6 +4,7 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,11 +23,11 @@ public class Talk extends Post {
     @Column(nullable = false,name = "title")
     private String title;
 
-    @Column(nullable = false)
-    @Lob
+
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column(name = "plain_content")
+    @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
 
     @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)

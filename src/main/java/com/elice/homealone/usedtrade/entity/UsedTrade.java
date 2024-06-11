@@ -1,6 +1,5 @@
 package com.elice.homealone.usedtrade.entity;
 
-import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.tag.dto.PostTagDto;
 import com.elice.homealone.tag.entity.PostTag;

@@ -47,6 +47,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     public MessageDto toDto() {
         return MessageDto.builder()
+                .id(this.id)
                 .content(this.content)
                 .sendDate(this.sendDate)
                 .sendTime(this.sendTime)

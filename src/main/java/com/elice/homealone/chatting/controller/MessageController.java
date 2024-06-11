@@ -33,24 +33,21 @@ public class MessageController {
 
     @MessageMapping("/chat-sendMessage/{chatroomId}")
     @SendTo("/topic/public/{chatroomId}")
-    public MessageModel sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
+    public void sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
         String content = messageModel.getContent();
         String chatType = messageModel.getType().toString();
         Date now = new Date();
         final String time = new SimpleDateFormat("HH:mm").format(now);
 
         messageService.saveMessage(chatroomId, content, now, time, chatType);
-
-        return messageModel;
     }
 
-    /*@MessageMapping("/chat-addUser")
+    /*
+    @MessageMapping("/chat-addUser")
     @SendTo("/topic/public")
     public MessageModel addUser(@Payload MessageModel messageModel, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", messageModel.getSender());
+        headerAccessor.getSessionAttributes().put("usernme", messageModel.getSender());
         return messageModel;
     }
-     */
-
-
+    */
 }
