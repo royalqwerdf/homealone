@@ -68,7 +68,7 @@ public class TalkController {
 
     }
     @Operation(summary = "혼잣말 인기 게시글 조회")
-    @GetMapping("/topView")
+    @GetMapping("/view")
     public ResponseEntity<Page<TalkResponseDTO>> findTopTalkByView(@PageableDefault(size = 6) Pageable pageable){
         Page<TalkResponseDTO> topTalkByView = talkService.findTopTalkByView(pageable);
         return ResponseEntity.ok(topTalkByView);
