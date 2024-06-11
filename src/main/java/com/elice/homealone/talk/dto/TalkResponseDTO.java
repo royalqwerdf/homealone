@@ -3,6 +3,7 @@ package com.elice.homealone.talk.dto;
 import com.elice.homealone.comment.entity.Comment;
 import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.tag.dto.PostTagDto;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class TalkResponseDTO {
     private String memberName;
     private Integer commentCount;
     private LocalDateTime createdAt;
-
+    private String contentSummary;
+    private Integer likeCount;
     public static TalkResponseDTO toTalkResponseDTO(Talk talk){
         return TalkResponseDTO.builder()
                 .id(talk.getId())
@@ -30,8 +32,11 @@ public class TalkResponseDTO {
                 .memberName(talk.getMember().getName())
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
+                .contentSummary(talk.getPlainContent().length() <= 50 ? talk.getPlainContent() : talk.getPlainContent().substring(0,50))
+                .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                 .build();
     }
+
     @Data
     @SuperBuilder
     @NoArgsConstructor
@@ -42,12 +47,12 @@ public class TalkResponseDTO {
         private LocalDateTime updatedAt;
         private Integer view;
         private Integer likeCount;
-        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
-
+        private Boolean scrap;
+        private Boolean like;
         public static TalkInfoDto toTalkInfoDto(Talk talk) {
             return TalkInfoDto.builder()
                     .id(talk.getId())
@@ -57,33 +62,11 @@ public class TalkResponseDTO {
                     .createdAt(talk.getCreatedAt())
                     .updatedAt(talk.getModifiedAt())
                     .view(talk.getView())
-                    .likeCount( talk.getPostLikes() != null ? talk.getPostLikes().size() : 0)
-                    .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
+                    .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                     .memberName(talk.getMember().getName())
                     .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
-                    .build();
-        }
-    }
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TalkInfoDtoForMember extends TalkResponseDTO.TalkInfoDto {
-        private Boolean scrap;
-        private Boolean like;
-        public static TalkInfoDtoForMember toTalkInfoDtoForMember(Talk talk) {
-            return TalkInfoDtoForMember.builder()
-                    .id(talk.getId())
-                    .title(talk.getTitle())
-                    .tags(talk.getTags().stream().map(postTag -> postTag.toDto()).collect(Collectors.toList()))
-                    .content(talk.getContent())
-                    .createdAt(talk.getCreatedAt())
-                    .updatedAt(talk.getModifiedAt())
-                    .view(talk.getView())
-                    .likeCount( talk.getPostLikes() != null ? talk.getPostLikes().size() : 0)
-                    .scrapCount(talk.getScraps() != null ? talk.getScraps().size() : 0)
-                    .memberName(talk.getMember().getName())
-                    .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
+                    .scrap(false)
+                    .like(false)
                     .build();
         }
     }

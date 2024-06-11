@@ -17,8 +17,12 @@ public class RoomSpecification {
     }
 
 
-    public static Specification<Room> hasMemberId(Long memberId){
-        return (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("memberId"),memberId)));
+    public static Specification<Room> hasMemberId(String memberName){
+        return (((root, query, criteriaBuilder) -> {
+            Join<Room, PostTag> roomMemberJoin = root.join("member", JoinType.INNER);
+            Predicate roomByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
+            return roomByMemberName;
+        }));
     }
 
     public static Specification<Room> containsTitleOrContent(String keyword) {

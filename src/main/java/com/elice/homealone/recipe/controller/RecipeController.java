@@ -13,11 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 public class RecipeController {
@@ -33,6 +35,7 @@ public class RecipeController {
 
     // 레시피 페이지 조회
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Page<RecipePageDto>> getRecipe(Pageable pageable,
         @RequestParam(required = false) String userId,
         @RequestParam(required = false) String title,
@@ -46,6 +49,7 @@ public class RecipeController {
 
     // 레시피 상세 조회
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<RecipeResponseDto> getRecipeById(@PathVariable Long id) {
         RecipeResponseDto recipe = recipeService.findById(id);
         return new ResponseEntity<>(recipe, HttpStatus.OK);
@@ -53,15 +57,15 @@ public class RecipeController {
 
     // 레시피 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteRecipe(id);
+    public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+        recipeService.deleteRecipe(member, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 레시피 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<RecipeResponseDto> patchRecipe(@PathVariable Long id, @RequestBody RecipeRequestDto requestDto) {
-        RecipeResponseDto patchedRecipe = recipeService.patchRecipe(id, requestDto);
+    public ResponseEntity<RecipeResponseDto> patchRecipe(@AuthenticationPrincipal Member member, @PathVariable Long id, @RequestBody RecipeRequestDto requestDto) {
+        RecipeResponseDto patchedRecipe = recipeService.patchRecipe(member, id, requestDto);
         return new ResponseEntity<>(patchedRecipe, HttpStatus.OK);
     }
 

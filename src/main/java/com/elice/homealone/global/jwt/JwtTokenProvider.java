@@ -2,10 +2,7 @@ package com.elice.homealone.global.jwt;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,12 +32,11 @@ public class JwtTokenProvider {
      * email을 받아서 access 토큰 생성
      */
     public String createAccessToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -51,12 +47,11 @@ public class JwtTokenProvider {
      * email을 받아서 refresh 토큰 생성
      */
     public String createRefreshToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshExpirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -67,15 +62,18 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            String accessToken = token.substring(7);
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
+            String email = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
             return true;
-        } catch (ExpiredJwtException e) { // 토큰 만료
-            throw new HomealoneException(ErrorCode.EXPIRED_TOKEN);
-        } catch (IllegalArgumentException e) { // 그 외의 예외상황(유효하지 않은 토큰 등)
-            throw new HomealoneException(ErrorCode.INVALID_TOKEN);
-        } catch (Exception e) {
-            return false;
+        } catch (SecurityException e) {
+            throw new JwtException("잘못된 JWT 시그니처");
+        } catch (MalformedJwtException e) {
+            throw new JwtException("유효하지 않은 JWT 토큰");
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("토큰 기한 만료");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtException("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("JWT token compact of handler are invalid.");
         }
     }
 
@@ -83,8 +81,7 @@ public class JwtTokenProvider {
      * JWT 토큰으로 email 반환받는다.
      */
     public String getEmail(String token) {
-        String accessToken = token.substring(7);
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
 
