@@ -33,13 +33,15 @@ public class MessageController {
 
     @MessageMapping("/chat-sendMessage/{chatroomId}")
     @SendTo("/topic/public/{chatroomId}")
-    public void sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
+    public OutputMessageModel sendMessage(@Payload MessageModel messageModel, @DestinationVariable Long chatroomId) {
         String content = messageModel.getContent();
         String chatType = messageModel.getType().toString();
         Date now = new Date();
         final String time = new SimpleDateFormat("HH:mm").format(now);
 
         messageService.saveMessage(chatroomId, content, now, time, chatType);
+
+        return new OutputMessageModel(content, time);
     }
 
     /*
