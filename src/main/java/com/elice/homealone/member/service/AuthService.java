@@ -185,7 +185,7 @@ public class AuthService{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //비회원 처리
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            throw new HomealoneException(ErrorCode.MEMBER_NOT_AUTHENTICATED);
+            return null;
         }
         Object principal = authentication.getPrincipal();
         //멤버 객체 예외 처리
