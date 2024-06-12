@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = false)
 public class Room extends Post {
 
     @Id
@@ -26,8 +27,6 @@ public class Room extends Post {
 
     @Column(nullable = false, name = "title")
     private String title;
-
-
 
     @Column(columnDefinition = "LONGTEXT")
     private String content;
@@ -42,9 +41,13 @@ public class Room extends Post {
     @Builder.Default
     private Integer view = 0;
 
+    @Builder.Default
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<RoomViewLog> roomViewLog = new ArrayList<>();
 
 //    public static Room toRoom(RoomRequestDTO roomDto){
 //        return Room.builder()
@@ -65,7 +68,12 @@ public class Room extends Post {
                 .map(url -> new RoomImage(url, this))
                 .collect(Collectors.toList());
     }
-
+    public Room(Member member,String title, String content, String thumbnailUrl){
+        super(member,Type.ROOM);
+        this.title = title;
+        this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
+    }
     @Override
     public void addTag(PostTag tag) {
         super.addTag(tag);

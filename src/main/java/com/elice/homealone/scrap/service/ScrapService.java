@@ -100,4 +100,10 @@ public class ScrapService {
     public boolean isScrapdeByMember(Long postId, Long memberId) {
         return scrapRepository.existsByPostIdAndMemberId(postId, memberId);
     }
+
+    public List<Scrap> findByMemberIdAndPostType(Long memberId, Post.Type type) {
+        List<Scrap> scraps = scrapRepository.findByMemberIdAndPostType(memberId, type);
+
+        return scraps;
+    }
 }

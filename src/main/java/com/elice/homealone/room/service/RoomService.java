@@ -5,19 +5,19 @@ import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
-import com.elice.homealone.member.service.MemberService;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.recipe.dto.RecipePageDto;
+import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
+import com.elice.homealone.scrap.entity.Scrap;
 import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -25,13 +25,11 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.HtmlUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.time.LocalDateTime;
@@ -48,6 +46,7 @@ public class RoomService {
 //    private final ImageService imageService;
     private final LikeService likeService;
     private final ScrapService scrapService;
+    private final RoomViewLogService roomViewLogService;
     private final AuthService authService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
@@ -56,7 +55,7 @@ public class RoomService {
         Room room = new Room(roomDto,member);
         Room save = roomRepository.save(room);
         //HTML태그 제거
-        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none());
+        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         save.setContent(StringEscapeUtils.unescapeHtml4(roomDto.getContent()));
         save.setPlainContent(plainContent);
         roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
@@ -152,6 +151,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView() + 1);
+        roomViewLogService.logView(room);
         RoomResponseDTO.RoomInfoDto roomInfoDto = RoomResponseDTO.RoomInfoDto.toRoomInfoDto(room);
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
@@ -166,7 +166,7 @@ public class RoomService {
     @Transactional
     public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findTopRoomByView(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
 
         return roomResponseDTOS;
     }
@@ -181,6 +181,22 @@ public class RoomService {
         }
         return roomResponseDTOS;
 
+    }
+
+    // 로그인 한 멤버가 스크랩 한 레시피를 반환 해준다.
+    public Page<RoomResponseDTO> findByScrap(Pageable pageable) {
+        Member member = authService.getMember();
+        List<Scrap> scraps = scrapService.findByMemberIdAndPostType(member.getId(), Post.Type.ROOM);
+        List<Room> rooms = scraps.stream()
+            .map(scrap -> (Room) scrap.getPost())
+            .toList();
+        Page<Room> roomPage = PageableExecutionUtils.getPage(
+            rooms,
+            pageable,
+            rooms::size
+        );
+
+        return roomPage.map(RoomResponseDTO::toRoomResponseDTO);
     }
 
 }

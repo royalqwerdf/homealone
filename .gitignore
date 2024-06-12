@@ -32,6 +32,7 @@ src/main/resources/serviceAccountKey.json
 /src/main/resources/application.properties
 /src/main/resources/application-dev.properties
 /src/main/resources/application-test.properties
+.env
 
 ### NetBeans ###
 /nbproject/private/
@@ -57,3 +58,5 @@ src/main/resources/serviceAccountKey.json
 /src/main/resources/data.sql
 
 /docker-compose.yml
+
+/src/main/resources/room.json

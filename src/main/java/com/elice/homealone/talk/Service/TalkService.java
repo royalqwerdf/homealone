@@ -2,26 +2,18 @@ package com.elice.homealone.talk.Service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
-import com.elice.homealone.global.jwt.JwtTokenProvider;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.repository.MemberRepository;
 import com.elice.homealone.member.service.AuthService;
-import com.elice.homealone.member.service.MemberService;
-import com.elice.homealone.room.dto.RoomResponseDTO;
-import com.elice.homealone.room.entity.Room;
-import com.elice.homealone.room.entity.RoomImage;
+import com.elice.homealone.post.repository.PostRepository;
 import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
-import com.elice.homealone.tag.entity.PostTag;
 import com.elice.homealone.talk.dto.TalkRequestDTO;
 import com.elice.homealone.talk.dto.TalkResponseDTO;
 import com.elice.homealone.talk.entity.Talk;
 import com.elice.homealone.talk.entity.TalkImage;
 import com.elice.homealone.talk.repository.TalkRepository;
 import com.elice.homealone.talk.repository.TalkSpecification;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -47,13 +39,15 @@ public class TalkService {
     private final PostTagService postTagService;
     private final LikeService likeService;
     private final ScrapService scrapService;
+    private final TalkViewLogService talkViewLogService;
+    private final PostRepository postRepository;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal();
         Talk talk = new Talk(talkDto,member);
         //HTML태그 제거
-        String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none());
+        String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         talk.setPlainContent(plainContent);
         talkRepository.save(talk);
         talkDto.getTags().stream().map(tags -> postTagService.createPostTag(tags))
@@ -137,6 +131,7 @@ public class TalkService {
         Talk talk = talkRepository.findById(talkId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         talk.setView(talk.getView() + 1);
+        talkViewLogService.logView(talk);
         TalkResponseDTO.TalkInfoDto talkInfoDto = TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talk);
         if (member != null) {
             // TODO: 회원이 스크랩했는지 체크 로직 추가
@@ -153,7 +148,7 @@ public class TalkService {
     @Transactional
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<TalkResponseDTO> talkResponseDTO = talkRepository.findTopTalkByView(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        Page<TalkResponseDTO> talkResponseDTO = talkViewLogService.findTopTalksByViewCountInLastWeek(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
         return talkResponseDTO;
     }
     @Transactional

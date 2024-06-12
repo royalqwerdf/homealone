@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class RoomResponseDTO {
 
     private Long id;
@@ -28,6 +29,7 @@ public class RoomResponseDTO {
     private Integer commentCount;
     private LocalDateTime createdAt;
     private String contentSummary;
+    @Builder.Default
     private Integer likeCount = 0;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
@@ -38,7 +40,7 @@ public class RoomResponseDTO {
                 .memberName(room.getMember().getName())
                 .commentCount(room.getComments().size())
                 .createdAt(room.getCreatedAt())
-                .contentSummary(room.getPlainContent().length() <=50 ? room.getPlainContent() : room.getPlainContent().substring(0,50))
+                .contentSummary(room.getPlainContent().length() <=80 ? room.getPlainContent() : room.getPlainContent().substring(0,80))
                 .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                 .build();
     }
@@ -56,6 +58,7 @@ public class RoomResponseDTO {
         private Integer commentCount;
         private List<Comment> comments;
         private List<PostTagDto> tags;
+        @Builder.Default
         private List<String> roomImages = new ArrayList<>();
         private Boolean scrap;
         private Boolean like;

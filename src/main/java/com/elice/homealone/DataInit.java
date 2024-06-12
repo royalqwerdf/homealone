@@ -76,7 +76,7 @@ public class DataInit implements CommandLineRunner {
             memberRepository.save(user);
         }
 
-        // 테스트 레시피 생성
+//         테스트 레시피 생성
 
         // 테스트 이미지 생성
         List<RecipeImageDto> images = new ArrayList<>();

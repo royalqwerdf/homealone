@@ -41,15 +41,15 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //현재 로그인된 사용자 정보
-        Member member = memberRepository.findById(authService.getMember().getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-        Long curMemberId = member.getId();
-
-
-        /* 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        /*
+        Member member = memberRepository.findMemberById(authService.getMember().getId());
         Long curMemberId = member.getId();
          */
+
+
+        // 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
 
         //현재 사용자와 중고거래 게시물 작성자가 같을 때
         if(receiver_id == curMemberId) {
@@ -62,32 +62,19 @@ public class ChatRoomService {
         return chatroom.toDto();
     }
 
-    //채팅방에서 전송된 메시지를 저장하는 메소드. 채팅방과 1:n
-    @Transactional
-    public ChatMessage saveMessage(Long chatroomId, Long senderId, String content, String time) {
-        ChatMessage chatMessage = ChatMessage.builder()
-                .content(content)
-                .member(memberRepository.findMemberById(senderId))
-                .sendTime(time)
-                .chatting(chatRoomRepository.findChattingById(chatroomId))
-                .build();
-        chatMessageRepository.save(chatMessage);
-
-        return chatMessage;
-    }
-
     @Transactional
     public ChatDto findChatList(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member member = memberRepository.findById(authService.getMember().getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-        Long curMemberId = member.getId();
-
-        /* 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        /*
+        Member member = memberRepository.findMemberById(authService.getMember().getId());
         Long curMemberId = member.getId();
          */
+
+        // 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
         Chatting chatting = chatRoomRepository.findById(chatroomId).orElseThrow(() ->
@@ -122,13 +109,13 @@ public class ChatRoomService {
     public List<ChatDto> findChatrooms() {
 
         //현재 로그인된 사용자 정보
-        Member member = memberRepository.findById(authService.getMember().getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
+        /*
+        Member member = memberRepository.findMemberById(authService.getMember().getId());
+         */
 
-        /* 테스트용
+        //테스트용
         Member member = memberRepository.findMemberById(6L);
         Long curMemberId = member.getId();
-         */
 
         //member는 현재 로그인한 사용자 즉 sender
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(member.getId());
@@ -144,15 +131,16 @@ public class ChatRoomService {
     public void deleteChatroom(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        Member member = memberRepository.findById(authService.getMember().getId())
-                .orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
-        Long curMemberId = member.getId();
-
-
-        /* 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        /*
+        Member member = memberRepository.findMemberById(authService.getMember().getId());
         Long curMemberId = member.getId();
          */
+
+
+        // 테스트용
+        Member member = memberRepository.findMemberById(6L);
+        Long curMemberId = member.getId();
+
 
         //삭제하려는 채팅방 정보
         Chatting chatting = chatRoomRepository.findById(chatroomId)

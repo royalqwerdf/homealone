@@ -9,6 +9,7 @@ import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.post.dto.PostRelatedDto;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.post.entity.Post.Type;
 import com.elice.homealone.post.sevice.PostService;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
@@ -27,6 +28,7 @@ import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -104,16 +106,16 @@ public class RecipeService {
     // QueryDsl 레시피 페이지 조회
     public Page<RecipePageDto> findRecipes(
         Pageable pageable,
-        String userId,
+        Long memberId,
         String title,
         String description,
         List<String> tags
     ) {
-        List<Recipe> recipes = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        List<Recipe> recipes = recipeRepository.findRecipes(pageable, memberId, title, description, tags);
         Page<Recipe> recipePage = PageableExecutionUtils.getPage(
             recipes,
             pageable,
-            () -> recipeRepository.countRecipes(userId, title, description, tags)
+            () -> recipeRepository.countRecipes(memberId, title, description, tags)
         );
 
         try {
@@ -162,10 +164,11 @@ public class RecipeService {
     // 레시피 삭제
     @Transactional
     public void deleteRecipe(Member member, Long id) {
-        if (member == null) {
+        boolean isAdmin = authService.isAdmin(member);
+        if (!isAdmin && member == null) {
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
-        
+
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
         recipeRepository.delete(recipe);
@@ -232,5 +235,10 @@ public class RecipeService {
         RecipePageDto pageDto = recipe.toPageDto();
         pageDto.setRelatedDto(postService.getPostRelated(recipe));
         return pageDto;
+    }
+
+    // 로그인 한 멤버가 스크랩 한 레시피를 반환 해준다.
+    public Page<RecipePageDto> findByScrap(Pageable pageable) {
+        return postService.findByScrap(pageable, Post.Type.RECIPE, Recipe.class, this::createRecipePageDto);
     }
 }

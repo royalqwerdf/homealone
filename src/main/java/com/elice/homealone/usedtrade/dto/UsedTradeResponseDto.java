@@ -22,6 +22,7 @@ public class UsedTradeResponseDto {
     private List<UsedTradeImageDto> images = new ArrayList<>();
     private List<PostTagDto> tags = new ArrayList<>();
     private MemberDto member;
+    private int likeCount;
 
 
 }
