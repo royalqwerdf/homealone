@@ -2,17 +2,16 @@ package com.elice.homealone.global.crawler;
 
 import com.elice.homealone.global.jobstatus.JobStatus;
 import com.elice.homealone.global.jobstatus.JobStatusService;
-import com.elice.homealone.member.dto.request.SignupRequestDto;
-import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.entity.Role;
-import com.elice.homealone.member.repository.MemberRepository;
-import com.elice.homealone.member.service.AuthService;
-import com.elice.homealone.recipe.dto.RecipeRequestDto;
-import com.elice.homealone.recipe.service.RecipeService;
+import com.elice.homealone.module.member.dto.request.SignupRequestDto;
+import com.elice.homealone.module.member.entity.Member;
+import com.elice.homealone.module.member.entity.Role;
+import com.elice.homealone.module.member.repository.MemberRepository;
+import com.elice.homealone.module.recipe.dto.RecipeRequestDto;
+import com.elice.homealone.module.recipe.service.RecipeService;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +44,7 @@ public class CrawlerService {
 
      */
     @Async
-    public void loadFromMongoAndSaveRecipe(Member member,Date date, String jobId) {
+    public void loadFromMongoAndSaveRecipe(Member member, Date date, String jobId) {
         JobStatus jobStatus = jobStatusService.createJobStatus(jobId);
         // MongoDB에서 Recipe 데이터를 읽어옴
         List<RecipeRequest> recipes = recipeMongoRepository.findAllWithCreatedDateAfter(date);
