@@ -32,7 +32,7 @@ public class TalkResponseDTO {
                 .memberName(talk.getMember().getName())
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
-                .contentSummary(talk.getPlainContent().length() <= 50 ? talk.getPlainContent() : talk.getPlainContent().substring(0,50))
+                .contentSummary(talk.getPlainContent().length() <= 80 ? talk.getPlainContent() : talk.getPlainContent().substring(0,80))
                 .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                 .build();
     }
