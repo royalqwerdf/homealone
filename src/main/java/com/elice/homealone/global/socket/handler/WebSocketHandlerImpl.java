@@ -1,12 +1,10 @@
 package com.elice.homealone.global.socket.handler;
 
-import com.elice.homealone.global.exception.HomealoneException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;

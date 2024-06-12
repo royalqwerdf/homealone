@@ -1,12 +1,8 @@
-
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/src/main/resources/application.properties
-**/src/main/resources/application-dev.properties
-**/src/main/resources/application-test.properties
 data/
 
 ### STS ###
@@ -31,10 +27,12 @@ out/
 !**/src/test/**/out/
 
 **/src/main/team7-front
-application.properties
-src/main/resources/application.properties
-src/main/resources/application-dev.properties
-src/main/resources/application-test.properties
+src/main/resources/serviceAccountKey.json
+
+/src/main/resources/application.properties
+/src/main/resources/application-dev.properties
+/src/main/resources/application-test.properties
+.env
 
 ### NetBeans ###
 /nbproject/private/
@@ -48,13 +46,18 @@ src/main/resources/application-test.properties
 
 # python
 /python_workspace
-src/main/resources/.env
-.env
 
-HELP.md
+/.env
+
+/HELP.md
 
 # Q클래스
 /src/main/generated
 
 # sql
 /src/main/resources/data.sql
+
+/Dockerfile
+/docker-compose.yml
+
+/src/main/resources/room.json
