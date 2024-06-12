@@ -30,7 +30,7 @@ public class UsedTrade extends Post {
     @Column(name="content")
     private String content;
 
-    @OneToMany(mappedBy = "usedTrade")
+    @OneToMany(mappedBy = "usedTrade", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UsedTradeImage> images = new ArrayList<>();
 
     public UsedTradeResponseDto toDto(){
