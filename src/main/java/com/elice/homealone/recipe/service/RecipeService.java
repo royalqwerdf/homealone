@@ -104,16 +104,16 @@ public class RecipeService {
     // QueryDsl 레시피 페이지 조회
     public Page<RecipePageDto> findRecipes(
         Pageable pageable,
-        String userId,
+        Long memberId,
         String title,
         String description,
         List<String> tags
     ) {
-        List<Recipe> recipes = recipeRepository.findRecipes(pageable, userId, title, description, tags);
+        List<Recipe> recipes = recipeRepository.findRecipes(pageable, memberId, title, description, tags);
         Page<Recipe> recipePage = PageableExecutionUtils.getPage(
             recipes,
             pageable,
-            () -> recipeRepository.countRecipes(userId, title, description, tags)
+            () -> recipeRepository.countRecipes(memberId, title, description, tags)
         );
 
         try {

@@ -2,17 +2,22 @@ package com.elice.homealone.member.controller;
 
 
 import com.elice.homealone.member.dto.MemberDto;
+import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
+import com.elice.homealone.recipe.dto.RecipePageDto;
+import com.elice.homealone.recipe.service.RecipeService;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.service.RoomService;
 import com.elice.homealone.talk.Service.TalkService;
 import com.elice.homealone.talk.dto.TalkResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.nio.file.FileAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +29,8 @@ public class MypageController {
     private final AuthService authService;
     private final TalkService talkService;
     private final RoomService roomService;
+    private final RecipeService recipeService;
+
     @Operation(summary = "마이페이지 정보 조회")
     @GetMapping("")
     public ResponseEntity<MemberDto> getMemberInfo() {
@@ -49,6 +56,13 @@ public class MypageController {
         Page<TalkResponseDTO> talkByMember = talkService.findTalkByMember(pageable);
         return ResponseEntity.ok(talkByMember);
     }
+    @GetMapping("/recipes")
+    public ResponseEntity<Page<RecipePageDto>> findRecipeByMember(@PageableDefault(size=10) Pageable pageable) {
+        Member member = authService.getMember();
+        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, member.getId(),null,null,null);
+        return new ResponseEntity<>(pageDtos, HttpStatus.OK);
+    }
+
 
 
     @Operation(summary = "이메일 중복 체크")

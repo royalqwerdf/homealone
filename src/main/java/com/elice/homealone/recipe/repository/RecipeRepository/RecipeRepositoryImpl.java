@@ -32,7 +32,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
     private final QRecipe qRecipe = QRecipe.recipe;
 
     @Override
-    public List<Recipe> findRecipes(Pageable pageable, String userId, String title,
+    public List<Recipe> findRecipes(Pageable pageable, Long memberId, String title,
         String description, List<String> tags) {
 
         // 레시피 엔티티를 선택하고 where을 통해 검색 조건을 적용하여 레시피 리스트를 가져옴
@@ -40,7 +40,8 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             .selectFrom(qRecipe)
             .where(
                 containsTitle(title),
-                containsDescription(description)
+                containsDescription(description),
+                containsMemberId(memberId)
             )
             .orderBy(getOrderSpecifiers(pageable.getSort()))
             .offset(pageable.getOffset())
@@ -62,6 +63,13 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         return QRecipe.recipe.description.contains(description);
     }
 
+    private BooleanExpression containsMemberId(Long memberId) {
+        if(memberId == null) {
+            return null;
+        }
+        return QRecipe.recipe.member.id.eq(memberId);
+    }
+
     // 정렬을 위한 메소드 (공통으로 뺴야하지 않을까?)
     private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
@@ -76,7 +84,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
     }
 
     public Long countRecipes(
-        String userId,
+        Long memberId,
         String title,
         String description,
         List<String> tags) {
@@ -85,7 +93,8 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             .from(qRecipe)
             .where(
                 containsTitle(title),
-                containsDescription(description)
+                containsDescription(description),
+                containsMemberId(memberId)
             )
             .fetchOne();
     }
