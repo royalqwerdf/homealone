@@ -50,8 +50,7 @@ public class RoomService {
     private final AuthService authService;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Room room = new Room(roomDto,member);
         Room save = roomRepository.save(room);
         //HTML태그 제거
@@ -65,8 +64,7 @@ public class RoomService {
     }
     @Transactional
     public RoomResponseDTO.RoomInfoDto EditRoomPost(Long roomId, RoomRequestDTO roomDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         if(roomOriginal.getMember().getId() != member.getId()){
@@ -89,8 +87,7 @@ public class RoomService {
 
     @Transactional
     public void deleteRoomPost(Long roomId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Room roomOriginal = roomRepository.findById(roomId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
 
@@ -141,7 +138,6 @@ public class RoomService {
     @Transactional
     public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId) {
         Member member = authService.getMember();
-
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         room.setView(room.getView() + 1);
@@ -167,8 +163,7 @@ public class RoomService {
 
     @Transactional
     public Page<RoomResponseDTO> findRoomByMember(Pageable pageable){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findRoomByMember(member, pageable).map(RoomResponseDTO::toRoomResponseDTO);
         if(roomResponseDTOS.isEmpty()){
             throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);

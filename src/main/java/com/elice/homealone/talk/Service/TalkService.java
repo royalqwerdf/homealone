@@ -43,8 +43,7 @@ public class TalkService {
     private final PostRepository postRepository;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Talk talk = new Talk(talkDto,member);
         //HTML태그 제거
         String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
@@ -57,8 +56,7 @@ public class TalkService {
 
     @Transactional
     public TalkResponseDTO.TalkInfoDto EditTalkPost(Long talkId, TalkRequestDTO talkDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Talk talkOriginal = talkRepository.findById(talkId).orElseThrow(() -> new HomealoneException(ErrorCode.TALK_NOT_FOUND));
         if(talkOriginal.getMember().getId() != member.getId()){
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
@@ -74,8 +72,7 @@ public class TalkService {
 
     @Transactional
     public void deleteRoomPost(Long talkId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Talk talkOriginal = talkRepository.findById(talkId)
                 .orElseThrow(() ->new HomealoneException(ErrorCode.TALK_NOT_FOUND));
 
@@ -120,14 +117,7 @@ public class TalkService {
 
     @Transactional
     public TalkResponseDTO.TalkInfoDto findByTalkId(Long talkId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-
-        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
-            member = (Member) authentication.getPrincipal();
-
-        }
-
+        Member member = authService.getMember();
         Talk talk = talkRepository.findById(talkId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
         talk.setView(talk.getView() + 1);
@@ -153,8 +143,7 @@ public class TalkService {
     }
     @Transactional
     public Page<TalkResponseDTO> findTalkByMember(Pageable pageable){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member) authentication.getPrincipal();
+        Member member = authService.getMember();
         Page<TalkResponseDTO> TalkResponse = talkRepository.findTalkByMember(member, pageable).map(TalkResponseDTO::toTalkResponseDTO);
         if(TalkResponse.isEmpty()){
             throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
