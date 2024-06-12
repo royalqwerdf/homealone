@@ -135,13 +135,7 @@ public class RoomService {
     }
     @Transactional
     public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-
-        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
-                member = (Member) authentication.getPrincipal();
-
-        }
+        Member member = authService.getMember();
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
