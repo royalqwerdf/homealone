@@ -30,5 +30,13 @@ pipeline {
             }
           }
         }
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    // Docker 이미지 빌드
+                    sh 'docker build -t homealone .'
+                }
+            }
+        }
     }
 }
