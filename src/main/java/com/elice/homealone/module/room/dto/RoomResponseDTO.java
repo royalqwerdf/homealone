@@ -1,6 +1,7 @@
 package com.elice.homealone.module.room.dto;
 
 import com.elice.homealone.module.comment.entity.Comment;
+import com.elice.homealone.module.member.dto.MemberDto;
 import com.elice.homealone.module.room.entity.Room;
 import com.elice.homealone.module.tag.dto.PostTagDto;
 import lombok.*;
@@ -27,6 +28,8 @@ public class RoomResponseDTO {
     private String contentSummary;
     @Builder.Default
     private Integer likeCount = 0;
+    //프론트 요청으로 추가
+    private String imageUrl;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -38,6 +41,7 @@ public class RoomResponseDTO {
                 .createdAt(room.getCreatedAt())
                 .contentSummary(room.getPlainContent().length() <=80 ? room.getPlainContent() : room.getPlainContent().substring(0,80))
                 .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
+                .imageUrl(room.getMember().getImageUrl())
                 .build();
     }
     @Data
@@ -59,6 +63,11 @@ public class RoomResponseDTO {
         private Boolean scrap;
         private Boolean like;
 
+        //프론트 요청으로 추가
+        private String imageUrl;
+        private long memberId;
+        private long scrapCount;
+
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
                     .id(room.getId())
@@ -75,6 +84,9 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps().size())
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .scrap(false)
+                    .imageUrl(room.getMember().getImageUrl())
+                    .memberId(room.getMember().getId())
+                    .scrapCount(room.getScraps().size())
                     .like(false)
                     .build();
         }

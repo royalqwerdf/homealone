@@ -120,7 +120,7 @@ public class AuthService{
         // 3. 새로운 Access Token 생성
         String newAccessToken = jwtTokenProvider.createAccessToken(email);
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(newAccessToken);
+        tokenDto.setAccessToken(GRANT_TYPE+newAccessToken);
 
         return tokenDto;
     }
