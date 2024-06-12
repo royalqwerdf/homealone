@@ -28,8 +28,7 @@ public class RoomResponseDTO {
     private String contentSummary;
     @Builder.Default
     private Integer likeCount = 0;
-    //프론트 요청으로 추가
-    private String imageUrl;
+    private String memberImageUrl;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -41,7 +40,7 @@ public class RoomResponseDTO {
                 .createdAt(room.getCreatedAt())
                 .contentSummary(room.getPlainContent().length() <=80 ? room.getPlainContent() : room.getPlainContent().substring(0,80))
                 .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
-                .imageUrl(room.getMember().getImageUrl())
+                .memberImageUrl(room.getMember().getImageUrl())
                 .build();
     }
     @Data
@@ -52,21 +51,17 @@ public class RoomResponseDTO {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private Integer view;
-        private Integer likeCount;
-        private String memberName;
-        private Integer commentCount;
-        private List<Comment> comments;
         private List<PostTagDto> tags;
         @Builder.Default
         private List<String> roomImages = new ArrayList<>();
+        private Integer view;
+        private String memberName;
+        private Integer commentCount;
+        private Integer scrapCount;
+        private Integer likeCount;
         private Boolean scrap;
         private Boolean like;
 
-        //프론트 요청으로 추가
-        private String imageUrl;
-        private long memberId;
-        private long scrapCount;
 
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
@@ -78,13 +73,13 @@ public class RoomResponseDTO {
                     .createdAt(room.getCreatedAt())
                     .updatedAt(room.getModifiedAt())
                     .view(room.getView())
-                    .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                     .memberName(room.getMember().getName())
-                    .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .memberImageUrl(room.getMember().getImageUrl())
+                    .commentCount(room.getComments().size())
+                    .likeCount(room.getLikes().size())
+                    .scrapCount(room.getScraps().size())
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .scrap(false)
-                    .imageUrl(room.getMember().getImageUrl())
-                    .memberId(room.getMember().getId())
                     .scrapCount(room.getScraps().size())
                     .like(false)
                     .build();
