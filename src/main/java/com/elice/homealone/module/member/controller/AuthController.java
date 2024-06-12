@@ -38,7 +38,7 @@ public class AuthController {
 
 
     @Operation(summary = "AccessToken 재발급")
-    @PostMapping("/token/refresh")
+    @GetMapping("/token/refresh")
     public ResponseEntity<TokenDto> refreshAceessToken(HttpServletRequest request) {
         TokenDto tokenDto = authService.refreshAccessToken(request);
         return ResponseEntity.ok(tokenDto);
