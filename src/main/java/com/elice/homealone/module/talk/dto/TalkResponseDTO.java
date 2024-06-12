@@ -24,11 +24,13 @@ public class TalkResponseDTO {
     private LocalDateTime createdAt;
     private String contentSummary;
     private Integer likeCount;
+    private String memberImageUrl;
     public static TalkResponseDTO toTalkResponseDTO(Talk talk){
         return TalkResponseDTO.builder()
                 .id(talk.getId())
                 .title(talk.getTitle())
                 .memberName(talk.getMember().getName())
+                .memberImageUrl(talk.getMember().getImageUrl())
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
                 .contentSummary(talk.getPlainContent().length() <= 80 ? talk.getPlainContent() : talk.getPlainContent().substring(0,80))
@@ -64,6 +66,7 @@ public class TalkResponseDTO {
                     .likeCount(talk.getLikes().size())
                     .scrapCount(talk.getScraps().size())
                     .memberName(talk.getMember().getName())
+                    .memberImageUrl(talk.getMember().getImageUrl())
                     .commentCount(talk.getComments().size())
                     .scrap(false)
                     .like(false)
