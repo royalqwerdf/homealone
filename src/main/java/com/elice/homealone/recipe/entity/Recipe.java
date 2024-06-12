@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.CustomLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,6 +52,10 @@ public class Recipe extends Post {
     @Setter
     private Cuisine cuisine;
 
+    @Column
+    @Setter
+    private int view = 0;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeImage> images = new ArrayList<>();
 
@@ -63,7 +66,15 @@ public class Recipe extends Post {
     private List<RecipeDetail> details = new ArrayList<>();
 
     @Builder
-    public Recipe(Member member, String title, String description, int portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine) {
+    public Recipe(
+        Member member,
+        String title,
+        String description,
+        int portions,
+        RecipeType recipeType,
+        RecipeTime recipeTime,
+        Cuisine cuisine,
+        int view) {
         // Post
         super(member, Type.RECIPE);
 
@@ -74,6 +85,7 @@ public class Recipe extends Post {
         this.recipeType = (recipeType == null)? RecipeType.ETC : recipeType;
         this.recipeTime = (recipeTime == null)?RecipeTime.THIRTY : recipeTime;
         this.cuisine = (cuisine==null)?Cuisine.ETC:cuisine;
+        this.view = view;
     }
 
     // toDto
@@ -111,6 +123,7 @@ public class Recipe extends Post {
             .postTags(tagDtos)
             .userId(userId)
             .userName(userName)
+            .view(view)
             .build();
     }
 
