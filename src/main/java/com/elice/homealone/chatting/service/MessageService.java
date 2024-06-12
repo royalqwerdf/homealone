@@ -18,7 +18,6 @@ public class MessageService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final MemberRepository memberRepository;
 
     //채팅방 입장 후 전솧한 메시지를 저장하는 메서드
     @Transactional

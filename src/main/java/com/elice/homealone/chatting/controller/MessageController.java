@@ -20,15 +20,6 @@ import java.util.Date;
 @Controller
 public class MessageController {
 
-    /* 메시지 모델
-    *   let message = {
-    *       senderId: sessionStorage.getId(),
-    *       content: messageInput.value,
-    *       type: 'CHAT'
-    *   };
-    */
-
-    private final ChatRoomService chatRoomService;
     private final MessageService messageService;
 
     @MessageMapping("/chat-sendMessage/{chatroomId}")
