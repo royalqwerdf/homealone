@@ -7,6 +7,7 @@ import com.elice.homealone.scrap.entity.Scrap;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,4 +20,9 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     List<Scrap> findByMemberAndPostIn(Member member, List<Post> posts);
 
     boolean existsByPostAndMember(Post post, Member member);
+
+    List<Scrap> findByMemberId(Long memberId);
+
+    @Query("SELECT s FROM Scrap s JOIN s.post p WHERE s.member.id = :memberId AND p.type = :postType")
+    List<Scrap> findByMemberIdAndPostType(Long memberId, Post.Type postType);
 }

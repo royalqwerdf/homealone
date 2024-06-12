@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,5 +96,14 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new HomealoneException(
             ErrorCode.COMMENT_NOT_FOUND));
         return comment;
+    }
+
+    // 로그인 멤버 댓글 조회
+    @Transactional
+    public Page<CommentResDto> findCommentByMember(Pageable pageable) {
+        Member member = authService.getMember();
+        Page<Comment> comments = commentRepository.findByMemberIdOrderByPostIdDescCreatedAtDesc(member.getId(), pageable);
+        Page<CommentResDto> resDtos = comments.map(CommentResDto::fromEntity);
+        return resDtos;
     }
 }

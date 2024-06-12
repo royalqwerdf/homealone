@@ -28,8 +28,6 @@ public class Room extends Post {
     @Column(nullable = false, name = "title")
     private String title;
 
-
-
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
@@ -42,7 +40,6 @@ public class Room extends Post {
     @Column(name = "view")
     @Builder.Default
     private Integer view = 0;
-
 
     @Builder.Default
     @OneToMany(mappedBy = "room",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
