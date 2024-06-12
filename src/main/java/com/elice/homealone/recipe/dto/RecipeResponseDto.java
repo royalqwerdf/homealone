@@ -30,6 +30,8 @@ public class RecipeResponseDto {
     private Long userId;
     private String userName;
 
+    private int view = 0;
+
     @Setter
     private PostRelatedDto relatedDto;
 
@@ -48,7 +50,8 @@ public class RecipeResponseDto {
         List<PostTagDto> postTags,
         Long userId,
         String userName,
-        PostRelatedDto relatedDto
+        PostRelatedDto relatedDto,
+        int view
     ) {
         this.id = id;
         this.title = title;
@@ -64,5 +67,6 @@ public class RecipeResponseDto {
         this.userId = userId;
         this.userName = userName;
         this.relatedDto = relatedDto;
+        this.view = view;
     }
 }

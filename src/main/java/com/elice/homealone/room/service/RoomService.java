@@ -6,12 +6,16 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.like.service.LikeService;
 import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
+import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.recipe.dto.RecipePageDto;
+import com.elice.homealone.recipe.entity.Recipe;
 import com.elice.homealone.room.dto.RoomRequestDTO;
 import com.elice.homealone.room.dto.RoomResponseDTO;
 import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.room.entity.RoomImage;
 import com.elice.homealone.room.repository.RoomRepository;
 import com.elice.homealone.room.repository.RoomSpecification;
+import com.elice.homealone.scrap.entity.Scrap;
 import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -135,13 +140,7 @@ public class RoomService {
     }
     @Transactional
     public RoomResponseDTO.RoomInfoDto findByRoomId(Long roomId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-
-        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
-                member = (Member) authentication.getPrincipal();
-
-        }
+        Member member = authService.getMember();
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.ROOM_NOT_FOUND));
@@ -176,6 +175,22 @@ public class RoomService {
         }
         return roomResponseDTOS;
 
+    }
+
+    // 로그인 한 멤버가 스크랩 한 레시피를 반환 해준다.
+    public Page<RoomResponseDTO> findByScrap(Pageable pageable) {
+        Member member = authService.getMember();
+        List<Scrap> scraps = scrapService.findByMemberIdAndPostType(member.getId(), Post.Type.ROOM);
+        List<Room> rooms = scraps.stream()
+            .map(scrap -> (Room) scrap.getPost())
+            .toList();
+        Page<Room> roomPage = PageableExecutionUtils.getPage(
+            rooms,
+            pageable,
+            rooms::size
+        );
+
+        return roomPage.map(RoomResponseDTO::toRoomResponseDTO);
     }
 
 }

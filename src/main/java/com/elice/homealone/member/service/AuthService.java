@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -101,11 +102,7 @@ public class AuthService{
         return cookie;
     }
 
-    /**
-     *
-     * @param refreshToken
-     * @return
-     */
+
     public TokenDto refreshAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String refreshToken = null;
@@ -185,11 +182,16 @@ public class AuthService{
      * 회원 정보 받아오는 메소드
      */
     public Member getMember() {
-        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(object.equals("anonymousUser")){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            throw new HomealoneException(ErrorCode.MEMBER_NOT_AUTHENTICATED);
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Member) {
+            return (Member) principal;
+        } else {
             throw new HomealoneException(ErrorCode.MEMBER_NOT_FOUND);
         }
-        return Optional.ofNullable((Member)object).orElseThrow(() -> new HomealoneException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     /**
