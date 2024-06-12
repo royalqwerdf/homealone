@@ -79,8 +79,6 @@ public class OAuthService {
         return response.getBody().getAccessToken();
     }
 
-
-
     //front에서 처리 해주시면서 kakao login과 동일하게 처리하도록 해당 코드는 deprecate함
     //GetMapping의 query parameter로 code를 받아올 때 사용함
 //    public Member getNaverUserInfo(String code) {
