@@ -21,6 +21,8 @@ public enum ErrorCode {
     INVALID_TOKEN(UNAUTHORIZED, "유효하지 않는 토큰입니다."),
     EXPIRED_TOKEN(UNAUTHORIZED, "만료된 토큰입니다"),
     JWT_EXCEPTION(UNAUTHORIZED, "토큰 오류입니다."),
+    MEMBER_NOT_AUTHENTICATED(UNAUTHORIZED, "인증되지 않은 회원입니다."),
+
     //403
     NOT_UNAUTHORIZED_ACTION(FORBIDDEN,"작성자와 일치하지 않습니다."),
     NO_JWT_TOKEN(FORBIDDEN,"JWT토큰이 비어있습니다."),
@@ -37,6 +39,7 @@ public enum ErrorCode {
     SEARCH_NOT_FOUND(NOT_FOUND,"검색결과가 존재하지 않습니다"),
     WRITE_NOT_FOUND(NOT_FOUND,"작성하신 게시물이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(NOT_FOUND, "조회되지 않는 댓글입니다."),
+
 
     //409
     EMAIL_ALREADY_EXISTS(CONFLICT, "중복된 이메일 입니다."),
