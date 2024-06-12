@@ -24,17 +24,20 @@ public class TalkResponseDTO {
     private LocalDateTime createdAt;
     private String contentSummary;
     private Integer likeCount;
+    private String memberImageUrl;
     public static TalkResponseDTO toTalkResponseDTO(Talk talk){
         return TalkResponseDTO.builder()
                 .id(talk.getId())
                 .title(talk.getTitle())
                 .memberName(talk.getMember().getName())
+                .memberImageUrl(talk.getMember().getImageUrl())
                 .commentCount(talk.getComments().size())
                 .createdAt(talk.getCreatedAt())
                 .contentSummary(talk.getPlainContent().length() <= 80 ? talk.getPlainContent() : talk.getPlainContent().substring(0,80))
                 .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
                 .build();
     }
+
 
     @Data
     @SuperBuilder
@@ -46,9 +49,9 @@ public class TalkResponseDTO {
         private LocalDateTime updatedAt;
         private Integer view;
         private Integer likeCount;
+        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
-        private List<Comment> comments;
         private List<PostTagDto> tags;
         private Boolean scrap;
         private Boolean like;
@@ -61,9 +64,11 @@ public class TalkResponseDTO {
                     .createdAt(talk.getCreatedAt())
                     .updatedAt(talk.getModifiedAt())
                     .view(talk.getView())
-                    .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
+                    .likeCount(talk.getLikes().size())
+                    .scrapCount(talk.getScraps().size())
                     .memberName(talk.getMember().getName())
-                    .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
+                    .memberImageUrl(talk.getMember().getImageUrl())
+                    .commentCount(talk.getComments().size())
                     .scrap(false)
                     .like(false)
                     .build();

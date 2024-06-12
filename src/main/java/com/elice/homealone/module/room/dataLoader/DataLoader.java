@@ -1,14 +1,18 @@
-//package com.elice.homealone.room.dataLoader;
+//package com.elice.homealone.module.room.dataLoader;
 //
-//import com.elice.homealone.member.entity.Member;
-//import com.elice.homealone.member.entity.Role;
-//import com.elice.homealone.member.repository.MemberRepository;
-//import com.elice.homealone.member.service.MemberService;
-//import com.elice.homealone.room.dto.RoomRequestDTO;
-//import com.elice.homealone.room.entity.Room;
-//import com.elice.homealone.room.repository.RoomRepository;
-//import com.elice.homealone.tag.Service.PostTagService;
-//import com.elice.homealone.tag.entity.PostTag;
+//
+//
+//import com.elice.homealone.module.member.entity.Member;
+//import com.elice.homealone.module.member.entity.Role;
+//import com.elice.homealone.module.member.repository.MemberRepository;
+//import com.elice.homealone.module.member.service.MemberService;
+//import com.elice.homealone.module.room.dto.RoomRequestDTO;
+//import com.elice.homealone.module.room.entity.Room;
+//import com.elice.homealone.module.room.entity.RoomImage;
+//import com.elice.homealone.module.room.repository.RoomImageRepository;
+//import com.elice.homealone.module.room.repository.RoomRepository;
+//import com.elice.homealone.module.tag.Service.PostTagService;
+//import com.elice.homealone.module.tag.entity.PostTag;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import lombok.RequiredArgsConstructor;
 //import org.jsoup.Jsoup;
@@ -36,6 +40,8 @@
 //    private final PostTagService postTagService;
 //    private final MemberRepository memberRepository;
 //    private final PasswordEncoder passwordEncoder;
+//    private final RoomImageRepository roomImageRepository;
+//
 //    @Bean
 //    CommandLineRunner loadData() {
 //        return args -> loadRoomData();
@@ -65,6 +71,11 @@
 //                Room room = new Room(roomRequestDTO, byEmail);
 //                room.setPlainContent(Jsoup.clean(room.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim());
 //                Room save = roomRepository.save(room);
+//                roomRequestDTO.getRoomImages().forEach(roomImage->{
+//                    RoomImage roomImage1 = new RoomImage(roomImage, room);
+//                    roomImageRepository.save(roomImage1);
+//
+//                });
 //
 //                // 태그 생성 및 추가
 //                List<PostTag> postTags = roomRequestDTO.getTags().stream()
