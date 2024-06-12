@@ -49,7 +49,7 @@ public class Talk extends Post {
 
     public Talk(TalkRequestDTO talkDto, Member member) {
         super(member,Type.TALK);
-        this.title = talkDto.getContent();
+        this.title = talkDto.getTitle();
         this.content = talkDto.getContent();
         this.view = 0;
     }
