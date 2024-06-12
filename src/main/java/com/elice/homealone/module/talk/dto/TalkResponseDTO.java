@@ -38,6 +38,7 @@ public class TalkResponseDTO {
                 .build();
     }
 
+
     @Data
     @SuperBuilder
     @NoArgsConstructor
