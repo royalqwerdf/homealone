@@ -54,7 +54,7 @@ public class Recipe extends Post {
 
     @Column
     @Setter
-    private int view = 0;
+    private Integer view = 0;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeImage> images = new ArrayList<>();

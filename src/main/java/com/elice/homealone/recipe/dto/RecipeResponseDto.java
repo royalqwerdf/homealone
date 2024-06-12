@@ -30,7 +30,7 @@ public class RecipeResponseDto {
     private Long userId;
     private String userName;
 
-    private int view = 0;
+    private Integer view = 0;
 
     @Setter
     private PostRelatedDto relatedDto;

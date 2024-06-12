@@ -27,7 +27,7 @@ public class RecipePageDto {
     @Setter
     private PostRelatedDto relatedDto;
 
-    private final int view;
+    private final Integer view;
 
     @Builder
     public RecipePageDto(

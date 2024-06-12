@@ -30,7 +30,7 @@ public class RecipeRequestDto {
     private List<RecipeDetailDto> details;
     private List<PostTagDto> postTags;
 
-    private int view = 0;
+    private Integer view = 0;
 
     @Builder
     public RecipeRequestDto(
