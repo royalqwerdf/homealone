@@ -6,6 +6,7 @@ import com.elice.homealone.global.exception.HomealoneException;
 import com.elice.homealone.module.like.service.LikeService;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
+import com.elice.homealone.module.room.repository.RoomImageRepository;
 import com.elice.homealone.module.room.repository.RoomRepository;
 import com.elice.homealone.module.scrap.entity.Scrap;
 import com.elice.homealone.module.scrap.service.ScrapService;
@@ -43,6 +44,7 @@ public class RoomService {
     private final ScrapService scrapService;
     private final RoomViewLogService roomViewLogService;
     private final AuthService authService;
+    private final RoomImageRepository roomImageRepository;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Member member = authService.getMember();
