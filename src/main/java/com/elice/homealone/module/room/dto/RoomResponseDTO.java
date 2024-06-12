@@ -1,6 +1,7 @@
 package com.elice.homealone.module.room.dto;
 
 import com.elice.homealone.module.comment.entity.Comment;
+import com.elice.homealone.module.member.dto.MemberDto;
 import com.elice.homealone.module.room.entity.Room;
 import com.elice.homealone.module.tag.dto.PostTagDto;
 import lombok.*;
@@ -61,6 +62,7 @@ public class RoomResponseDTO {
         private Boolean scrap;
         private Boolean like;
 
+
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
                     .id(room.getId())
@@ -78,6 +80,7 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps().size())
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .scrap(false)
+                    .scrapCount(room.getScraps().size())
                     .like(false)
                     .build();
         }
