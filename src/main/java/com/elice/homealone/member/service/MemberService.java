@@ -53,5 +53,4 @@ public class MemberService implements UserDetailsService {
         Member member = findByEmail(email);
         return member;
     }
-
 }

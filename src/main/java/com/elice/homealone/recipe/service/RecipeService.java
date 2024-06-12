@@ -9,6 +9,7 @@ import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.post.dto.PostRelatedDto;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.post.entity.Post.Type;
 import com.elice.homealone.post.sevice.PostService;
 import com.elice.homealone.recipe.dto.RecipeDetailDto;
 import com.elice.homealone.recipe.dto.RecipeImageDto;
@@ -27,6 +28,7 @@ import com.elice.homealone.scrap.service.ScrapService;
 import com.elice.homealone.tag.Service.PostTagService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -233,5 +235,10 @@ public class RecipeService {
         RecipePageDto pageDto = recipe.toPageDto();
         pageDto.setRelatedDto(postService.getPostRelated(recipe));
         return pageDto;
+    }
+
+    // 로그인 한 멤버가 스크랩 한 레시피를 반환 해준다.
+    public Page<RecipePageDto> findByScrap(Pageable pageable) {
+        return postService.findByScrap(pageable, Post.Type.RECIPE, Recipe.class, this::createRecipePageDto);
     }
 }
