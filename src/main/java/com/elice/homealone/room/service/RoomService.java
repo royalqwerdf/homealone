@@ -123,9 +123,6 @@ public class RoomService {
             }
 
         Page<Room> findRoom = roomRepository.findAll(spec, pageable);
-            if(findRoom.isEmpty()){
-                throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
-            }
         Page<RoomResponseDTO> roomResponseDTOS =findRoom.map(room -> {
             RoomResponseDTO roomResponseDTO = RoomResponseDTO.toRoomResponseDTO(room);
             return roomResponseDTO;
@@ -171,9 +168,6 @@ public class RoomService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal();
         Page<RoomResponseDTO> roomResponseDTOS = roomRepository.findRoomByMember(member, pageable).map(RoomResponseDTO::toRoomResponseDTO);
-        if(roomResponseDTOS.isEmpty()){
-            throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
-        }
         return roomResponseDTOS;
 
     }

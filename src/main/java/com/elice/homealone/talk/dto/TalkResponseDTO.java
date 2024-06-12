@@ -47,9 +47,9 @@ public class TalkResponseDTO {
         private LocalDateTime updatedAt;
         private Integer view;
         private Integer likeCount;
+        private Integer scrapCount;
         private String memberName;
         private Integer commentCount;
-        private List<Comment> comments;
         private List<PostTagDto> tags;
         private Boolean scrap;
         private Boolean like;
@@ -62,9 +62,10 @@ public class TalkResponseDTO {
                     .createdAt(talk.getCreatedAt())
                     .updatedAt(talk.getModifiedAt())
                     .view(talk.getView())
-                    .likeCount( talk.getLikes() != null ? talk.getLikes().size() : 0)
+                    .likeCount(talk.getLikes().size())
+                    .scrapCount(talk.getScraps().size())
                     .memberName(talk.getMember().getName())
-                    .commentCount(talk.getComments() != null ? talk.getComments().size() : 0)
+                    .commentCount(talk.getComments().size())
                     .scrap(false)
                     .like(false)
                     .build();

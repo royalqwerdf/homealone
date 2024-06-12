@@ -111,9 +111,6 @@ public class TalkService {
             }
 
         Page<Talk> findTalks = talkRepository.findAll(spec, pageable);
-            if(findTalks.isEmpty()){
-                throw new HomealoneException(ErrorCode.SEARCH_NOT_FOUND);
-            }
 
         return findTalks.map(TalkResponseDTO::toTalkResponseDTO);
     }
@@ -156,9 +153,6 @@ public class TalkService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal();
         Page<TalkResponseDTO> TalkResponse = talkRepository.findTalkByMember(member, pageable).map(TalkResponseDTO::toTalkResponseDTO);
-        if(TalkResponse.isEmpty()){
-            throw new HomealoneException(ErrorCode.WRITE_NOT_FOUND);
-        }
         return TalkResponse;
 
     }

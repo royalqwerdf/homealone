@@ -52,14 +52,14 @@ public class RoomResponseDTO {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private Integer view;
-        private Integer likeCount;
-        private String memberName;
-        private Integer commentCount;
-        private List<Comment> comments;
         private List<PostTagDto> tags;
         @Builder.Default
         private List<String> roomImages = new ArrayList<>();
+        private Integer view;
+        private String memberName;
+        private Integer commentCount;
+        private Integer scrapCount;
+        private Integer likeCount;
         private Boolean scrap;
         private Boolean like;
 
@@ -73,9 +73,10 @@ public class RoomResponseDTO {
                     .createdAt(room.getCreatedAt())
                     .updatedAt(room.getModifiedAt())
                     .view(room.getView())
-                    .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                     .memberName(room.getMember().getName())
-                    .commentCount(room.getComments() != null ? room.getComments().size() : 0)
+                    .commentCount(room.getComments().size())
+                    .likeCount(room.getLikes().size())
+                    .scrapCount(room.getScraps().size())
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .scrap(false)
                     .like(false)
