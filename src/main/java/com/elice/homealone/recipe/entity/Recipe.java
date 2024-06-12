@@ -109,7 +109,7 @@ public class Recipe extends Post {
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
-        Integer viewValue = (view != null) ? view : 0;
+        Integer viewValue = (this.view != null) ? this.view : 0;
 
         return RecipeResponseDto.builder()
             .id(this.getId())
