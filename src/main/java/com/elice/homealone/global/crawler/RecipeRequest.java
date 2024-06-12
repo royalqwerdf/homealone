@@ -29,8 +29,21 @@ public class RecipeRequest {
     private List<RecipeDetailDto> details;
     private List<PostTagDto> postTags;
 
+    private int view = 0;
+
     @Builder
-    public RecipeRequest(String title, String description, Integer portions, RecipeType recipeType, RecipeTime recipeTime, Cuisine cuisine, List<RecipeImageDto> images, List<RecipeIngredientDto> ingredients, List<RecipeDetailDto> details, List<PostTagDto> postTags) {
+    public RecipeRequest(
+        String title,
+        String description,
+        Integer portions,
+        RecipeType recipeType,
+        RecipeTime recipeTime,
+        Cuisine cuisine,
+        List<RecipeImageDto> images,
+        List<RecipeIngredientDto> ingredients,
+        List<RecipeDetailDto> details,
+        List<PostTagDto> postTags,
+        int view) {
         this.title = title;
         this.description = description;
         this.portions = portions;
@@ -42,5 +55,7 @@ public class RecipeRequest {
         this.ingredients = ingredients;
         this.details = details;
         this.postTags = postTags;
+
+        this.view = view;
     }
 }

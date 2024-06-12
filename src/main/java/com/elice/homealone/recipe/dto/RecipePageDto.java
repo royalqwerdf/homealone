@@ -15,7 +15,7 @@ public class RecipePageDto {
 
     private String title;
     private String description;
-    private int portions;
+    private final int portions;
     private String recipeType;
     private int recipeTime;
     private String cuisine;
@@ -27,8 +27,21 @@ public class RecipePageDto {
     @Setter
     private PostRelatedDto relatedDto;
 
+    private final int view;
+
     @Builder
-    public RecipePageDto(Long id, String title, String description, int portions, String recipeType, int recipeTime, String cuisine, String imageUrl, Long userId, String userName) {
+    public RecipePageDto(
+        Long id,
+        String title,
+        String description,
+        int portions,
+        String recipeType,
+        int recipeTime,
+        String cuisine,
+        String imageUrl,
+        Long userId,
+        String userName,
+        int view) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,5 +53,7 @@ public class RecipePageDto {
         this.imageUrl = imageUrl;
         this.userId = userId;
         this.userName = userName;
+
+        this.view = view;
     }
 }

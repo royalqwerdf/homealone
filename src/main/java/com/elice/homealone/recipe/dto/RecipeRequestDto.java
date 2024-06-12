@@ -30,6 +30,8 @@ public class RecipeRequestDto {
     private List<RecipeDetailDto> details;
     private List<PostTagDto> postTags;
 
+    private int view = 0;
+
     @Builder
     public RecipeRequestDto(
         String title,
@@ -41,7 +43,8 @@ public class RecipeRequestDto {
         List<RecipeImageDto> images,
         List<RecipeIngredientDto> ingredients,
         List<RecipeDetailDto> details,
-        List<PostTagDto> postTags) {
+        List<PostTagDto> postTags,
+        int view) {
 
         this.title = title;
         this.description = description;
@@ -54,6 +57,7 @@ public class RecipeRequestDto {
         this.ingredients = ingredients;
         this.details = details;
         this.postTags = postTags;
+        this.view = view;
     }
 
     public Recipe toBaseEntity(Member member) {
@@ -65,6 +69,7 @@ public class RecipeRequestDto {
             .recipeType(this.getRecipeType())
             .recipeTime(this.getRecipeTime())
             .cuisine(this.getCuisine())
+            .view(this.view)
             .build();
         return recipe;
     }
@@ -81,6 +86,7 @@ public class RecipeRequestDto {
             .ingredients(recipeRequest.getIngredients())
             .details(recipeRequest.getDetails())
             .postTags(recipeRequest.getPostTags())
+            .view(recipeRequest.getView())
             .build();
     }
 }
