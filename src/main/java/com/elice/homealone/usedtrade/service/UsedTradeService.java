@@ -64,15 +64,8 @@ public class UsedTradeService {
     //중고거래 게시글 수정
     public boolean modifyUsedTrade(Long id, UsedTradeRequestDto requestDto) {
 
-        //로그인한 계정의 데이터를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //비회원일시 예외처리
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
-        }
-
-        Member member = (Member) authentication.getPrincipal();
+        //로그인한 계정의 데이터를 가져옴 //비회원일시 예외처리
+        Member member = authService.getMember();
 
         //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
@@ -102,15 +95,8 @@ public class UsedTradeService {
     @Transactional
     public Long createUsedTrade(UsedTradeRequestDto requestDto) {
 
-        //로그인한 계정의 데이터를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //비회원일시 예외처리
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
-        }
-
-        Member member = (Member) authentication.getPrincipal();
+        //로그인한 계정의 데이터를 가져옴 //비회원일시 예외처리
+        Member member = authService.getMember();
 
         UsedTrade usedTrade = requestDto.toEntity();
         usedTrade.setMember(member);
@@ -131,15 +117,8 @@ public class UsedTradeService {
     @Transactional
     public boolean deleteUsedTrade(Long id) {
 
-        //로그인한 계정의 데이터를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //비회원일시 예외처리
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
-        }
-
-        Member member = (Member) authentication.getPrincipal();
+        //로그인한 계정의 데이터를 가져옴 //비회원일시 예외처리
+        Member member = authService.getMember();
 
         //게시글의 데이터를 가져옴
         UsedTrade usedTrade = usedTradeRepository.findById(id).orElseThrow(()->new HomealoneException(ErrorCode.USEDTRADE_NOT_FOUND));
