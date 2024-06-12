@@ -44,7 +44,7 @@ public class RecipeRequestDto {
         List<RecipeIngredientDto> ingredients,
         List<RecipeDetailDto> details,
         List<PostTagDto> postTags,
-        int view) {
+        Integer view) {
 
         this.title = title;
         this.description = description;

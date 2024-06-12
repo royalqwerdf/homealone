@@ -41,7 +41,7 @@ public class RecipePageDto {
         String imageUrl,
         Long userId,
         String userName,
-        int view) {
+        Integer view) {
         this.id = id;
         this.title = title;
         this.description = description;
