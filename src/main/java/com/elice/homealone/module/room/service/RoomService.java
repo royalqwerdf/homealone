@@ -3,12 +3,18 @@ package com.elice.homealone.module.room.service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.module.comment.entity.Comment;
+import com.elice.homealone.module.comment.repository.CommentRepository;
+import com.elice.homealone.module.like.entity.Like;
+import com.elice.homealone.module.like.repository.LikeRepository;
 import com.elice.homealone.module.like.service.LikeService;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
+import com.elice.homealone.module.post.repository.PostRepository;
 import com.elice.homealone.module.room.repository.RoomImageRepository;
 import com.elice.homealone.module.room.repository.RoomRepository;
 import com.elice.homealone.module.scrap.entity.Scrap;
+import com.elice.homealone.module.scrap.repository.ScrapRepository;
 import com.elice.homealone.module.scrap.service.ScrapService;
 import com.elice.homealone.module.post.entity.Post;
 import com.elice.homealone.module.room.dto.RoomRequestDTO;
@@ -16,7 +22,9 @@ import com.elice.homealone.module.room.dto.RoomResponseDTO;
 import com.elice.homealone.module.room.entity.Room;
 import com.elice.homealone.module.room.entity.RoomImage;
 import com.elice.homealone.module.room.repository.RoomSpecification;
+import com.elice.homealone.module.tag.Repository.PostTagRepository;
 import com.elice.homealone.module.tag.Service.PostTagService;
+import com.elice.homealone.module.tag.entity.PostTag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -30,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +53,10 @@ public class RoomService {
     private final ScrapService scrapService;
     private final RoomViewLogService roomViewLogService;
     private final AuthService authService;
-    private final RoomImageRepository roomImageRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
+    private final ScrapRepository scrapRepository;
+    private final PostTagRepository postTagRepository;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Member member = authService.getMember();
@@ -95,6 +107,24 @@ public class RoomService {
 
         //이전의 이미지url로 스토리지에 저장된 이미지 삭제
 //        roomOriginal.getRoomImages().stream().forEach(roomImage -> imageService.deleteImage(roomImage.getImage_url()));
+        List<Comment> commentsToDelete = new ArrayList<>(roomOriginal.getComments());
+        List<PostTag> tagsToDelete = new ArrayList<>(roomOriginal.getTags());
+        List<Scrap> scrapsToDelete = new ArrayList<>(roomOriginal.getScraps());
+        List<Like> likesToDelete = new ArrayList<>(roomOriginal.getLikes());
+
+        for (Comment comment : commentsToDelete) {
+            commentRepository.delete(comment);
+        }
+        for (PostTag tag : tagsToDelete) {
+            postTagRepository.delete(tag);
+        }
+        for (Scrap scrap : scrapsToDelete) {
+            scrapRepository.delete(scrap);
+        }
+        for (Like like : likesToDelete) {
+            likeRepository.delete(like);
+        }
+
         roomRepository.delete(roomOriginal);
     }
 
