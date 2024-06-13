@@ -30,9 +30,6 @@ public class Talk extends Post {
     @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
 
-    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<TalkImage> talkImages;
-
     @Column(name = "view")
     private Integer view;
 
