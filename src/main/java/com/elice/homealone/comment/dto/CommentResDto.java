@@ -23,6 +23,12 @@ public class CommentResDto {
     @Setter
     private int likeCount = 0;
 
+    @Setter
+    private String postTitle;
+
+    @Setter
+    private String postMemberName;
+
     @Builder
     public CommentResDto(
         Long id,

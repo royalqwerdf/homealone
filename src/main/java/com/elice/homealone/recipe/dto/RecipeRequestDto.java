@@ -30,7 +30,7 @@ public class RecipeRequestDto {
     private List<RecipeDetailDto> details;
     private List<PostTagDto> postTags;
 
-    private int view = 0;
+    private Integer view = 0;
 
     @Builder
     public RecipeRequestDto(
@@ -44,7 +44,7 @@ public class RecipeRequestDto {
         List<RecipeIngredientDto> ingredients,
         List<RecipeDetailDto> details,
         List<PostTagDto> postTags,
-        int view) {
+        Integer view) {
 
         this.title = title;
         this.description = description;

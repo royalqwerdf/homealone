@@ -54,7 +54,7 @@ public class Recipe extends Post {
 
     @Column
     @Setter
-    private int view = 0;
+    private Integer view = 0;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeImage> images = new ArrayList<>();
@@ -74,7 +74,7 @@ public class Recipe extends Post {
         RecipeType recipeType,
         RecipeTime recipeTime,
         Cuisine cuisine,
-        int view) {
+        Integer view) {
         // Post
         super(member, Type.RECIPE);
 
@@ -109,6 +109,8 @@ public class Recipe extends Post {
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
+        Integer viewValue = (this.view != null) ? this.view : 0;
+
         return RecipeResponseDto.builder()
             .id(this.getId())
             .title(title)
@@ -123,7 +125,7 @@ public class Recipe extends Post {
             .postTags(tagDtos)
             .userId(userId)
             .userName(userName)
-            .view(view)
+            .view(viewValue)
             .build();
     }
 

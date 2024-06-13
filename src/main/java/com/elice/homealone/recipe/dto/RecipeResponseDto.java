@@ -30,7 +30,7 @@ public class RecipeResponseDto {
     private Long userId;
     private String userName;
 
-    private int view = 0;
+    private Integer view = 0;
 
     @Setter
     private PostRelatedDto relatedDto;
@@ -51,8 +51,10 @@ public class RecipeResponseDto {
         Long userId,
         String userName,
         PostRelatedDto relatedDto,
-        int view
+        Integer view
     ) {
+        Integer viewValue = (view != null) ? view : 0;
+
         this.id = id;
         this.title = title;
         this.description = description;
@@ -67,6 +69,6 @@ public class RecipeResponseDto {
         this.userId = userId;
         this.userName = userName;
         this.relatedDto = relatedDto;
-        this.view = view;
+        this.view = viewValue;
     }
 }
