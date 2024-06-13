@@ -28,9 +28,9 @@ public class CommentController {
 
     // 댓글 등록
     @PostMapping
-    public ResponseEntity<CommentResDto> createComment(@AuthenticationPrincipal Member member, @RequestBody
+    public ResponseEntity<CommentResDto> createComment(@RequestBody
     CommentReqDto requestDto) {
-        CommentResDto resDto = commentService.createComment(requestDto, member);
+        CommentResDto resDto = commentService.createComment(requestDto);
         return new ResponseEntity<>(resDto, HttpStatus.CREATED);
     }
 
@@ -43,8 +43,8 @@ public class CommentController {
 
     // 댓글 수정
     @PatchMapping
-    public ResponseEntity<CommentResDto> updateComment(@AuthenticationPrincipal Member member, @RequestBody CommentReqDto requestDto) {
-        CommentResDto resDto = commentService.updateComment(member, requestDto);
+    public ResponseEntity<CommentResDto> updateComment(@RequestBody CommentReqDto requestDto) {
+        CommentResDto resDto = commentService.updateComment(requestDto);
         return new ResponseEntity<>(resDto, HttpStatus.OK);
     }
 

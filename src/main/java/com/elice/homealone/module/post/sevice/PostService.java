@@ -8,10 +8,13 @@ import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
 import com.elice.homealone.module.post.dto.PostRelatedDto;
 import com.elice.homealone.module.post.entity.Post;
+import com.elice.homealone.module.post.entity.Post.Type;
 import com.elice.homealone.module.post.repository.PostRepository;
+import com.elice.homealone.module.recipe.entity.Recipe;
 import com.elice.homealone.module.scrap.entity.Scrap;
 import com.elice.homealone.module.scrap.repository.ScrapRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -75,7 +78,12 @@ public class PostService {
             pageable,
             items::size
         );
-
         return itemPage.map(mapper);
+    }
+
+    public Page<Recipe> getRecipeByLikes(Pageable pageable) {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        Page<Post> postPage = postRepository.findRecipesByLikesInLastWeek(Type.RECIPE, oneWeekAgo, pageable);
+        return postPage.map(post -> (Recipe) post);
     }
 }

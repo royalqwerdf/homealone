@@ -14,12 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatDto {
 
-    private long id;
+    private Long id;
     private String chatroomName;
     private String senderName;
     private String receiverName;
-    private long senderId;
-    private long receiverId;
+    private Long senderId;
+    private Long receiverId;
 
     private List<MessageDto> Messages;
     private long currentId;
