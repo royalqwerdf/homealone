@@ -15,13 +15,35 @@
 In progress 2024.05.15~2024.06.15 </p>
 
 ## 👨‍👩‍👧‍👦멤버 구성
-
-  |                                                                       |                                                                          |                                                                          |                                                                          |                                                                          |                                                                          |                                                                        |
-  |-----------------------------------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------------|
-  | <img src="src/main/resources/static/img/asm.png" width="80" height="80"> | <img src="src/main/resources/static/img/ygw.png" width="80" height="80"> | <img src="src/main/resources/static/img/jsg.png" width="80" height="80"> | <img src="src/main/resources/static/img/hyn.png" width="80" height="80"> | <img src="src/main/resources/static/img/gyj.jpg" width="80" height="80"> | <img src="src/main/resources/static/img/gms.png" width="80" height="80"> | <img src="src/main/resources/static/img/nsg.png" width="80" height="80"> |
-  | **BE 팀장 안수민**| **BE 유기원**| **BE 장성규** | **BE 홍유나** | **BE 권예지**| **FE 고민성**| **FE 노석규**|
-  | 중고 거래 게시판 API 구축| 레시피 게시판, 댓글 기능 API 구축| 채팅 기능 API 구축| 방자랑, 혼잣말 게시판 API 구축| 회원, 마이페이지 API 구축| 좋아요, 북마크 기능 API 구축| 청년정책게시판 API 구축|
-
+<table>
+  <tr>
+    <td><img src="src/main/resources/static/img/asm.png" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/ygw.png" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/jsg.png" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/hyn.png" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/gyj.jpg" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/gms.png" width="80" height="80"></td>
+    <td><img src="src/main/resources/static/img/nsg.png" width="80" height="80"></td>
+  </tr>
+  <tr>
+    <td><a href=""><strong>BE 팀장 안수민</strong></a></td>
+    <td><a href=""><strong>BE 유기원</strong></a></td>
+    <td><a href=""><strong>BE 장성규</strong></a></td>
+    <td><a href=""><strong>BE 홍유나</strong></a></td>
+    <td><a href="https://github.com/mylazysundaycat"><strong>BE 권예지</strong></a></td>
+    <td><a href=""><strong>BE 고민성</strong></a></td>
+    <td><a href=""><strong>BE 노석규</strong></a></td>
+  </tr>
+  <tr>
+    <td>중고 거래 게시판 API 구축</td>
+    <td>레시피 게시판, 댓글 기능 API 구축</td>
+    <td>채팅 기능 API 구축</td>
+    <td>방자랑, 혼잣말 게시판 API 구축</td>
+    <td>회원, 마이페이지 API 구축</td>
+    <td>좋아요, 북마크 기능 API 구축</td>
+    <td>청년정책게시판 API 구축</td>
+  </tr>
+</table>
 🧩팀장 안수민<br>
 - 중고 거래 게시판 CRUD Rest API 구현 
 - 레시피 데이터 크롤링
