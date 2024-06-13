@@ -49,7 +49,6 @@ public class RecipeService {
 
     private final AuthService authService;
     private final PostService postService;
-    private final MemberService memberService;
     private final RecipeImageService recipeImageService;
     private final RecipeDetailService recipeDetailService;
     private final RecipeIngredientService recipeIngredientService;

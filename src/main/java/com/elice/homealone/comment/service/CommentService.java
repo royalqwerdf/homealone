@@ -12,6 +12,7 @@ import com.elice.homealone.member.entity.Member;
 import com.elice.homealone.member.service.AuthService;
 import com.elice.homealone.member.service.MemberService;
 import com.elice.homealone.post.entity.Post;
+import com.elice.homealone.post.sevice.CommonPostService;
 import com.elice.homealone.post.sevice.PostService;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class CommentService {
     private final PostService postService;
     private final MemberService memberService;
     private final AuthService authService;
+    private final CommonPostService commonPostService;
 
     // 댓글 등록
     @Transactional
@@ -104,6 +106,11 @@ public class CommentService {
         Member member = authService.getMember();
         Page<Comment> comments = commentRepository.findByMemberIdOrderByPostIdDescCreatedAtDesc(member.getId(), pageable);
         Page<CommentResDto> resDtos = comments.map(CommentResDto::fromEntity);
+        for(CommentResDto resDto : resDtos){
+            Post post = postService.findById(resDto.getPostId());
+            resDto.setPostTitle(commonPostService.getTitle(post.getId()));
+            resDto.setPostMemberName(post.getMember().getName());
+        }
         return resDtos;
     }
 }

@@ -10,9 +10,12 @@ import com.elice.homealone.post.dto.PostRelatedDto;
 import com.elice.homealone.post.entity.Post;
 import com.elice.homealone.post.repository.PostRepository;
 
+import com.elice.homealone.recipe.entity.Recipe;
+import com.elice.homealone.room.entity.Room;
 import com.elice.homealone.scrap.entity.Scrap;
 import com.elice.homealone.scrap.repository.ScrapRepository;
 import com.elice.homealone.scrap.service.ScrapService;
+import com.elice.homealone.talk.entity.Talk;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
