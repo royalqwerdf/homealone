@@ -57,7 +57,6 @@ public class RoomService {
     private final CommentRepository commentRepository;
     private final ScrapRepository scrapRepository;
     private final PostTagRepository postTagRepository;
-    private final PostRepository postRepository;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Member member = authService.getMember();
