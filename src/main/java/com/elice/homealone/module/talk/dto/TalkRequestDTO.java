@@ -21,6 +21,5 @@ public class TalkRequestDTO {
     @NotBlank(message = ErrorMessage.CONTENT_REQUIRED)
     private String content;
     private List<PostTagDto> tags;
-    private List<String> images = new ArrayList<>();
 
 }

@@ -14,9 +14,7 @@ import com.elice.homealone.module.scrap.repository.ScrapRepository;
 import com.elice.homealone.module.scrap.service.ScrapService;
 import com.elice.homealone.module.tag.Repository.PostTagRepository;
 import com.elice.homealone.module.tag.entity.PostTag;
-import com.elice.homealone.module.talk.entity.TalkImage;
 import com.elice.homealone.module.talk.repository.TalkRepository;
-import com.elice.homealone.module.post.repository.PostRepository;
 import com.elice.homealone.module.tag.Service.PostTagService;
 import com.elice.homealone.module.talk.dto.TalkRequestDTO;
 import com.elice.homealone.module.talk.dto.TalkResponseDTO;
@@ -35,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -73,11 +70,11 @@ public class TalkService {
         }
         talkOriginal.setTitle(talkDto.getTitle());
         talkOriginal.setContent(talkDto.getContent());
-        List<TalkImage> talkImage = talkDto.getImages().stream()
-                .map(url -> new TalkImage(url,talkOriginal))
-                .collect(Collectors.toList());
-        talkOriginal.getTalkImages().clear();
-        talkOriginal.getTalkImages().addAll(talkImage);
+        String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
+        talkOriginal.setPlainContent(plainContent);
+                talkOriginal.getTags().clear();
+        talkDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
+                .forEach(postTag-> talkOriginal.addTag(postTag));
         return TalkResponseDTO.TalkInfoDto.toTalkInfoDto(talkOriginal);
     }
 

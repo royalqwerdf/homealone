@@ -10,8 +10,7 @@ import com.elice.homealone.module.like.repository.LikeRepository;
 import com.elice.homealone.module.like.service.LikeService;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
-import com.elice.homealone.module.post.repository.PostRepository;
-import com.elice.homealone.module.room.repository.RoomImageRepository;
+import com.elice.homealone.module.room.entity.RoomImage;
 import com.elice.homealone.module.room.repository.RoomRepository;
 import com.elice.homealone.module.scrap.entity.Scrap;
 import com.elice.homealone.module.scrap.repository.ScrapRepository;
@@ -20,7 +19,6 @@ import com.elice.homealone.module.post.entity.Post;
 import com.elice.homealone.module.room.dto.RoomRequestDTO;
 import com.elice.homealone.module.room.dto.RoomResponseDTO;
 import com.elice.homealone.module.room.entity.Room;
-import com.elice.homealone.module.room.entity.RoomImage;
 import com.elice.homealone.module.room.repository.RoomSpecification;
 import com.elice.homealone.module.tag.Repository.PostTagRepository;
 import com.elice.homealone.module.tag.Service.PostTagService;
@@ -83,7 +81,7 @@ public class RoomService {
         roomOriginal.setContent(roomDto.getContent());
         roomOriginal.setThumbnailUrl(roomDto.getThumbnailUrl());
 
-        String plainContent = Jsoup.clean(roomDto.getContent(),Safelist.none());
+        String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         roomOriginal.setPlainContent(plainContent);
         //이미지새로 생성후 이전 이미지 테이블 전체 삭제 후 새로운 이미지로 대체
         List<RoomImage> newImages = roomDto.getRoomImages().stream()
@@ -91,6 +89,10 @@ public class RoomService {
                 .collect(Collectors.toList());
         roomOriginal.getRoomImages().clear();
         roomOriginal.getRoomImages().addAll(newImages);
+
+        roomOriginal.getTags().clear();
+        roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
+                .forEach(postTag-> roomOriginal.addTag(postTag));
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
 
