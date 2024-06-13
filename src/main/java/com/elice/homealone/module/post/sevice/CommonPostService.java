@@ -10,6 +10,7 @@ import com.elice.homealone.module.talk.entity.Talk;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +21,8 @@ public class CommonPostService {
     private final PostRepository postRepository;
 
     public String getTitle(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new HomealoneException(
-            ErrorCode.POST_NOT_FOUND));
+        Post post = (Post) Hibernate.unproxy(postRepository.findById(postId).orElseThrow(() -> new HomealoneException(
+            ErrorCode.POST_NOT_FOUND)));
 
         if (post instanceof Recipe recipe) {
             return recipe.getTitle();
