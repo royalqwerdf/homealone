@@ -5,6 +5,7 @@ import com.elice.homealone.module.room.entity.RoomViewLog;
 import com.elice.homealone.module.room.repository.RoomViewLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,13 @@ public class RoomViewLogService {
         roomViewLogRepository.save(roomViewLog);
     }
     @Transactional
-    public Page<Room> findTopRoomsByViewCountInLastWeek(LocalDateTime localDateTime, Pageable pageable){
-        return roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime, pageable);
+
+    public Page<Room> findTop4RoomsByViewCountInLastWeek(LocalDateTime localDateTime,Pageable pageable){
+        // 서비스나 호출하는 곳에서
+        Page<Room> topRooms = roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime, pageable);
+
+        return topRooms;
+
     }
 
 }
