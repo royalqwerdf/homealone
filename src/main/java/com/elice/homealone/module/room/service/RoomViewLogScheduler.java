@@ -14,7 +14,7 @@ public class RoomViewLogScheduler {
     private final RoomViewLogRepository roomViewLogRepository;
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanUpOldLogs(){
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        roomViewLogRepository.deleteByTimeStampBefore(oneWeekAgo);
+        LocalDateTime monthAgo = LocalDateTime.now().withMonth(1);
+        roomViewLogRepository.deleteByTimeStampBefore(monthAgo);
     }
 }

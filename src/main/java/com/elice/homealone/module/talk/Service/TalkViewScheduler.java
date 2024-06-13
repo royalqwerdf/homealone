@@ -14,7 +14,7 @@ public class TalkViewScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanUpOldLogs(){
-        LocalDateTime localDateTime = LocalDateTime.now().minusWeeks(1);
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(1);
         talkViewLogRepository.deleteByTimeStamp(localDateTime);
     }
 }
