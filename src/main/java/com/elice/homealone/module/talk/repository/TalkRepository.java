@@ -20,6 +20,8 @@ public interface TalkRepository extends JpaRepository<Talk,Long> , JpaSpecificat
     Page<Talk> findTopTalkByView(@Param("oneWeekAgo")LocalDateTime oneWeekAgo, Pageable pageable);
 
 
+    Page<Talk> findByOrderByViewDesc(Pageable pageable);
+
     Page<Talk> findTalkByMember(Member member, Pageable pageable);
 
 }
