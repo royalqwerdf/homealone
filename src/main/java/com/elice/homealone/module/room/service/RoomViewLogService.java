@@ -21,8 +21,8 @@ public class RoomViewLogService {
         roomViewLogRepository.save(roomViewLog);
     }
     @Transactional
-    public List<Room> findTopRoomsByViewCountInLastWeek(LocalDateTime localDateTime){
-        return roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime);
+    public Page<Room> findTopRoomsByViewCountInLastWeek(LocalDateTime localDateTime, Pageable pageable){
+        return roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime, pageable);
     }
 
 }
