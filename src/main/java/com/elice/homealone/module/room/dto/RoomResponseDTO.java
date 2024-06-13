@@ -28,7 +28,8 @@ public class RoomResponseDTO {
     private String contentSummary;
     @Builder.Default
     private Integer likeCount = 0;
-    private String memberImageUrl;
+    private String imageUrl; //member, front 요청으로 필드명 다시 원래대로 고침
+    private Long memberId;
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -40,7 +41,8 @@ public class RoomResponseDTO {
                 .createdAt(room.getCreatedAt())
                 .contentSummary(room.getPlainContent().length() <=80 ? room.getPlainContent() : room.getPlainContent().substring(0,80))
                 .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
-                .memberImageUrl(room.getMember().getImageUrl())
+                .imageUrl(room.getMember().getImageUrl())
+                .memberId(room.getMember().getId())
                 .build();
     }
     @Data
@@ -63,6 +65,7 @@ public class RoomResponseDTO {
         private Boolean like;
 
 
+
         public static RoomInfoDto toRoomInfoDto(Room room) {
             return RoomInfoDto.builder()
                     .id(room.getId())
@@ -74,7 +77,8 @@ public class RoomResponseDTO {
                     .updatedAt(room.getModifiedAt())
                     .view(room.getView())
                     .memberName(room.getMember().getName())
-                    .memberImageUrl(room.getMember().getImageUrl())
+                    .memberId(room.getMember().getId())
+                    .imageUrl(room.getMember().getImageUrl())
                     .commentCount(room.getComments().size())
                     .likeCount(room.getLikes().size())
                     .scrapCount(room.getScraps().size())
