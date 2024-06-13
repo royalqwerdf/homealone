@@ -152,7 +152,7 @@ public class RoomService {
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
         List<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo).stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
         if(roomResponseDTOS.isEmpty()){
-            roomResponseDTOS  = roomRepository.findTop4ByOrderByCreatedAtDesc().stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
+            roomResponseDTOS  = roomRepository.findTop4ByOrderByViewDesc().stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
         }
 
         return roomResponseDTOS;
