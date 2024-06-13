@@ -84,8 +84,8 @@ public class RoomResponseDTO {
                     .scrapCount(room.getScraps().size())
                     .roomImages(room.getRoomImages().stream().map(roomImage -> roomImage.getImage_url()).collect(Collectors.toList()))
                     .scrap(false)
-//                    .scrapCount(room.getScraps().size())
-//                    .like(false)
+                    .scrapCount(room.getScraps().size())
+                    .like(false)
                     .build();
         }
     }
