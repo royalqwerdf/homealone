@@ -29,7 +29,7 @@ public class RoomResponseDTO {
     @Builder.Default
     private Integer likeCount = 0;
     private String imageUrl; //member, front 요청으로 필드명 다시 원래대로 고침
-    private Long memberId;
+
 
     public static RoomResponseDTO toRoomResponseDTO(Room room){
         return RoomResponseDTO.builder()
@@ -42,7 +42,6 @@ public class RoomResponseDTO {
                 .contentSummary(room.getPlainContent().length() <=80 ? room.getPlainContent() : room.getPlainContent().substring(0,80))
                 .likeCount( room.getLikes() != null ? room.getLikes().size() : 0)
                 .imageUrl(room.getMember().getImageUrl())
-                .memberId(room.getMember().getId())
                 .build();
     }
     @Data
@@ -63,6 +62,7 @@ public class RoomResponseDTO {
         private Integer likeCount;
         private Boolean scrap;
         private Boolean like;
+        private Long memberId;
 
 
 

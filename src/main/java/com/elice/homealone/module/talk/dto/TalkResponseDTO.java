@@ -53,6 +53,7 @@ public class TalkResponseDTO {
         private String memberName;
         private Integer commentCount;
         private List<PostTagDto> tags;
+        private Long memberId;
         private Boolean scrap;
         private Boolean like;
         public static TalkInfoDto toTalkInfoDto(Talk talk) {
@@ -68,6 +69,7 @@ public class TalkResponseDTO {
                     .scrapCount(talk.getScraps().size())
                     .memberName(talk.getMember().getName())
                     .memberImageUrl(talk.getMember().getImageUrl())
+                    .memberId(talk.getMember().getId())
                     .commentCount(talk.getComments().size())
                     .scrap(false)
                     .like(false)
