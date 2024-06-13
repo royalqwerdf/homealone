@@ -112,6 +112,7 @@ public class CommentService {
             Post post = (Post) Hibernate.unproxy(postService.findById(resDto.getPostId()));
             resDto.setPostTitle(commonPostService.getTitle(post.getId()));
             resDto.setPostMemberName(post.getMember().getName());
+            resDto.setPostType(post.getType());
         }
         return resDtos;
     }
