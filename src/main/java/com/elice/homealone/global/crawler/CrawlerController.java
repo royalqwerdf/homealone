@@ -2,13 +2,13 @@ package com.elice.homealone.global.crawler;
 
 import com.elice.homealone.global.jobstatus.JobStatus;
 import com.elice.homealone.global.jobstatus.JobStatusService;
-import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.member.service.MemberService;
+import com.elice.homealone.module.member.entity.Member;
+import com.elice.homealone.module.member.service.MemberService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.Future;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.concurrent.Future;
 
 @Slf4j
 @RestController
@@ -34,7 +33,7 @@ public class CrawlerController {
 
     @PostMapping("/saverecipe/{date}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> importRecipeData(@AuthenticationPrincipal Member member,  @PathVariable String date) {
+    public ResponseEntity<String> importRecipeData(@AuthenticationPrincipal Member member, @PathVariable String date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         Date parsedDate;
         try {
