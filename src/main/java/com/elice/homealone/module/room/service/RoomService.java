@@ -178,13 +178,9 @@ public class RoomService {
         return roomInfoDto;
     }
     @Transactional
-    public List<RoomResponseDTO> findTopRoomByView(){
+    public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        List<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo).stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
-        if(roomResponseDTOS.isEmpty()){
-            roomResponseDTOS  = roomRepository.findTop4ByOrderByViewDesc().stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
-        }
-
+        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
         return roomResponseDTOS;
     }
 
