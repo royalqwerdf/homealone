@@ -12,7 +12,7 @@
 
 In progress 2024.05.15~2024.06.15 <br>
 
-## 👨‍👩‍👧‍👦멤버 구성
+## 멤버 구성
 <table style="width: 100%;">
   <tr>
     <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/asm.png" width="80" height="80"></td>
@@ -43,36 +43,35 @@ In progress 2024.05.15~2024.06.15 <br>
   </tr>
 </table>
 
-🧩팀장 안수민
+🔗팀장 안수민
 - 중고 거래 게시판 CRUD Rest API 구현 
 - 레시피 데이터 크롤링
 - 프로젝트 발표 및 문서화
 
-🧩유기원
-- 레시피 게시판, 댓글 기능 CRUD Rest API 구현
+🔗유기원
+- 레시피 게시판, 댓글 기능 CRUD Rest API 구현 
 - QueryDSL 을 통한 데이터 관리
 - VM, Docker를 이용한 프로젝트 빌드 및 배포
 - Jenkins를 활용한 CI/CD 파이프라인 구축
 
-
-  🧩권예지
+🔗권예지
 - 회원 기능 CRUD Rest API 구현
 - Spring Security를 활용한 JWT 기능 구현
 - OAuth 2.0을 활용한 소셜 로그인(네이버, 카카오) 구현
 - Redis, Cookie를 통한 유저 상태 관리 구현
 
-🧩장성규
+🔗장성규
 - 채팅 기능 CRUD Rest API 구현
 - 채팅 기능 구현을 위한 Socket IO 구축
 
-🧩홍유나 
+🔗홍유나 
 - 방자랑, 혼잣말 게시판 CRUD Rest API 구현
 - 이미지 DB 관리를 위한 Firebase 구축
 
-🧩고민성
+🔗고민성
 - 북마크, 스크랩 기능 CRUD Rest API 구현
 
-🧩노석규
+🔗노석규
 - 청년 지원 게시판 CRUD Rest API 구현
 
 ## ⚙️개발환경
