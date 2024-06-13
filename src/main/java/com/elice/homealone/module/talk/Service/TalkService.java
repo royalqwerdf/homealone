@@ -2,10 +2,18 @@ package com.elice.homealone.module.talk.Service;
 
 import com.elice.homealone.global.exception.ErrorCode;
 import com.elice.homealone.global.exception.HomealoneException;
+import com.elice.homealone.module.comment.entity.Comment;
+import com.elice.homealone.module.comment.repository.CommentRepository;
+import com.elice.homealone.module.like.entity.Like;
+import com.elice.homealone.module.like.repository.LikeRepository;
 import com.elice.homealone.module.like.service.LikeService;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
+import com.elice.homealone.module.scrap.entity.Scrap;
+import com.elice.homealone.module.scrap.repository.ScrapRepository;
 import com.elice.homealone.module.scrap.service.ScrapService;
+import com.elice.homealone.module.tag.Repository.PostTagRepository;
+import com.elice.homealone.module.tag.entity.PostTag;
 import com.elice.homealone.module.talk.entity.TalkImage;
 import com.elice.homealone.module.talk.repository.TalkRepository;
 import com.elice.homealone.module.post.repository.PostRepository;
@@ -25,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +47,10 @@ public class TalkService {
     private final LikeService likeService;
     private final ScrapService scrapService;
     private final TalkViewLogService talkViewLogService;
-    private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
+    private final ScrapRepository scrapRepository;
+    private final PostTagRepository postTagRepository;
     @Transactional
     public TalkResponseDTO.TalkInfoDto CreateTalkPost(TalkRequestDTO talkDto){
         Member member = authService.getMember();
@@ -60,6 +72,7 @@ public class TalkService {
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkOriginal.setTitle(talkDto.getTitle());
+        talkOriginal.setContent(talkDto.getContent());
         List<TalkImage> talkImage = talkDto.getImages().stream()
                 .map(url -> new TalkImage(url,talkOriginal))
                 .collect(Collectors.toList());
@@ -77,6 +90,23 @@ public class TalkService {
         boolean isAdmin = authService.isAdmin(member);
         if(!isAdmin && (talkOriginal.getMember().getId() != member.getId())){
             throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
+        }
+        List<Comment> commentsToDelete = new ArrayList<>(talkOriginal.getComments());
+        List<PostTag> tagsToDelete = new ArrayList<>(talkOriginal.getTags());
+        List<Scrap> scrapsToDelete = new ArrayList<>(talkOriginal.getScraps());
+        List<Like> likesToDelete = new ArrayList<>(talkOriginal.getLikes());
+
+        for (Comment comment : commentsToDelete) {
+            commentRepository.delete(comment);
+        }
+        for (PostTag tag : tagsToDelete) {
+            postTagRepository.delete(tag);
+        }
+        for (Scrap scrap : scrapsToDelete) {
+            scrapRepository.delete(scrap);
+        }
+        for (Like like : likesToDelete) {
+            likeRepository.delete(like);
         }
         talkRepository.delete(talkOriginal);
     }
@@ -134,6 +164,9 @@ public class TalkService {
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
         Page<TalkResponseDTO> talkResponseDTO = talkViewLogService.findTopTalksByViewCountInLastWeek(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        if(talkResponseDTO.isEmpty()){
+            talkResponseDTO =  talkRepository.findByOrderByViewDesc(pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        }
         return talkResponseDTO;
     }
     @Transactional

@@ -53,7 +53,7 @@ public class TalkController {
     @DeleteMapping("/{talkId}")
     public ResponseEntity<Response.ApiResponse> deletePost(@PathVariable Long talkId){//사용자 받아 글쓴 회원과 일치하는지 확인 로직 추가
         talkService.deleteRoomPost(talkId);
-        Response.ApiResponse response = new Response.ApiResponse("방자랑 "+talkId+"번 게시글이 성공적으로 지워졌습니다.");
+        Response.ApiResponse response = new Response.ApiResponse("혼잣말 "+talkId+"번 게시글이 성공적으로 지워졌습니다.");
         return ResponseEntity.ok().body(response);
     }
     @Operation(summary = "혼잣말 게시글 상세 조회")

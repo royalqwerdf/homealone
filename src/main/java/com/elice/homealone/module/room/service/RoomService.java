@@ -180,7 +180,13 @@ public class RoomService {
     @Transactional
     public Page<RoomResponseDTO> findTopRoomByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo, pageable).map(RoomResponseDTO::toRoomResponseDTO);
+
+        Page<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTop4RoomsByViewCountInLastWeek(oneWeekAgo,pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        if(roomResponseDTOS.isEmpty()){
+            roomResponseDTOS  = roomRepository.findByOrderByViewDesc(pageable).map(RoomResponseDTO::toRoomResponseDTO);
+        }
+
+
         return roomResponseDTOS;
     }
 

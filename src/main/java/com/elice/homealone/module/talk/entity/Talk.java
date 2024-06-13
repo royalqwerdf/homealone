@@ -30,13 +30,13 @@ public class Talk extends Post {
     @Column(columnDefinition = "LONGTEXT")
     private String plainContent;
 
-    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TalkImage> talkImages;
 
     @Column(name = "view")
     private Integer view;
 
-    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "talk", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TalkViewLog> talkViewLogs= new ArrayList<>();
     public static Talk toTalk(TalkRequestDTO talkDto){
         return Talk.builder()
