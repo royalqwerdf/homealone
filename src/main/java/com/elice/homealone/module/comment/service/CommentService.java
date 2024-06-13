@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -108,7 +109,7 @@ public class CommentService {
         Page<Comment> comments = commentRepository.findByMemberIdOrderByPostIdDescCreatedAtDesc(member.getId(), pageable);
         Page<CommentResDto> resDtos = comments.map(CommentResDto::fromEntity);
         for(CommentResDto resDto : resDtos){
-            Post post = postService.findById(resDto.getPostId());
+            Post post = (Post) Hibernate.unproxy(postService.findById(resDto.getPostId()));
             resDto.setPostTitle(commonPostService.getTitle(post.getId()));
             resDto.setPostMemberName(post.getMember().getName());
         }
