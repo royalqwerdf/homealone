@@ -18,7 +18,7 @@ public interface RoomRepository extends JpaRepository<Room,Long> , JpaSpecificat
     Page<Room> findAll(Pageable pageable);
 
     Page<Room> findRoomByMember(Member member, Pageable pageable);
-    List<Room> findTop4ByOrderByCreatedAtDesc();
+    List<Room> findTop4ByOrderByViewDesc();
 
 
 }
