@@ -36,13 +36,13 @@ public class CommentService {
     @Lazy
     private final CommentLikeService commentLikeService;
     private final PostService postService;
-    private final MemberService memberService;
     private final AuthService authService;
     private final CommonPostService commonPostService;
 
     // 댓글 등록
     @Transactional
-    public CommentResDto createComment(CommentReqDto reqDto, Member member) {
+    public CommentResDto createComment(CommentReqDto reqDto) {
+        Member member = authService.getMember();
         Post post = postService.findById(reqDto.getPostId());
         Comment comment = reqDto.toEntity(member,post);
         commentRepository.save(comment);
@@ -80,7 +80,8 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResDto updateComment(Member member, CommentReqDto requestDto) {
+    public CommentResDto updateComment(CommentReqDto requestDto) {
+        Member member = authService.getMember();
         Comment comment = commentRepository.findById(requestDto.getId())
             .orElseThrow(() -> new IllegalArgumentException("Comment not found with id"));
         comment.setContent(requestDto.getContent());
