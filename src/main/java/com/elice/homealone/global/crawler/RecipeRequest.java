@@ -1,14 +1,12 @@
 package com.elice.homealone.global.crawler;
 
-import com.elice.homealone.member.entity.Member;
-import com.elice.homealone.recipe.dto.RecipeDetailDto;
-import com.elice.homealone.recipe.dto.RecipeImageDto;
-import com.elice.homealone.recipe.dto.RecipeIngredientDto;
-import com.elice.homealone.recipe.entity.Recipe;
-import com.elice.homealone.recipe.enums.Cuisine;
-import com.elice.homealone.recipe.enums.RecipeTime;
-import com.elice.homealone.recipe.enums.RecipeType;
-import com.elice.homealone.tag.dto.PostTagDto;
+import com.elice.homealone.module.recipe.dto.RecipeDetailDto;
+import com.elice.homealone.module.recipe.dto.RecipeImageDto;
+import com.elice.homealone.module.recipe.dto.RecipeIngredientDto;
+import com.elice.homealone.module.recipe.enums.Cuisine;
+import com.elice.homealone.module.recipe.enums.RecipeTime;
+import com.elice.homealone.module.recipe.enums.RecipeType;
+import com.elice.homealone.module.tag.dto.PostTagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
