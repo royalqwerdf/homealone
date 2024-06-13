@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class RoomViewLogService {
@@ -21,8 +21,8 @@ public class RoomViewLogService {
         roomViewLogRepository.save(roomViewLog);
     }
     @Transactional
-    public Page<Room> findTopRoomsByViewCountInLastWeek(LocalDateTime localDateTime, Pageable pageable){
-        return roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime,pageable);
+    public List<Room> findTopRoomsByViewCountInLastWeek(LocalDateTime localDateTime){
+        return roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime);
     }
 
 }
