@@ -16,7 +16,7 @@ public interface RoomViewLogRepository extends JpaRepository<RoomViewLog,Long> {
     List<RoomViewLogRepository> findByTimeStampBefore(LocalDateTime dateTime);
     void deleteByTimeStampBefore(LocalDateTime dateTime);
 
-    @Query("SELECT r FROM RoomViewLog rv Join rv.room r WHERE rv.timeStamp >= :oneWeekAgo GROUP BY r ORDER BY COUNT(rv) DESC ")
-    Page<Room> findTopRoomsByViewCountInLastWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo, Pageable pageable);
+    @Query("SELECT r FROM RoomViewLog rv Join rv.room r WHERE rv.timeStamp >= :monthAgo GROUP BY r ORDER BY COUNT(rv) DESC ")
+    Page<Room> findTopRoomsByViewCountInLastWeek(@Param("monthAgo") LocalDateTime monthAgo, Pageable pageable);
 
 }
