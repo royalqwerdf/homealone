@@ -72,8 +72,8 @@ public class RoomController {
     }
     @Operation(summary = "방자랑 게시글 인기글 조회")
     @GetMapping("/view")
-    public ResponseEntity<List<RoomResponseDTO>> findTopRoomByView(){
-        List<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView();
+    public ResponseEntity<Page<RoomResponseDTO>> findTopRoomByView(@PageableDefault(size = 4) Pageable pageable){
+        Page<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView(pageable);
         return ResponseEntity.ok(topRoomByView);
     }
     @Operation(summary = "방자랑 게시글 회원으로 조회")

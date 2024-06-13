@@ -22,12 +22,13 @@ public class RoomViewLogService {
         roomViewLogRepository.save(roomViewLog);
     }
     @Transactional
-    public List<Room> findTop4RoomsByViewCountInLastWeek(LocalDateTime localDateTime){
+
+    public Page<Room> findTop4RoomsByViewCountInLastWeek(LocalDateTime localDateTime,Pageable pageable){
         // 서비스나 호출하는 곳에서
-        Pageable topFour = PageRequest.of(0, 4);
-        List<Room> topRooms = roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime, topFour);
+        Page<Room> topRooms = roomViewLogRepository.findTopRoomsByViewCountInLastWeek(localDateTime, pageable);
 
         return topRooms;
+
     }
 
 }

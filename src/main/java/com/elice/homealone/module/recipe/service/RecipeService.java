@@ -231,4 +231,27 @@ public class RecipeService {
     public Page<RecipePageDto> findByScrap(Pageable pageable) {
         return postService.findByScrap(pageable, Post.Type.RECIPE, Recipe.class, this::createRecipePageDto);
     }
+
+    public Page<RecipePageDto> getRecipeByLikes(Pageable pageable) {
+        Page<Recipe> recipePage = postService.getRecipeByLikes(pageable);
+
+        try {
+            Member member = authService.getMember();
+            // List<Recipe> -> List<Post>
+            List<Post> posts = recipePage.stream()
+                .map(post -> (Post) post)
+                .toList();
+
+            Set<Long> likedRecipeIds = getLikedPostIds(member, posts);
+            Set<Long> scrapedRecipeIds = getScrapedPostIds(member, posts);
+
+            return recipePage.map(recipe -> createRecipePageDto(recipe, likedRecipeIds, scrapedRecipeIds));
+        } catch (HomealoneException e) {
+            if (e.getErrorCode()==ErrorCode.MEMBER_NOT_FOUND) {
+                return recipePage.map(this::createRecipePageDto);
+            } else {
+                throw new HomealoneException(ErrorCode.RECIPE_NOT_FOUND);
+            }
+        }
+    }
 }

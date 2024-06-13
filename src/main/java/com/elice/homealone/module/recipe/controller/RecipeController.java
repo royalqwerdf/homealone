@@ -1,6 +1,7 @@
 package com.elice.homealone.module.recipe.controller;
 
 import com.elice.homealone.module.member.entity.Member;
+import com.elice.homealone.module.post.sevice.PostService;
 import com.elice.homealone.module.recipe.dto.RecipePageDto;
 import com.elice.homealone.module.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.module.recipe.dto.RecipeResponseDto;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final PostService postService;
 
     // 레시피 등록
     @PostMapping
@@ -69,6 +72,10 @@ public class RecipeController {
         return new ResponseEntity<>(patchedRecipe, HttpStatus.OK);
     }
 
-    // TODO : 트렌드 레시피 추천 api 필요
+    @GetMapping("/trends")
+    public ResponseEntity<Page<RecipePageDto>> getRecipeByLikes(@PageableDefault(size=4) Pageable pageable) {
+        Page<RecipePageDto> pageDtos = recipeService.getRecipeByLikes(pageable);
+        return new ResponseEntity<>(pageDtos, HttpStatus.OK);
+    }
 }
 

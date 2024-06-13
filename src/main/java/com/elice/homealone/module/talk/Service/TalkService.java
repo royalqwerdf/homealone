@@ -164,6 +164,9 @@ public class TalkService {
     public Page<TalkResponseDTO> findTopTalkByView(Pageable pageable){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
         Page<TalkResponseDTO> talkResponseDTO = talkViewLogService.findTopTalksByViewCountInLastWeek(oneWeekAgo, pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        if(talkResponseDTO.isEmpty()){
+            talkResponseDTO =  talkRepository.findByOrderByViewDesc(pageable).map(TalkResponseDTO :: toTalkResponseDTO);
+        }
         return talkResponseDTO;
     }
     @Transactional
