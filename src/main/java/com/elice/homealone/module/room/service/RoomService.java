@@ -180,7 +180,7 @@ public class RoomService {
     @Transactional
     public List<RoomResponseDTO> findTopRoomByView(){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        List<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTopRoomsByViewCountInLastWeek(oneWeekAgo).stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
+        List<RoomResponseDTO> roomResponseDTOS = roomViewLogService.findTop4RoomsByViewCountInLastWeek(oneWeekAgo).stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
         if(roomResponseDTOS.isEmpty()){
             roomResponseDTOS  = roomRepository.findTop4ByOrderByViewDesc().stream().map(RoomResponseDTO::toRoomResponseDTO).collect(Collectors.toList());
         }

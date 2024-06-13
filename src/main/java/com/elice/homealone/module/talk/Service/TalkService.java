@@ -72,6 +72,7 @@ public class TalkService {
            throw new HomealoneException(ErrorCode.NOT_UNAUTHORIZED_ACTION);
         }
         talkOriginal.setTitle(talkDto.getTitle());
+        talkOriginal.setContent(talkDto.getContent());
         List<TalkImage> talkImage = talkDto.getImages().stream()
                 .map(url -> new TalkImage(url,talkOriginal))
                 .collect(Collectors.toList());
