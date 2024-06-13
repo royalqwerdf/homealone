@@ -58,3 +58,6 @@ HELP.md
 
 # sql
 /src/main/resources/data.sql
+
+# env 파일
+env

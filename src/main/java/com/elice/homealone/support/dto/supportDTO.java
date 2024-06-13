@@ -2,11 +2,15 @@ package com.elice.homealone.support.dto;
 
 import com.elice.homealone.support.domain.support;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class supportDTO {
     private Long id;
     private String polyBizSjnm; // 정책명
@@ -37,6 +41,10 @@ public class supportDTO {
     private String tintCherCtpcCn;  //   운영기관담당자연락처
     private String etct;    // 기타사항
 
+    public supportDTO(support supportsPage) {
+
+    }
+
     public support toEntity() {
         return new support(polyBizSjnm,polyltcnCn,sporCn,sporScvl,bizPrdCn,
                 rqutPrdCn,ageInfo,majrRqisCn,empmSttsCn,splzRlmRqisCn,accRqisCn,
@@ -44,4 +52,40 @@ public class supportDTO {
                 rqutUrla,rfcSiteUrla1,rfcSiteUrla2,mngtMson,mngtMrofCherCn,
                 cherCtpcCn,cnsgNmor,tintCherCn,tintCherCtpcCn,etct);
     }
+
+    public supportDTO(String polyBizSjnm, String polyltcnCn, String sporCn, String sporScvl, String bizPrdCn,
+                   String rqutPrdCn,String ageInfo, String majrRqisCn, String empmSttsCn, String splzRlmRqisCn,
+                   String accRqisCn, String prcpCn, String aditRscn, String prcpLmttTrgtCn,
+                   String rqutProcCn, String pstnPaprCn, String jdgnPresCn, String rqutUrla,
+                   String rfcSiteUrla1, String rfcSiteUrla2, String mngtMson, String mngtMrofCherCn,
+                   String cherCtpcCn, String cnsgNmor, String tintCherCn, String tintCherCtpcCn,String etct) {
+        this.polyBizSjnm = polyBizSjnm;
+        this.polyltcnCn = polyltcnCn;
+        this.sporCn = sporCn;
+        this.sporScvl = sporScvl;
+        this.bizPrdCn = bizPrdCn;
+        this.rqutPrdCn = rqutPrdCn;
+        this.ageInfo = ageInfo;
+        this.majrRqisCn = majrRqisCn;
+        this.empmSttsCn = empmSttsCn;
+        this.splzRlmRqisCn = splzRlmRqisCn;
+        this.accRqisCn = accRqisCn;
+        this.prcpCn = prcpCn;
+        this.aditRscn = aditRscn;
+        this.prcpLmttTrgtCn = prcpLmttTrgtCn;
+        this.rqutProcCn = rqutProcCn;
+        this.pstnPaprCn = pstnPaprCn;
+        this.jdgnPresCn = jdgnPresCn;
+        this.rqutUrla = rqutUrla;
+        this.rfcSiteUrla1 = rfcSiteUrla1;
+        this.rfcSiteUrla2 = rfcSiteUrla2;
+        this.mngtMson = mngtMson;
+        this.mngtMrofCherCn =  mngtMrofCherCn;
+        this.cherCtpcCn = cherCtpcCn;
+        this.cnsgNmor = cnsgNmor;
+        this.tintCherCn = tintCherCn;
+        this.tintCherCtpcCn = tintCherCtpcCn;
+        this.etct = etct;
+    }
+
 }

@@ -3,13 +3,16 @@ package com.elice.homealone.support.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "support")
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Getter
+@Setter
 public class support {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
