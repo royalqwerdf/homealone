@@ -38,14 +38,13 @@ public class ChatRoomService {
         Member receiver = memberRepository.findMemberById(receiver_id);
 
         //현재 로그인된 사용자 정보
-        /*
         Member member = authService.getMember();
         Long curMemberId = member.getId();
-         */
 
-        // 테스트용
+        /* 테스트용
         Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
+        */
 
         //현재 사용자와 중고거래 게시물 작성자가 같을 때
         if(receiver_id == curMemberId) {
@@ -62,14 +61,13 @@ public class ChatRoomService {
     public ChatDto findChatList(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        /*
         Member member = authService.getMember();
         Long curMemberId = member.getId();
-         */
 
-        // 테스트용
+        /* 테스트용
         Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
+        */
 
 
         //chatroomId에 따른 채팅방이 존재하지 않으면 예외 던지기
@@ -105,13 +103,12 @@ public class ChatRoomService {
     public List<ChatDto> findChatrooms() {
 
         //현재 로그인된 사용자 정보
-        /*
         Member member = authService.getMember();
-         */
 
-        //테스트용
+        /* 테스트용
         Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
+        */
 
         //member는 현재 로그인한 사용자 즉 sender
         List<Chatting> chattings = chatRoomRepository.findAllChattingBySenderId(member.getId());
@@ -127,14 +124,13 @@ public class ChatRoomService {
     public void deleteChatroom(Long chatroomId) {
 
         //현재 로그인된 사용자 정보
-        /*
         Member member = authService.getMember();
         Long curMemberId = member.getId();
-         */
 
-        // 테스트용
+        /* 테스트용
         Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
+        */
 
         //삭제하려는 채팅방 정보
         Chatting chatting = chatRoomRepository.findById(chatroomId)

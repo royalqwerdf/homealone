@@ -1,5 +1,6 @@
 package com.elice.homealone.module.chatting.controller;
 
+import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.module.chatting.entity.ChatDto;
 import com.elice.homealone.module.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.module.chatting.service.ChatRoomService;
