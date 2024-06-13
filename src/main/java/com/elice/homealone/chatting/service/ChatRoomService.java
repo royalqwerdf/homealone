@@ -42,13 +42,12 @@ public class ChatRoomService {
 
         //현재 로그인된 사용자 정보
         /*
-        Member member = memberRepository.findMemberById(authService.getMember().getId());
+        Member member = authService.getMember();
         Long curMemberId = member.getId();
          */
 
-
         // 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
 
         //현재 사용자와 중고거래 게시물 작성자가 같을 때
@@ -67,12 +66,12 @@ public class ChatRoomService {
 
         //현재 로그인된 사용자 정보
         /*
-        Member member = memberRepository.findMemberById(authService.getMember().getId());
+        Member member = authService.getMember();
         Long curMemberId = member.getId();
          */
 
         // 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
 
 
@@ -110,11 +109,11 @@ public class ChatRoomService {
 
         //현재 로그인된 사용자 정보
         /*
-        Member member = memberRepository.findMemberById(authService.getMember().getId());
+        Member member = authService.getMember();
          */
 
         //테스트용
-        Member member = memberRepository.findMemberById(6L);
+        Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
 
         //member는 현재 로그인한 사용자 즉 sender
@@ -132,37 +131,37 @@ public class ChatRoomService {
 
         //현재 로그인된 사용자 정보
         /*
-        Member member = memberRepository.findMemberById(authService.getMember().getId());
+        Member member = authService.getMember();
         Long curMemberId = member.getId();
          */
 
-
         // 테스트용
-        Member member = memberRepository.findMemberById(6L);
+        Member member = memberRepository.findMemberById(5L);
         Long curMemberId = member.getId();
-
 
         //삭제하려는 채팅방 정보
         Chatting chatting = chatRoomRepository.findById(chatroomId)
                 .orElseThrow(() -> new HomealoneException(ErrorCode.CHATTING_ROOM_NOT_FOUND));
-        Long senderId = chatting.getSender().getId();
-        Long receiverId = chatting.getReceiver().getId();
+        Member sender = chatting.getSender();
+        Member receiver = chatting.getReceiver();
 
-        if(senderId != null && receiverId != null) {
-            if(curMemberId == senderId) {
-                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+        if (sender != null && receiver != null) {
+            if (curMemberId.equals(sender.getId())) {
+                //member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
                 chatting.setSender(null);
-            } else if(curMemberId == receiverId) {
-                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+            } else if (curMemberId.equals(receiver.getId())) {
+                //member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
                 chatting.setReceiver(null); //채팅방에서 해당 회원 id 삭제
+            } else {
+                throw new HomealoneException(ErrorCode.NOT_MY_CHATROOM);
             }
         } else { // 채팅방의 구성원 둘 중 한 명이라도 채팅방 나간 상태일 때
-            if(curMemberId == senderId) {
-                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
+            if ((sender != null && curMemberId.equals(sender.getId())) ||
+                    (receiver != null && curMemberId.equals(receiver.getId()))) {
+                //member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
                 chatRoomRepository.delete(chatting); //채팅방 삭제하기(매핑된 메시지들도 cascade로 같이 삭제됨)
-            } else if(curMemberId == receiverId) {
-                member.getChat_rooms().remove(chatting); //회원이 가진 채팅방 리스트에서 해당 채팅방 삭제
-                chatRoomRepository.delete(chatting); //채팅방 삭제하기(매핑된 메시지들도 cascade로 같이 삭제됨)
+            } else {
+                throw new HomealoneException(ErrorCode.NOT_MY_CHATROOM);
             }
         }
     }

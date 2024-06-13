@@ -6,6 +6,7 @@ import com.elice.homealone.chatting.entity.Chatting;
 import com.elice.homealone.chatting.entity.MessageDto;
 import com.elice.homealone.chatting.repository.ChatRoomRepository;
 import com.elice.homealone.chatting.service.ChatRoomService;
+import com.elice.homealone.global.exception.Response;
 import com.elice.homealone.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,10 +63,12 @@ public class ChatRoomController {
     //채팅방 삭제
     @Operation(summary = "채팅방 삭제")
     @DeleteMapping("/chatting/{chatroomId}")
-    public ResponseEntity<Void> deleteChatroom(@PathVariable Long chatroomId) {
+    public ResponseEntity<Response.ApiResponse> deleteChatroom(@PathVariable Long chatroomId) {
 
         chatRoomService.deleteChatroom(chatroomId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Response.ApiResponse response = new Response.ApiResponse("현재 회원의 " + chatroomId + "번 채팅방을 나갔습니다");
+
+        return ResponseEntity.ok().body(response);
     }
 
 }
