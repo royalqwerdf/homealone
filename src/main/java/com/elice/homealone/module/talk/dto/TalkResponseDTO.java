@@ -69,7 +69,7 @@ public class TalkResponseDTO {
                     .scrapCount(talk.getScraps().size())
                     .memberName(talk.getMember().getName())
                     .imageUrl(talk.getMember().getImageUrl())
-                    .memberId(talk.getMember().getId());
+                    .memberId(talk.getMember().getId())
                     .commentCount(talk.getComments().size())
                     .scrap(false)
                     .like(false)
