@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public interface TalkViewLogRepository extends JpaRepository<TalkViewLog, Long> {
     void deleteByTimeStamp(LocalDateTime timeStamp);
 
-    @Query("SELECT t FROM TalkViewLog tv JOIN tv.talk t WHERE tv.timeStamp > :oneWeekAgo GROUP BY t.id ORDER BY COUNT(tv) DESC")
-    Page<Talk> findTopTalksByViewCountInLastWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo, Pageable pageable);
+    @Query("SELECT t FROM TalkViewLog tv JOIN tv.talk t WHERE tv.timeStamp > :monthAgo GROUP BY t.id ORDER BY COUNT(tv) DESC")
+    Page<Talk> findTopTalksByViewCountInLastWeek(@Param("monthAgo") LocalDateTime monthAgo, Pageable pageable);
 
 }
