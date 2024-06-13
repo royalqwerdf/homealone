@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 @Tag(name ="RoomController",description = "방자랑 게시글 관련 API")
 @Slf4j
 @RestController
@@ -71,8 +72,8 @@ public class RoomController {
     }
     @Operation(summary = "방자랑 게시글 인기글 조회")
     @GetMapping("/view")
-    public ResponseEntity<Page<RoomResponseDTO>> findTopRoomByView(@PageableDefault(size = 4) Pageable pageable){
-        Page<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView(pageable);
+    public ResponseEntity<List<RoomResponseDTO>> findTopRoomByView(){
+        List<RoomResponseDTO> topRoomByView = roomService.findTopRoomByView();
         return ResponseEntity.ok(topRoomByView);
     }
     @Operation(summary = "방자랑 게시글 회원으로 조회")
