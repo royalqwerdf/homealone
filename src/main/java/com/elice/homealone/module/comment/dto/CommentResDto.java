@@ -1,6 +1,7 @@
 package com.elice.homealone.module.comment.dto;
 
 import com.elice.homealone.module.comment.entity.Comment;
+import com.elice.homealone.module.post.entity.Post;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -23,12 +24,12 @@ public class CommentResDto {
     private boolean isLikeByCurrentUser = false;
     @Setter
     private int likeCount = 0;
-
     @Setter
     private String postTitle;
-
     @Setter
     private String postMemberName;
+    @Setter
+    private Post.Type postType;
 
     @Builder
     public CommentResDto(
