@@ -9,69 +9,70 @@
       <img src="src/main/resources/static/img/homealone2.png">
     </p>
 </a>
-이미지를 클릭하여 사이트로 이동
-<br><br>
 
-In progress 2024.05.15~2024.06.15 </p>
+In progress 2024.05.15~2024.06.15 <br>
 
 ## 👨‍👩‍👧‍👦멤버 구성
-<table>
+<table style="width: 100%;">
   <tr>
-    <td><img src="src/main/resources/static/img/asm.png" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/ygw.png" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/jsg.png" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/hyn.png" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/gyj.jpg" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/gms.png" width="80" height="80"></td>
-    <td><img src="src/main/resources/static/img/nsg.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/asm.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/ygw.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/gyj.jpg" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/jsg.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/hyn.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/gms.png" width="80" height="80"></td>
+    <td style="width: 14%; text-align: center;"><img src="src/main/resources/static/img/nsg.png" width="80" height="80"></td>
   </tr>
   <tr>
-    <td><a href=""><strong>BE 팀장 안수민</strong></a></td>
-    <td><a href=""><strong>BE 유기원</strong></a></td>
-    <td><a href=""><strong>BE 장성규</strong></a></td>
-    <td><a href=""><strong>BE 홍유나</strong></a></td>
-    <td><a href="https://github.com/mylazysundaycat"><strong>BE 권예지</strong></a></td>
-    <td><a href=""><strong>BE 고민성</strong></a></td>
-    <td><a href=""><strong>BE 노석규</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 팀장 안수민</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 유기원</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href="https://github.com/mylazysundaycat"><strong>BE 권예지</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 장성규</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 홍유나</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 고민성</strong></a></td>
+    <td style="width: 14%; text-align: center;"><a href=""><strong>BE 노석규</strong></a></td>
   </tr>
   <tr>
-    <td>중고 거래 게시판 API 구축</td>
-    <td>레시피 게시판, 댓글 기능 API 구축</td>
-    <td>채팅 기능 API 구축</td>
-    <td>방자랑, 혼잣말 게시판 API 구축</td>
-    <td>회원, 마이페이지 API 구축</td>
-    <td>좋아요, 북마크 기능 API 구축</td>
-    <td>청년정책게시판 API 구축</td>
+    <td style="width: 14%; text-align: center;">중고 거래 게시판 구현</td>
+    <td style="width: 14%; text-align: center;">레시피 게시판, 댓글 기능 구현</td>
+    <td style="width: 14%; text-align: center;">회원 관리 구현</td>
+    <td style="width: 14%; text-align: center;">채팅 기능 구현</td>
+    <td style="width: 14%; text-align: center;">방자랑, 혼잣말 게시판 구현</td>
+    <td style="width: 14%; text-align: center;">좋아요, 북마크 기능 구현</td>
+    <td style="width: 14%; text-align: center;">청년정책 게시판 구현</td>
   </tr>
 </table>
-🧩팀장 안수민<br>
+
+🧩팀장 안수민
 - 중고 거래 게시판 CRUD Rest API 구현 
 - 레시피 데이터 크롤링
 - 프로젝트 발표 및 문서화
 
-🧩팀원 유기원<br>
+🧩유기원
 - 레시피 게시판, 댓글 기능 CRUD Rest API 구현
+- QueryDSL 을 통한 데이터 관리
 - VM, Docker를 이용한 프로젝트 빌드 및 배포
 - Jenkins를 활용한 CI/CD 파이프라인 구축
 
-🧩팀원 장성규
-- 채팅 기능 CRUD Rest API 구현
-- 채팅 기능 구현을 위한 Socket IO 구축
 
-🧩팀원 홍유나 
-- 방자랑, 혼잣말 게시판 CRUD Rest API 구현
-- 이미지 DB 관리를 위한 Firebase 구축
-
-🧩팀원 권예지
+  🧩권예지
 - 회원 기능 CRUD Rest API 구현
 - Spring Security를 활용한 JWT 기능 구현
 - OAuth 2.0을 활용한 소셜 로그인(네이버, 카카오) 구현
 - Redis, Cookie를 통한 유저 상태 관리 구현
 
-🧩팀원 고민성
+🧩장성규
+- 채팅 기능 CRUD Rest API 구현
+- 채팅 기능 구현을 위한 Socket IO 구축
+
+🧩홍유나 
+- 방자랑, 혼잣말 게시판 CRUD Rest API 구현
+- 이미지 DB 관리를 위한 Firebase 구축
+
+🧩고민성
 - 북마크, 스크랩 기능 CRUD Rest API 구현
 
-🧩팀원 노석규
+🧩노석규
 - 청년 지원 게시판 CRUD Rest API 구현
 
 ## ⚙️개발환경
