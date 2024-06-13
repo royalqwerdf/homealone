@@ -102,7 +102,6 @@ public class AuthService{
         return cookie;
     }
 
-
     public TokenDto refreshAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String refreshToken = null;
