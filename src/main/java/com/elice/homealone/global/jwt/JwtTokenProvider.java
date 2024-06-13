@@ -1,7 +1,5 @@
 package com.elice.homealone.global.jwt;
 
-import com.elice.homealone.global.exception.ErrorCode;
-import com.elice.homealone.global.exception.HomealoneException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
