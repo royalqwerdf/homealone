@@ -115,7 +115,7 @@ public class TalkService {
         Specification<Talk> spec = Specification.where(null);
 
             if (all != null&& !all.isEmpty()) {
-                spec = spec.and(TalkSpecification.containsTitleOrContent(all));
+                spec = spec.and(TalkSpecification.containsTitleOrContentOrMemberName(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(TalkSpecification.containsTitle(title));

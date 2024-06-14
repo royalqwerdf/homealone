@@ -147,7 +147,7 @@ public class RoomService {
         Specification<Room> spec = Specification.where(null);
 
             if (all != null && !all.isEmpty()) {
-                spec = spec.and(RoomSpecification.containsTitleOrContent(all));
+                spec = spec.and(RoomSpecification.containsTitleOrContentOrMemberName(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(RoomSpecification.containsTitle(title));

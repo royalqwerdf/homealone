@@ -27,12 +27,16 @@ public class TalkSpecification {
         }));
     }
 
-    public static Specification<Talk> containsTitleOrContent(String keyword) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.or(
-                        criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
-                        criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%")
-                );
+    public static Specification<Talk> containsTitleOrContentOrMemberName(String keyword) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Talk, Member> roomMemberJoin = root.join("member", JoinType.INNER); // "member"는 Room 엔티티에서 Member 엔티티로의 조인
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
+                    criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%"),
+                    criteriaBuilder.like(roomMemberJoin.get("name"), "%" + keyword + "%") // 작성자 이름 검색 추가
+            );
+        };
     }
     public static Specification<Talk> containsTag(String tagName) {
         return (root, query, criteriaBuilder) -> {
