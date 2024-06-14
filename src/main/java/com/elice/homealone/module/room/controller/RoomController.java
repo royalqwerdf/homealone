@@ -27,12 +27,14 @@ public class RoomController {
     private RoomService roomService;
     @Operation(summary = "방자랑 게시글 조회, 검색")
     @GetMapping("")
-    public ResponseEntity<Page<RoomResponseDTO>> findAll(@RequestParam(required = false) String title,
+    public ResponseEntity<Page<RoomResponseDTO>> findAll
+                                                        (@RequestParam(required = false) String all,
+                                                         @RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
                                                         @RequestParam(required = false) String tag,
                                                         @RequestParam(required = false) String memberName,
                                                         @PageableDefault(size = 20) Pageable pageable){
-        Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(title, content,tag, memberName, pageable);
+        Page<RoomResponseDTO> RoomResponseDTO = roomService.searchRoomPost(all,title, content,tag, memberName, pageable);
         return ResponseEntity.ok().body(RoomResponseDTO);
     }
     @Operation(summary = "방자랑 게시글 생성")

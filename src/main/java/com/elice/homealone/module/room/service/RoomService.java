@@ -143,12 +143,11 @@ public class RoomService {
 
 
     @Transactional
-    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,String memberName,Pageable pageable){
+    public Page<RoomResponseDTO> searchRoomPost(String all,String title,String content, String tag,String memberName,Pageable pageable){
         Specification<Room> spec = Specification.where(null);
 
-            if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
-                String keyword = (title != null && !title.isEmpty()) ? title : content;
-                spec = spec.and(RoomSpecification.containsTitleOrContent(keyword));
+            if (all != null && !all.isEmpty()) {
+                spec = spec.and(RoomSpecification.containsTitleOrContent(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(RoomSpecification.containsTitle(title));
