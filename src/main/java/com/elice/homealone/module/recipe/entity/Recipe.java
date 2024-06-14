@@ -17,6 +17,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -169,6 +170,21 @@ public class Recipe extends Post {
     public void addIngredients(RecipeIngredient ingredient)  {
         this.ingredients.add(ingredient);
         ingredient.setRecipe(this);
+    }
+
+    @PreRemove
+    public void preRemove() {
+        // 별도의 컬렉션에 삭제할 RecipeImage 엔티티 저장
+        List<RecipeImage> imagesToDelete = new ArrayList<>(this.getImages());
+        // 별도의 컬렉션에 삭제할 RecipeIngredient 엔티티 저장
+        List<RecipeIngredient> ingredientsToDelete = new ArrayList<>(this.getIngredients());
+        // 별도의 컬렉션에 삭제할 RecipeDetail 엔티티 저장
+        List<RecipeDetail> detailsToDelete = new ArrayList<>(this.getDetails());
+
+        // 별도의 컬렉션에 저장된 엔티티를 원래의 컬렉션에서 삭제
+        this.getImages().removeAll(imagesToDelete);
+        this.getIngredients().removeAll(ingredientsToDelete);
+        this.getDetails().removeAll(detailsToDelete);
     }
 }
 
