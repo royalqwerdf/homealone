@@ -111,12 +111,11 @@ public class TalkService {
 
 
     @Transactional
-    public Page<TalkResponseDTO> searchTalkPost(String title,String content,String tag, Long memberId,Pageable pageable){
+    public Page<TalkResponseDTO> searchTalkPost(String all, String title,String content,String tag, Long memberId,Pageable pageable){
         Specification<Talk> spec = Specification.where(null);
 
-            if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
-                String keyword = (title != null && !title.isEmpty()) ? title : content;
-                spec = spec.and(TalkSpecification.containsTitleOrContent(keyword));
+            if (all != null&& !all.isEmpty()) {
+                spec = spec.and(TalkSpecification.containsTitleOrContent(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(TalkSpecification.containsTitle(title));
