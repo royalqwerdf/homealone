@@ -22,8 +22,9 @@ public class RecipePageDto {
 
     @Setter
     private PostRelatedDto relatedDto;
-
     private final Integer view;
+    @Setter
+    private String userImages;
 
     @Builder
     public RecipePageDto(
@@ -37,7 +38,8 @@ public class RecipePageDto {
         String imageUrl,
         Long userId,
         String userName,
-        Integer view) {
+        Integer view,
+        String userImages) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -51,5 +53,6 @@ public class RecipePageDto {
         this.userName = userName;
 
         this.view = view;
+        this.userImages = userImages;
     }
 }
