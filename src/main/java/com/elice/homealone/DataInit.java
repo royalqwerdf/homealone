@@ -49,6 +49,7 @@ public class DataInit implements CommandLineRunner {
                 .firstAddress("Seoul")
                 .secondAddress("광진구")
                 .password(passwordEncoder.encode("1234")) // 관리자 비밀번호
+                .imageUrl(email)
                 .role(Role.ROLE_ADMIN) // 관리자 역할 설정
                 .build();
             memberRepository.save(admin);
@@ -65,6 +66,7 @@ public class DataInit implements CommandLineRunner {
                 .firstAddress("Deageon")
                 .secondAddress("유성구")
                 .password(passwordEncoder.encode("1234"))
+                .imageUrl(email)
                 .role(Role.ROLE_USER) // 유저 역할 설정
                 .build();
             memberRepository.save(user);
