@@ -26,12 +26,16 @@ public class RoomSpecification {
         }));
     }
 
-    public static Specification<Room> containsTitleOrContent(String keyword) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.or(
-                        criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
-                        criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%")
-                );
+    public static Specification<Room> containsTitleOrContentOrMemberName(String keyword) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Room, Member> roomMemberJoin = root.join("member", JoinType.INNER); // "member"는 Room 엔티티에서 Member 엔티티로의 조인 필드입니다.
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
+                    criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%"),
+                    criteriaBuilder.like(roomMemberJoin.get("name"), "%" + keyword + "%") // 작성자 이름 검색 추가
+            );
+        };
     }
 
     public static Specification<Room> containsTag(String tagName) {
