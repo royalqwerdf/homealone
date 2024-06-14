@@ -72,7 +72,7 @@ public class TalkService {
         talkOriginal.setContent(talkDto.getContent());
         String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         talkOriginal.setPlainContent(plainContent);
-        postTagRepository.deleteAll();
+        postTagRepository.deleteAll(talkOriginal.getTags());
                 talkOriginal.getTags().clear();
         talkDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
                 .forEach(postTag-> talkOriginal.addTag(postTag));
