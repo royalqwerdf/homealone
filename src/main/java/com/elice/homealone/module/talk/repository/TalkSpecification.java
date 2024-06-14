@@ -22,7 +22,7 @@ public class TalkSpecification {
     public static Specification<Talk> hasMemberName(String memberName){
         return (((root, query, criteriaBuilder) -> {
             Join<Talk, Member> roomMemberJoin = root.join("member", JoinType.INNER);
-            Predicate talkByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
+            Predicate talkByMemberName = criteriaBuilder.like(roomMemberJoin.get("name"),"%"+ memberName+"%");
             return talkByMemberName;
         }));
     }
