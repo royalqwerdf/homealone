@@ -24,8 +24,26 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
     private final QRecipe qRecipe = QRecipe.recipe;
 
     @Override
-    public List<Recipe> findRecipes(Pageable pageable, Long memberId, String title,
-                                    String description, List<String> tags) {
+    public List<Recipe> findRecipes(
+        Pageable pageable,
+        String all,
+        Long memberId,
+        String userName,
+        String title,
+        String description,
+        List<String> tags) {
+
+        BooleanExpression expr;
+
+        if(all != null) {
+            expr = containsTitle(all)
+                .or(containsDescription(all))
+                .or(containsMemberName(all));
+        } else {
+            expr = containsTitle(title)
+                .and(containsDescription(description))
+                .and(containsMemberName(userName));
+        }
 
         // 레시피 엔티티를 선택하고 where을 통해 검색 조건을 적용하여 레시피 리스트를 가져옴
         return jpaQueryFactory
@@ -33,7 +51,8 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             .where(
                 containsTitle(title),
                 containsDescription(description),
-                containsMemberId(memberId)
+                containsMemberId(memberId),
+                containsMemberName(userName)
             )
             .orderBy(getOrderSpecifiers(pageable.getSort()))
             .offset(pageable.getOffset())
@@ -52,6 +71,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         if(description == null) {
             return null;
         }
+
         return QRecipe.recipe.description.contains(description);
     }
 
@@ -60,6 +80,13 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             return null;
         }
         return QRecipe.recipe.member.id.eq(memberId);
+    }
+
+    private BooleanExpression containsMemberName(String userName) {
+        if(userName == null) {
+            return null;
+        }
+        return QRecipe.recipe.member.name.contains(userName);
     }
 
     // 정렬을 위한 메소드 (공통으로 뺴야하지 않을까?)
@@ -77,6 +104,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     public Long countRecipes(
         Long memberId,
+        String userName,
         String title,
         String description,
         List<String> tags) {
@@ -90,5 +118,4 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
             )
             .fetchOne();
     }
-    // TODO : userId와 tags에 대한 처리 로직 추가 필요
 }

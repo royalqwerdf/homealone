@@ -66,7 +66,7 @@ public class MypageController {
     @GetMapping("/recipes")
     public ResponseEntity<Page<RecipePageDto>> findRecipeByMember(@PageableDefault(size=10) Pageable pageable) {
         Member member = authService.getMember();
-        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, member.getId(),null,null,null);
+        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, null, member.getId(), null,null,null,null);
         return new ResponseEntity<>(pageDtos, HttpStatus.OK);
     }
 
