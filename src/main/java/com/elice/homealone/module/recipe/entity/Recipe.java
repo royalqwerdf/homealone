@@ -174,11 +174,8 @@ public class Recipe extends Post {
 
     @PreRemove
     public void preRemove() {
-        // 별도의 컬렉션에 삭제할 RecipeImage 엔티티 저장
         List<RecipeImage> imagesToDelete = new ArrayList<>(this.getImages());
-        // 별도의 컬렉션에 삭제할 RecipeIngredient 엔티티 저장
         List<RecipeIngredient> ingredientsToDelete = new ArrayList<>(this.getIngredients());
-        // 별도의 컬렉션에 삭제할 RecipeDetail 엔티티 저장
         List<RecipeDetail> detailsToDelete = new ArrayList<>(this.getDetails());
 
         // 별도의 컬렉션에 저장된 엔티티를 원래의 컬렉션에서 삭제
