@@ -41,8 +41,9 @@ public class DataInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         String email = "geobukseon@homealone.co.kr";
+        Member admin = null;
         if (!memberRepository.existsByEmail(email)) {
-            Member admin = Member.builder()
+            admin = Member.builder()
                 .name("관리자")
                 .birth(LocalDate.of(1945, 4, 28)) // 관리자 생년월일 예시
                 .email(email)
@@ -128,6 +129,19 @@ public class DataInit implements CommandLineRunner {
             .build();
         recipeService.createRecipe(user, recipeReqDto);
 
+        RecipeRequestDto recipeReqDto2 = RecipeRequestDto.builder()
+            .title("관리자 레시피")
+            .description("테스트 레시피 설명")
+            .portions(4)
+            .recipeType(RecipeType.CONDI)
+            .recipeTime(RecipeTime.FIFTEEN)
+            .cuisine(Cuisine.KOREAN)
+            .images(images)
+            .ingredients(ingredients)
+            .details(details)
+            .postTags(postTags)
+            .build();
+        recipeService.createRecipe(admin, recipeReqDto2);
         // 테스트 혼잣말 생성
 
 //        // 테스트 이미지 생성

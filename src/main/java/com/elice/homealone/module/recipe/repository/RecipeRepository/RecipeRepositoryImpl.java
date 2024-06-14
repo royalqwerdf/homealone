@@ -42,7 +42,8 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         } else {
             expr = containsTitle(title)
                 .and(containsDescription(description))
-                .and(containsMemberName(userName));
+                .and(containsMemberName(userName))
+                .and(containsMemberId(memberId));
         }
 
         // 레시피 엔티티를 선택하고 where을 통해 검색 조건을 적용하여 레시피 리스트를 가져옴
