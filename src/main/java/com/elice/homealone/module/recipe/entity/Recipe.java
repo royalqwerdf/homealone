@@ -24,6 +24,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -106,7 +107,6 @@ public class Recipe extends Post {
             .map(PostTag::toDto)
             .toList();
 
-        Member member = this.getMember();
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
@@ -127,7 +127,7 @@ public class Recipe extends Post {
             .userId(userId)
             .userName(userName)
             .view(viewValue)
-            .userImages(member.getImageUrl())
+            .userImages(this.getMember().getImageUrl())
             .build();
     }
 
@@ -136,9 +136,10 @@ public class Recipe extends Post {
         if(images != null){
             imageUrl = images.get(0).getImageUrl();
         }
+
+        Member member = (Member) Hibernate.unproxy(this.getMember());
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
-        Member member = this.getMember();
 
         return RecipePageDto.builder()
             .id(this.getId())
@@ -151,7 +152,7 @@ public class Recipe extends Post {
             .imageUrl(imageUrl)
             .userId(userId)
             .userName(userName)
-            .userImages(member.getImageUrl())
+            .userImage(member.getImageUrl())
             .build();
     }
 

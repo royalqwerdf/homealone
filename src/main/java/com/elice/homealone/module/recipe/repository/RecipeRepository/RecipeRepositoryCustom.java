@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 public interface RecipeRepositoryCustom {
     List<Recipe> findRecipes(
         Pageable pageable,
+        String all,
         Long memberId,
+        String userName,
         String title,
         String description,
         List<String> tags
@@ -16,6 +18,7 @@ public interface RecipeRepositoryCustom {
 
     public Long countRecipes(
         Long memberId,
+        String userName,
         String title,
         String description,
         List<String> tags);

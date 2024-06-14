@@ -39,13 +39,16 @@ public class RecipeController {
     // 레시피 페이지 조회
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Page<RecipePageDto>> getRecipe(Pageable pageable,
+    public ResponseEntity<Page<RecipePageDto>> getRecipe(
+        Pageable pageable,
+        @RequestParam(required = false) String all,
         @RequestParam(required = false) Long memberId,
+        @RequestParam(required = false) String userName,
         @RequestParam(required = false) String title,
         @RequestParam(required = false) String description,
         @RequestParam(required = false) List<String> tags
     ) {
-        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, memberId, title, description, tags);
+        Page<RecipePageDto> pageDtos = recipeService.findRecipes(pageable, all, memberId, userName, title, description, tags);
 
         return new ResponseEntity<>(pageDtos, HttpStatus.OK);
     }
