@@ -1,5 +1,7 @@
 package com.elice.homealone.module.talk.repository;
 
+import com.elice.homealone.module.member.entity.Member;
+import com.elice.homealone.module.room.entity.Room;
 import com.elice.homealone.module.tag.entity.PostTag;
 import com.elice.homealone.module.talk.entity.Talk;
 import jakarta.persistence.criteria.Join;
@@ -17,8 +19,12 @@ public class TalkSpecification {
     }
 
 
-    public static Specification<Talk> hasMemberId(Long memberId){
-        return (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("memberId"),memberId)));
+    public static Specification<Talk> hasMemberName(String memberName){
+        return (((root, query, criteriaBuilder) -> {
+            Join<Talk, Member> roomMemberJoin = root.join("member", JoinType.INNER);
+            Predicate talkByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
+            return talkByMemberName;
+        }));
     }
 
     public static Specification<Talk> containsTitleOrContent(String keyword) {

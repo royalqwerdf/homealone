@@ -160,7 +160,7 @@ public class RoomService {
                 spec =spec.and(RoomSpecification.containsTag(tag));
             }
             else if (memberName != null){
-                spec = spec.and(RoomSpecification.hasMemberId(memberName));
+                spec = spec.and(RoomSpecification.hasMemberName(memberName));
             }
 
         Page<Room> findRoom = roomRepository.findAll(spec, pageable);

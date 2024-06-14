@@ -111,7 +111,7 @@ public class TalkService {
 
 
     @Transactional
-    public Page<TalkResponseDTO> searchTalkPost(String all, String title,String content,String tag, Long memberId,Pageable pageable){
+    public Page<TalkResponseDTO> searchTalkPost(String all, String title,String content,String tag, String memberName,Pageable pageable){
         Specification<Talk> spec = Specification.where(null);
 
             if (all != null&& !all.isEmpty()) {
@@ -128,8 +128,8 @@ public class TalkService {
                 spec = spec.and(TalkSpecification.containsTag(tag));
             }
 
-            if(memberId != null){
-                spec = spec.and(TalkSpecification.hasMemberId(memberId));
+            if(memberName != null){
+                spec = spec.and(TalkSpecification.hasMemberName(memberName));
             }
 
         Page<Talk> findTalks = talkRepository.findAll(spec, pageable);
