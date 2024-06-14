@@ -49,6 +49,7 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final ScrapService scrapService;
+    private final MemberService memberService;
 
 
     // 레시피 등록
@@ -141,6 +142,9 @@ public class RecipeService {
             Member member = authService.getMember();
             relatedDto.setLikeByCurrentUser(likeService.isLikedByMember(recipe, member));
             relatedDto.setBookmarked(scrapService.isScrapedByMember(recipe, member));
+
+//            member = memberService.findById(resDto.getUserId());
+//            resDto.setUserImage(member.getImageUrl());
             return resDto;
         } catch (HomealoneException e) {
             if (e.getErrorCode()==ErrorCode.MEMBER_NOT_FOUND) {
@@ -218,12 +222,14 @@ public class RecipeService {
         pageDto.setRelatedDto(postService.getPostRelated(recipe));
         pageDto.getRelatedDto().setLikeByCurrentUser(likedRecipeIds.contains(recipe.getId()));
         pageDto.getRelatedDto().setBookmarked(scrapedRecipeIds.contains(recipe.getId()));
+
         return pageDto;
     }
 
     private RecipePageDto createRecipePageDto(Recipe recipe) {
         RecipePageDto pageDto = recipe.toPageDto();
         pageDto.setRelatedDto(postService.getPostRelated(recipe));
+
         return pageDto;
     }
 
