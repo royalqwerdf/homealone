@@ -106,6 +106,7 @@ public class Recipe extends Post {
             .map(PostTag::toDto)
             .toList();
 
+        Member member = this.getMember();
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
@@ -126,6 +127,7 @@ public class Recipe extends Post {
             .userId(userId)
             .userName(userName)
             .view(viewValue)
+            .userImages(member.getImageUrl())
             .build();
     }
 
@@ -136,9 +138,7 @@ public class Recipe extends Post {
         }
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
-
-        // 라이크를 찾는 메소드
-
+        Member member = this.getMember();
 
         return RecipePageDto.builder()
             .id(this.getId())
@@ -151,6 +151,7 @@ public class Recipe extends Post {
             .imageUrl(imageUrl)
             .userId(userId)
             .userName(userName)
+            .userImages(member.getImageUrl())
             .build();
     }
 
