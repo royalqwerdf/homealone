@@ -49,10 +49,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         return jpaQueryFactory
             .selectFrom(qRecipe)
             .where(
-                containsTitle(title),
-                containsDescription(description),
-                containsMemberId(memberId),
-                containsMemberName(userName)
+                expr
             )
             .orderBy(getOrderSpecifiers(pageable.getSort()))
             .offset(pageable.getOffset())
