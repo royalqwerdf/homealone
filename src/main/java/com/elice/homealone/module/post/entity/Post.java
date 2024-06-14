@@ -5,6 +5,9 @@ import com.elice.homealone.module.comment.entity.Comment;
 import com.elice.homealone.global.common.BaseTimeEntity;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.like.entity.Like;
+import com.elice.homealone.module.recipe.entity.RecipeDetail;
+import com.elice.homealone.module.recipe.entity.RecipeImage;
+import com.elice.homealone.module.recipe.entity.RecipeIngredient;
 import com.elice.homealone.module.scrap.entity.Scrap;
 import com.elice.homealone.module.tag.entity.PostTag;
 import jakarta.persistence.*;
@@ -69,5 +72,18 @@ public class Post extends BaseTimeEntity {
         comment.setPost(this);
     }
 
+    @PreRemove
+    public void preRemove() {
+        List<PostTag> tags = new ArrayList<>(this.getTags());
+        List<Comment> comments = new ArrayList<>(this.getComments());
+        List<Scrap> scraps = new ArrayList<>(this.getScraps());
+        List<Like> likes = new ArrayList<>(this.getLikes());
+
+        // 별도의 컬렉션에 저장된 엔티티를 원래의 컬렉션에서 삭제
+        this.getTags().removeAll(tags);
+        this.getComments().removeAll(comments);
+        this.getScraps().removeAll(scraps);
+        this.getLikes().removeAll(likes);
+    }
 }
 
