@@ -49,7 +49,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         return jpaQueryFactory
             .selectFrom(qRecipe)
             .where(
-                expr
+                expr != null ? expr : QRecipe.recipe.id.isNotNull()
             )
             .orderBy(getOrderSpecifiers(pageable.getSort()))
             .offset(pageable.getOffset())
@@ -59,14 +59,14 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     private BooleanExpression containsTitle(String title) {
         if(title == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.title.contains(title);
     }
 
     private BooleanExpression containsDescription(String description) {
         if(description == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
 
         return QRecipe.recipe.description.contains(description);
@@ -74,14 +74,14 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     private BooleanExpression containsMemberId(Long memberId) {
         if(memberId == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.member.id.eq(memberId);
     }
 
     private BooleanExpression containsMemberName(String userName) {
         if(userName == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.member.name.contains(userName);
     }
