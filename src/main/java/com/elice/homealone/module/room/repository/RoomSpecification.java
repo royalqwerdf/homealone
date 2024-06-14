@@ -1,5 +1,6 @@
 package com.elice.homealone.module.room.repository;
 
+import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.room.entity.Room;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -17,9 +18,9 @@ public class RoomSpecification {
     }
 
 
-    public static Specification<Room> hasMemberId(String memberName){
+    public static Specification<Room> hasMemberName(String memberName){
         return (((root, query, criteriaBuilder) -> {
-            Join<Room, PostTag> roomMemberJoin = root.join("member", JoinType.INNER);
+            Join<Room, Member> roomMemberJoin = root.join("member", JoinType.INNER);
             Predicate roomByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
             return roomByMemberName;
         }));
