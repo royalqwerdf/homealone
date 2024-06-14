@@ -21,7 +21,7 @@ public class RoomSpecification {
     public static Specification<Room> hasMemberName(String memberName){
         return (((root, query, criteriaBuilder) -> {
             Join<Room, Member> roomMemberJoin = root.join("member", JoinType.INNER);
-            Predicate roomByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
+            Predicate roomByMemberName = criteriaBuilder.like(roomMemberJoin.get("name"), "%"+memberName+"%");
             return roomByMemberName;
         }));
     }
