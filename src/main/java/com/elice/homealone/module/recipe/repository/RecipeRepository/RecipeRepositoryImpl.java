@@ -42,17 +42,15 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
         } else {
             expr = containsTitle(title)
                 .and(containsDescription(description))
-                .and(containsMemberName(userName));
+                .and(containsMemberName(userName))
+                .and(containsMemberId(memberId));
         }
 
         // 레시피 엔티티를 선택하고 where을 통해 검색 조건을 적용하여 레시피 리스트를 가져옴
         return jpaQueryFactory
             .selectFrom(qRecipe)
             .where(
-                containsTitle(title),
-                containsDescription(description),
-                containsMemberId(memberId),
-                containsMemberName(userName)
+                expr != null ? expr : QRecipe.recipe.id.isNotNull()
             )
             .orderBy(getOrderSpecifiers(pageable.getSort()))
             .offset(pageable.getOffset())
@@ -62,14 +60,14 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     private BooleanExpression containsTitle(String title) {
         if(title == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.title.contains(title);
     }
 
     private BooleanExpression containsDescription(String description) {
         if(description == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
 
         return QRecipe.recipe.description.contains(description);
@@ -77,14 +75,14 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
 
     private BooleanExpression containsMemberId(Long memberId) {
         if(memberId == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.member.id.eq(memberId);
     }
 
     private BooleanExpression containsMemberName(String userName) {
         if(userName == null) {
-            return null;
+            return QRecipe.recipe.id.isNotNull();
         }
         return QRecipe.recipe.member.name.contains(userName);
     }

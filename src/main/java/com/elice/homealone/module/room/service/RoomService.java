@@ -11,6 +11,7 @@ import com.elice.homealone.module.like.service.LikeService;
 import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.member.service.AuthService;
 import com.elice.homealone.module.room.entity.RoomImage;
+import com.elice.homealone.module.room.repository.RoomImageRepository;
 import com.elice.homealone.module.room.repository.RoomRepository;
 import com.elice.homealone.module.scrap.entity.Scrap;
 import com.elice.homealone.module.scrap.repository.ScrapRepository;
@@ -55,6 +56,7 @@ public class RoomService {
     private final CommentRepository commentRepository;
     private final ScrapRepository scrapRepository;
     private final PostTagRepository postTagRepository;
+    private final RoomImageRepository roomImageRepository;
     @Transactional
     public RoomResponseDTO.RoomInfoDto CreateRoomPost(RoomRequestDTO roomDto){
         Member member = authService.getMember();
@@ -84,15 +86,24 @@ public class RoomService {
         String plainContent = Jsoup.clean(roomDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         roomOriginal.setPlainContent(plainContent);
         //이미지새로 생성후 이전 이미지 테이블 전체 삭제 후 새로운 이미지로 대체
+
+        roomImageRepository.deleteAll(roomOriginal.getRoomImages());
+
+
         List<RoomImage> newImages = roomDto.getRoomImages().stream()
-                .map(url -> new RoomImage(url,roomOriginal))
+                .map(url -> new RoomImage(url, roomOriginal))
                 .collect(Collectors.toList());
         roomOriginal.getRoomImages().clear();
         roomOriginal.getRoomImages().addAll(newImages);
 
+
+        postTagRepository.deleteAll(roomOriginal.getTags());
+
+
         roomOriginal.getTags().clear();
-        roomDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
-                .forEach(postTag-> roomOriginal.addTag(postTag));
+        roomDto.getTags().stream()
+                .map(tag -> postTagService.createPostTag(tag))
+                .forEach(postTag -> roomOriginal.addTag(postTag));
         return RoomResponseDTO.RoomInfoDto.toRoomInfoDto(roomOriginal);
     }
 
@@ -132,12 +143,11 @@ public class RoomService {
 
 
     @Transactional
-    public Page<RoomResponseDTO> searchRoomPost(String title,String content, String tag,String memberName,Pageable pageable){
+    public Page<RoomResponseDTO> searchRoomPost(String all,String title,String content, String tag,String memberName,Pageable pageable){
         Specification<Room> spec = Specification.where(null);
 
-            if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
-                String keyword = (title != null && !title.isEmpty()) ? title : content;
-                spec = spec.and(RoomSpecification.containsTitleOrContent(keyword));
+            if (all != null && !all.isEmpty()) {
+                spec = spec.and(RoomSpecification.containsTitleOrContentOrMemberName(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(RoomSpecification.containsTitle(title));
@@ -150,7 +160,7 @@ public class RoomService {
                 spec =spec.and(RoomSpecification.containsTag(tag));
             }
             else if (memberName != null){
-                spec = spec.and(RoomSpecification.hasMemberId(memberName));
+                spec = spec.and(RoomSpecification.hasMemberName(memberName));
             }
 
         Page<Room> findRoom = roomRepository.findAll(spec, pageable);

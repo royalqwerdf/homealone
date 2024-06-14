@@ -1,5 +1,6 @@
 package com.elice.homealone.module.room.repository;
 
+import com.elice.homealone.module.member.entity.Member;
 import com.elice.homealone.module.room.entity.Room;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -17,20 +18,24 @@ public class RoomSpecification {
     }
 
 
-    public static Specification<Room> hasMemberId(String memberName){
+    public static Specification<Room> hasMemberName(String memberName){
         return (((root, query, criteriaBuilder) -> {
-            Join<Room, PostTag> roomMemberJoin = root.join("member", JoinType.INNER);
-            Predicate roomByMemberName = criteriaBuilder.equal(roomMemberJoin.get("name"), memberName);
+            Join<Room, Member> roomMemberJoin = root.join("member", JoinType.INNER);
+            Predicate roomByMemberName = criteriaBuilder.like(roomMemberJoin.get("name"), "%"+memberName+"%");
             return roomByMemberName;
         }));
     }
 
-    public static Specification<Room> containsTitleOrContent(String keyword) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.or(
-                        criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
-                        criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%")
-                );
+    public static Specification<Room> containsTitleOrContentOrMemberName(String keyword) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Room, Member> roomMemberJoin = root.join("member", JoinType.INNER); // "member"는 Room 엔티티에서 Member 엔티티로의 조인 필드입니다.
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
+                    criteriaBuilder.like(root.get("plainContent"), "%" + keyword + "%"),
+                    criteriaBuilder.like(roomMemberJoin.get("name"), "%" + keyword + "%") // 작성자 이름 검색 추가
+            );
+        };
     }
 
     public static Specification<Room> containsTag(String tagName) {

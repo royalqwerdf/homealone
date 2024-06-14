@@ -25,13 +25,14 @@ public class TalkController {
 
     @Operation(summary = "혼잣말 검색, 조회")
     @GetMapping("")
-    public ResponseEntity<Page<TalkResponseDTO>> findAll(@RequestParam(required = false) String title,
+    public ResponseEntity<Page<TalkResponseDTO>> findAll(@RequestParam(required = false) String all,
+                                                        @RequestParam(required = false) String title,
                                                         @RequestParam(required = false) String content,
                                                         @RequestParam(required = false) String tag,
-                                                        @RequestParam(required = false) Long memberId,
+                                                        @RequestParam(required = false) String memberName,
                                                         @PageableDefault(size = 20) Pageable pageable){
 
-        Page<TalkResponseDTO> talkSummaryDtos = talkService.searchTalkPost(title, content,tag, memberId, pageable);
+        Page<TalkResponseDTO> talkSummaryDtos = talkService.searchTalkPost(all,title, content,tag, memberName, pageable);
         return ResponseEntity.ok().body(talkSummaryDtos);
     }
     @Operation(summary = "혼잣말 게시글 생성")

@@ -72,6 +72,7 @@ public class TalkService {
         talkOriginal.setContent(talkDto.getContent());
         String plainContent = Jsoup.clean(talkDto.getContent(), Safelist.none()).replace("&nbsp;", " ").replaceAll("\\s", " ").trim();
         talkOriginal.setPlainContent(plainContent);
+        postTagRepository.deleteAll(talkOriginal.getTags());
                 talkOriginal.getTags().clear();
         talkDto.getTags().stream().map(tag -> postTagService.createPostTag(tag))
                 .forEach(postTag-> talkOriginal.addTag(postTag));
@@ -110,12 +111,11 @@ public class TalkService {
 
 
     @Transactional
-    public Page<TalkResponseDTO> searchTalkPost(String title,String content,String tag, Long memberId,Pageable pageable){
+    public Page<TalkResponseDTO> searchTalkPost(String all, String title,String content,String tag, String memberName,Pageable pageable){
         Specification<Talk> spec = Specification.where(null);
 
-            if ((title != null && !title.isEmpty()) || (content != null && !content.isEmpty())) {
-                String keyword = (title != null && !title.isEmpty()) ? title : content;
-                spec = spec.and(TalkSpecification.containsTitleOrContent(keyword));
+            if (all != null&& !all.isEmpty()) {
+                spec = spec.and(TalkSpecification.containsTitleOrContentOrMemberName(all));
             }
             else if (title != null && !title.isEmpty()) {
                 spec = spec.and(TalkSpecification.containsTitle(title));
@@ -128,8 +128,8 @@ public class TalkService {
                 spec = spec.and(TalkSpecification.containsTag(tag));
             }
 
-            if(memberId != null){
-                spec = spec.and(TalkSpecification.hasMemberId(memberId));
+            if(memberName != null){
+                spec = spec.and(TalkSpecification.hasMemberName(memberName));
             }
 
         Page<Talk> findTalks = talkRepository.findAll(spec, pageable);
