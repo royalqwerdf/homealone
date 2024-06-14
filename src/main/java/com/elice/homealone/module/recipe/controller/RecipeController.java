@@ -5,8 +5,12 @@ import com.elice.homealone.module.post.sevice.PostService;
 import com.elice.homealone.module.recipe.dto.RecipePageDto;
 import com.elice.homealone.module.recipe.dto.RecipeRequestDto;
 import com.elice.homealone.module.recipe.dto.RecipeResponseDto;
+import com.elice.homealone.module.recipe.entity.RecipeDetail;
+import com.elice.homealone.module.recipe.entity.RecipeImage;
+import com.elice.homealone.module.recipe.entity.RecipeIngredient;
 import com.elice.homealone.module.recipe.service.RecipeService;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
