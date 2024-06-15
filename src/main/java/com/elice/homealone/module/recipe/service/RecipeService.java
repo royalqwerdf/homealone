@@ -167,6 +167,10 @@ public class RecipeService {
 
         Recipe recipe = recipeRepository.findById(id)
             .orElseThrow(()-> new HomealoneException(ErrorCode.RECIPE_NOT_FOUND));
+        postTagService.deletePostTagByRecipe(recipe);
+        recipeImageService.deleteImageByRecipe(recipe);
+        recipeIngredientService.deleteRecipeIngredientByRecipe(recipe);
+        recipeDetailService.deleteDetailByRecipe(recipe);
         recipeRepository.delete(recipe);
     }
 
