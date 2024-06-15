@@ -28,7 +28,7 @@ import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 public class DataInit implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
