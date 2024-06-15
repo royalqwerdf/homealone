@@ -31,7 +31,7 @@ public class RecipeResponseDto {
     private String userName;
     private Integer view = 0;
     @Setter
-    private String userImages;
+    private String userImage;
 
     @Setter
     private PostRelatedDto relatedDto;
@@ -71,6 +71,6 @@ public class RecipeResponseDto {
         this.userName = userName;
         this.relatedDto = relatedDto;
         this.view = viewValue;
-        this.userImages = userImages;
+        this.userImage = userImages;
     }
 }

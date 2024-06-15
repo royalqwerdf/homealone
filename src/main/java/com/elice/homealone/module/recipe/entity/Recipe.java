@@ -17,6 +17,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -24,6 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -106,7 +108,6 @@ public class Recipe extends Post {
             .map(PostTag::toDto)
             .toList();
 
-        Member member = this.getMember();
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
 
@@ -127,7 +128,7 @@ public class Recipe extends Post {
             .userId(userId)
             .userName(userName)
             .view(viewValue)
-            .userImages(member.getImageUrl())
+            .userImages(this.getMember().getImageUrl())
             .build();
     }
 
@@ -136,9 +137,10 @@ public class Recipe extends Post {
         if(images != null){
             imageUrl = images.get(0).getImageUrl();
         }
+
+        Member member = (Member) Hibernate.unproxy(this.getMember());
         Long userId = this.getMember().getId();
         String userName = this.getMember().getName();
-        Member member = this.getMember();
 
         return RecipePageDto.builder()
             .id(this.getId())
@@ -151,7 +153,7 @@ public class Recipe extends Post {
             .imageUrl(imageUrl)
             .userId(userId)
             .userName(userName)
-            .userImages(member.getImageUrl())
+            .userImage(member.getImageUrl())
             .build();
     }
 
@@ -168,6 +170,18 @@ public class Recipe extends Post {
     public void addIngredients(RecipeIngredient ingredient)  {
         this.ingredients.add(ingredient);
         ingredient.setRecipe(this);
+    }
+
+    @PreRemove
+    public void preRemove() {
+        List<RecipeImage> imagesToDelete = new ArrayList<>(this.getImages());
+        List<RecipeIngredient> ingredientsToDelete = new ArrayList<>(this.getIngredients());
+        List<RecipeDetail> detailsToDelete = new ArrayList<>(this.getDetails());
+
+        // 별도의 컬렉션에 저장된 엔티티를 원래의 컬렉션에서 삭제
+        this.getImages().removeAll(imagesToDelete);
+        this.getIngredients().removeAll(ingredientsToDelete);
+        this.getDetails().removeAll(detailsToDelete);
     }
 }
 
