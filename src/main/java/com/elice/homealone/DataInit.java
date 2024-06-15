@@ -73,7 +73,7 @@ public class DataInit implements CommandLineRunner {
 //            memberRepository.save(user);
 //        }
 
-        String email = "admin@naholo.site";
+        String email = "supervisor@naholo.site";
         Member user2 = null;
         if (!memberRepository.existsByEmail(email)) {
             user2 = Member.builder()
@@ -82,7 +82,7 @@ public class DataInit implements CommandLineRunner {
                     .email(email)
                     .firstAddress("Deageon")
                     .secondAddress("동구")
-                    .password(passwordEncoder.encode("asdf@1234"))
+                    .password(passwordEncoder.encode("Asdf@1234"))
                     .role(Role.ROLE_ADMIN) // 유저 역할 설정
                     .build();
             memberRepository.save(user2);
