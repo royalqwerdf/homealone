@@ -70,6 +70,21 @@ public class DataInit implements CommandLineRunner {
             memberRepository.save(user);
         }
 
+        email = "admin@naholo.site";
+        Member user2 = null;
+        if (!memberRepository.existsByEmail(email)) {
+            user2 = Member.builder()
+                    .name("관리자")
+                    .birth(LocalDate.of(1945, 4, 28))
+                    .email(email)
+                    .firstAddress("Deageon")
+                    .secondAddress("동구")
+                    .password(passwordEncoder.encode("asdf@1234"))
+                    .role(Role.ROLE_ADMIN) // 유저 역할 설정
+                    .build();
+            memberRepository.save(user2);
+        }
+
 //         테스트 레시피 생성
 
         // 테스트 이미지 생성
