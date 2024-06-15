@@ -1,5 +1,7 @@
 package com.elice.homealone.module.tag.Service;
 
+import com.elice.homealone.module.post.entity.Post;
+import com.elice.homealone.module.recipe.entity.Recipe;
 import com.elice.homealone.module.tag.Repository.PostTagRepository;
 import com.elice.homealone.module.tag.dto.PostTagDto;
 import com.elice.homealone.module.tag.entity.PostTag;
@@ -25,5 +27,9 @@ public class PostTagService {
         postTagRepository.save(postTag);
         tagService.addTag(postTag);
         return postTag;
+    }
+
+    public void deletePostTagByRecipe(Post post) {
+        postTagRepository.deleteByPost(post);
     }
 }
