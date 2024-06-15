@@ -101,18 +101,31 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
     }
 
     public Long countRecipes(
+        String all,
         Long memberId,
         String userName,
         String title,
         String description,
         List<String> tags) {
+
+        BooleanExpression expr;
+
+        if(all != null) {
+            expr = containsTitle(all)
+                .or(containsDescription(all))
+                .or(containsMemberName(all));
+        } else {
+            expr = containsTitle(title)
+                .and(containsDescription(description))
+                .and(containsMemberName(userName))
+                .and(containsMemberId(memberId));
+        }
+
         return jpaQueryFactory
             .select(qRecipe.count())
             .from(qRecipe)
             .where(
-                containsTitle(title),
-                containsDescription(description),
-                containsMemberId(memberId)
+                expr != null ? expr : QRecipe.recipe.id.isNotNull()
             )
             .fetchOne();
     }

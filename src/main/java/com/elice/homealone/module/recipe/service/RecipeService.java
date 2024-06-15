@@ -108,7 +108,7 @@ public class RecipeService {
         Page<Recipe> recipePage = PageableExecutionUtils.getPage(
             recipes,
             pageable,
-            () -> (long) recipes.size()
+            () -> recipeRepository.countRecipes( all, memberId, userName, title, description, tags)
         );
 
         try {

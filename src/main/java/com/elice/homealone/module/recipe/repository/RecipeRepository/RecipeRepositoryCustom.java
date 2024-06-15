@@ -17,6 +17,7 @@ public interface RecipeRepositoryCustom {
     );
 
     public Long countRecipes(
+        String all,
         Long memberId,
         String userName,
         String title,

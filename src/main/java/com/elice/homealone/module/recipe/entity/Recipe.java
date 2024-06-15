@@ -174,6 +174,8 @@ public class Recipe extends Post {
 
     @PreRemove
     public void preRemove() {
+        super.preRemovePost();
+
         List<RecipeImage> imagesToDelete = new ArrayList<>(this.getImages());
         List<RecipeIngredient> ingredientsToDelete = new ArrayList<>(this.getIngredients());
         List<RecipeDetail> detailsToDelete = new ArrayList<>(this.getDetails());
