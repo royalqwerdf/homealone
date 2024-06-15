@@ -72,8 +72,8 @@ public class Post extends BaseTimeEntity {
         comment.setPost(this);
     }
 
-    @PreRemove
-    public void preRemove() {
+
+    protected void preRemovePost() {
         List<PostTag> tags = new ArrayList<>(this.getTags());
         List<Comment> comments = new ArrayList<>(this.getComments());
         List<Scrap> scraps = new ArrayList<>(this.getScraps());
